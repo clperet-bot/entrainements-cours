@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Art to Ad - Quiz de révision</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #fdf6ec;
+    color: #2d2440;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #d94f8c;
+    text-align: center;
+    font-size: 1.7em;
+    margin-bottom: 5px;
+    font-weight: 900;
+  }
+  .subtitle {
+    color: #6b5b95;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+  }
+  .container {
+    max-width: 600px;
+    width: 100%;
+  }
+  .section-title {
+    color: #2a9d8f;
+    font-size: 1.2em;
+    margin: 30px 0 10px 0;
+    border-bottom: 3px solid #ffd166;
+    padding-bottom: 6px;
+    font-weight: 800;
+  }
+  .question {
+    background-color: #ffffff;
+    border: 2px solid #f0e6d6;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+  }
+  .question p.qtext {
+    font-size: 1em;
+    color: #2d2440;
+    margin: 0 0 12px 0;
+    font-weight: bold;
+  }
+  .options label {
+    display: block;
+    background-color: #fdf6ec;
+    border: 1.5px solid #f0e6d6;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 0.92em;
+  }
+  .options label:hover {
+    background-color: #ffe8f0;
+  }
+  .options input {
+    margin-right: 8px;
+  }
+  button.check-btn {
+    background-color: #2a9d8f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: inherit;
+  }
+  button.check-btn:hover {
+    background-color: #21867a;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    display: none;
+  }
+  .feedback.correct {
+    background-color: #e6f6ea;
+    color: #1e6b3a;
+    border: 1.5px solid #a8ddb5;
+  }
+  .feedback.incorrect {
+    background-color: #fdeaea;
+    color: #a4383a;
+    border: 1.5px solid #f3b6b6;
+  }
+  .feedback .verdict {
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .feedback .extract {
+    font-style: italic;
+    color: #2d2440;
+    margin: 4px 0;
+  }
+  .feedback .translation {
+    color: #6b5b95;
+    margin: 4px 0 8px 0;
+  }
+  .feedback .explanation {
+    color: #4a4060;
+  }
+  select {
+    background-color: #fdf6ec;
+    color: #2d2440;
+    border: 1.5px solid #2a9d8f;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-family: inherit;
+    font-size: 0.95em;
+  }
+  .fill-text {
+    line-height: 2.2em;
+    font-size: 0.98em;
+  }
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #fdf6ec;
+    color: #2d2440;
+    border: 1.5px solid #f0e6d6;
+    border-radius: 8px;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 0.92em;
+    resize: vertical;
+    min-height: 60px;
+  }
+  .reveal-btn {
+    background: none;
+    border: 1.5px solid #d94f8c;
+    color: #d94f8c;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.88em;
+    margin-top: 8px;
+  }
+  .reveal-btn:hover {
+    background-color: #ffe8f0;
+  }
+  .model-answer {
+    display: none;
+    margin-top: 10px;
+    background-color: #fff6e0;
+    border: 1.5px solid #ffd166;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.88em;
+    color: #6b5b30;
+  }
+  #score-box {
+    background-color: #ffffff;
+    border: 2px solid #ffd166;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #d94f8c;
+    display: none;
+    font-weight: 800;
+  }
+  button.score-btn {
+    background-color: #d94f8c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1em;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  footer {
+    margin-top: 30px;
+    font-size: 0.75em;
+    color: #a89bbd;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>FROM ART TO AD — Quiz de révision</h1>
+<p class="subtitle">Entraîne-toi avant le contrôle !</p>
+
+<div class="container">
+
+  <div class="section-title">Vocabulaire de la publicité</div>
+
+  <div class="question"
+       data-correct="c"
+       data-extract="A symbol or image that represents the brand. You recognize it immediately."
+       data-translation="Un symbole ou une image qui représente la marque. Tu le reconnais immédiatement."
+       data-explanation="C'est la définition du logo — l'élément visuel qui identifie une marque instantanément.">
+    <p class="qtext">1. Quel mot correspond à cette définition : "A symbol or image that represents the brand. You recognize it immediately."</p>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> Slogan</label>
+      <label><input type="radio" name="q1" value="b"> Caption</label>
+      <label><input type="radio" name="q1" value="c"> Logo</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question"
+       data-correct="b"
+       data-extract="A short phrase that catches your attention. You always remember it."
+       data-translation="Une courte phrase qui attire ton attention. Tu t'en souviens toujours."
+       data-explanation="C'est la définition du slogan — la phrase accrocheuse associée à une marque.">
+    <p class="qtext">2. Quel mot correspond à cette définition : "A short phrase that catches your attention. You always remember it."</p>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> Brand name</label>
+      <label><input type="radio" name="q2" value="b"> Slogan</label>
+      <label><input type="radio" name="q2" value="c"> Picture</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question"
+       data-correct="a"
+       data-extract="A short text that gives details or explains the image."
+       data-translation="Un court texte qui donne des détails ou explique l'image."
+       data-explanation="C'est la définition de la caption — le petit texte explicatif qui accompagne l'image.">
+    <p class="qtext">3. Quel mot correspond à cette définition : "A short text that gives details or explains the image."</p>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> Caption</label>
+      <label><input type="radio" name="q3" value="b"> Logo</label>
+      <label><input type="radio" name="q3" value="c"> Picture</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="section-title">Decrire une publicite (Describe an ad)</div>
+
+  <div class="question" id="describe-lego">
+    <p class="qtext">4. Look at the ad. Complete the sentences.</p>
+    <button class="reveal-btn" onclick="document.getElementById('aide4').style.display='block'">🆘 Aide (traduction)</button>
+    <div class="model-answer" id="aide4">
+      <em>Regarde la publicité. Complète les phrases avec les bons mots.</em>
+    </div>
+    <br>
+    <img src="lego-ad.jpg" alt="Lego ad" style="max-width:100%;border-radius:10px;margin:10px 0;border:2px solid #f0e6d6;">
+    <p class="fill-text">
+      This document is an
+      <select data-answer="advertisement"><option value="">--</option><option value="advertisement">advertisement</option><option value="painting">painting</option><option value="logo">logo</option></select>
+      for Lego. We can see a human
+      <select data-answer="hand"><option value="">--</option><option value="hand">hand</option><option value="arm">arm</option><option value="finger">finger</option></select>
+      and a yellow Lego
+      <select data-answer="hand2"><option value="">--</option><option value="hand2">hand</option><option value="brick">brick</option><option value="logo">logo</option></select>
+      at the end of a blue
+      <select data-answer="arm"><option value="">--</option><option value="arm">arm</option><option value="hand">hand</option><option value="box">box</option></select>.
+    </p>
+    <button class="check-btn" id="check4">Vérifier</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="question" id="describe-water">
+    <p class="qtext">5. Look at the ad. Complete the sentences.</p>
+    <button class="reveal-btn" onclick="document.getElementById('aide5').style.display='block'">🆘 Aide (traduction)</button>
+    <div class="model-answer" id="aide5">
+      <em>Regarde la publicité. Complète les phrases avec les bons mots.</em>
+    </div>
+    <br>
+    <img src="water-ad.jpg" alt="Japanese Soul Water ad" style="max-width:100%;border-radius:10px;margin:10px 0;border:2px solid #f0e6d6;">
+    <p class="fill-text">
+      This document is an advertisement for water. We can see a
+      <select data-answer="glass"><option value="">--</option><option value="glass">glass</option><option value="bottle">bottle</option><option value="cup">cup</option></select>
+      of water. The water makes the shape of a
+      <select data-answer="wave"><option value="">--</option><option value="wave">wave</option><option value="dragon">dragon</option><option value="flower">flower</option></select>,
+      like a famous Japanese painting. We can see the
+      <select data-answer="bottle"><option value="">--</option><option value="bottle">bottle</option><option value="logo">logo</option><option value="glass">glass</option></select>
+      in the corner of the picture.
+    </p>
+    <button class="check-btn" id="check5">Vérifier</button>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <div class="section-title">Comparer une oeuvre et sa publicite (Compare)</div>
+
+  <div class="question" id="compare-warhol">
+    <p class="qtext">6. Look at the painting and the ad. Complete the comparison.</p>
+    <button class="reveal-btn" onclick="document.getElementById('aide6').style.display='block'">🆘 Aide (traduction)</button>
+    <div class="model-answer" id="aide6">
+      <em>Regarde le tableau et la publicité. Complète la comparaison avec les bons connecteurs et les bons mots.</em>
+    </div>
+    <br>
+    <img src="warhol-comparison.jpg" alt="Warhol painting and Ray-Ban ad" style="max-width:100%;border-radius:10px;margin:10px 0;border:2px solid #f0e6d6;">
+    <p class="fill-text">
+      The painting has a
+      <select data-answer="pink"><option value="">--</option><option value="pink">pink</option><option value="turquoise">turquoise</option><option value="yellow">yellow</option></select>
+      background,
+      <select data-answer="but"><option value="">--</option><option value="but">but</option><option value="because">because</option><option value="and">and</option></select>
+      the ad has a turquoise background.
+      <br><br>
+      The painting doesn't have torn paper,
+      <select data-answer="however"><option value="">--</option><option value="however">however</option><option value="so">so</option><option value="or">or</option></select>,
+      the ad has torn paper near the eyes.
+      <br><br>
+      <select data-answer="While"><option value="">--</option><option value="While">While</option><option value="So">So</option><option value="Then">Then</option></select>
+      the painting shows no glasses, the ad shows sunglasses under the torn paper.
+    </p>
+    <button class="check-btn" id="check6">Vérifier</button>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <div class="section-title">Entraînement à la rédaction</div>
+
+  <div class="question">
+    <p class="qtext">7. Écris deux phrases de comparaison entre une œuvre d'art et sa publicité (utilise "but", "however", "while" ou "whereas")</p>
+    <textarea id="writing10" placeholder="Write your two comparison sentences here..."></textarea>
+    <br>
+    <button class="check-btn" id="correct-btn" onclick="correctWriting()">✏️ Correction</button>
+    <button class="reveal-btn" onclick="document.getElementById('model10').style.display='block'">Voir un exemple</button>
+    <div class="feedback" id="ai-feedback"></div>
+    <div class="model-answer" id="model10">
+      Exemple : <em>"The painting has a pink background, but the ad has a turquoise background. While the painting shows no glasses, the ad shows sunglasses under the torn paper."</em>
+      <br><br>
+      Ce n'est qu'un exemple parmi d'autres — l'important est d'utiliser un connecteur de contraste + une vraie différence entre les deux images.
+    </div>
+  </div>
+
+  <button class="score-btn" onclick="showScore()">Voir mon score (questions 1 à 6)</button>
+
+  <div id="score-box"></div>
+
+</div>
+
+<footer>Lycée Godefroy de Bouillon</footer>
+
+<script>
+  // QCM checking (questions 1-8) — always shows extract + translation + explanation
+  document.querySelectorAll('.question[data-correct]').forEach(function(q) {
+    const btn = q.querySelector('.check-btn');
+    const feedback = q.querySelector('.feedback');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      const correct = q.getAttribute('data-correct');
+      const extract = q.getAttribute('data-extract');
+      const translation = q.getAttribute('data-translation');
+      const explanation = q.getAttribute('data-explanation');
+      const selected = q.querySelector('input[type="radio"]:checked');
+
+      feedback.style.display = 'block';
+
+      if (!selected) {
+        feedback.className = 'feedback incorrect';
+        feedback.innerHTML = '<div class="verdict">Choisis une réponse avant de vérifier.</div>';
+        return;
+      }
+
+      const isCorrect = selected.value === correct;
+      feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+      feedback.innerHTML =
+        '<div class="verdict">' + (isCorrect ? '✅ Correct !' : '❌ Pas tout à fait.') + '</div>' +
+        '<div class="extract">"' + extract + '"</div>' +
+        '<div class="translation">' + translation + '</div>' +
+        '<div class="explanation">' + explanation + '</div>';
+    });
+  });
+
+  // Fill in the blank checking (questions 4, 5, 6 — image-based production)
+  function checkFillBlank(questionId, checkBtnId, feedbackId, successMsg, errorMsg) {
+    document.getElementById(checkBtnId).addEventListener('click', function() {
+      const selects = document.querySelectorAll('#' + questionId + ' select');
+      let allCorrect = true;
+      selects.forEach(function(s) {
+        if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+      });
+      const fb = document.getElementById(feedbackId);
+      fb.style.display = 'block';
+      if (allCorrect) {
+        fb.className = 'feedback correct';
+        fb.innerHTML = '<div class="verdict">✅ ' + successMsg + '</div>';
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerHTML = '<div class="verdict">❌ Il y a au moins une erreur.</div><div class="explanation">' + errorMsg + '</div>';
+      }
+    });
+  }
+
+  checkFillBlank('describe-lego', 'check4', 'fb4', 'Bravo, tout est correct !', "Regarde bien l'image : qui touche quoi, et de quelle couleur sont les éléments ?");
+  checkFillBlank('describe-water', 'check5', 'fb5', 'Bravo, tout est correct !', "Regarde bien l'image : que voit-on dans le verre, et où est la bouteille ?");
+  checkFillBlank('compare-warhol', 'check6', 'fb6', 'Bravo, tout est correct !', "Rappel : but/however/while marquent tous un contraste, mais leur position dans la phrase change (but et while en milieu ou début de phrase, however après une virgule).");
+
+  // Correction de la rédaction via le Worker IA
+  async function correctWriting() {
+    const text = document.getElementById('writing10').value.trim();
+    const fb = document.getElementById('ai-feedback');
+    const btn = document.getElementById('correct-btn');
+
+    if (!text) {
+      fb.style.display = 'block';
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '<div class="verdict">Écris tes deux phrases avant de demander une correction.</div>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Correction en cours...';
+    fb.style.display = 'block';
+    fb.className = 'feedback';
+    fb.innerHTML = '<div class="verdict">⏳ Correction en cours...</div>';
+
+    const prompt = `Tu es un professeur d'anglais bienveillant pour des élèves A1-A2 avec parfois des difficultés (dyslexie, TDAH), en filière Com Graph (communication visuelle/graphique).
+Un élève a écrit ce texte en anglais pour comparer une œuvre d'art et sa version publicitaire (séquence "From Art to Ad") :
+"${text}"
+
+Consignes de correction :
+- Ton bienveillant et encourageant, jamais sévère
+- Signale les erreurs de grammaire/orthographe/vocabulaire simplement, sans jargon grammatical complexe
+- Vérifie que l'élève a bien utilisé un connecteur de contraste (but / however / while / whereas)
+- Vérifie que la comparaison porte sur une vraie différence visuelle (couleur, position, texte, objet)
+- Propose une version corrigée complète
+- Maximum 400 caractères
+- Réponds en français pour les explications, garde les exemples de phrases corrigées en anglais
+- Structure ta réponse ainsi : d'abord ce qui est réussi, puis les corrections, puis la version corrigée complète`;
+
+    try {
+      const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 300,
+          messages: [{role: 'user', content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+
+      fb.className = 'feedback correct';
+      fb.innerHTML = '<div class="verdict">✅ Correction :</div><div class="explanation">' + correction.replace(/\n/g, '<br>') + '</div>';
+    } catch (err) {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '<div class="verdict">❌ Erreur de connexion.</div><div class="explanation">Vérifie ta connexion internet et réessaie.</div>';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✏️ Correction';
+  }
+
+  // Score calculation (questions 1-9, out of 9)
+  function showScore() {
+    let score = 0;
+    let total = 6;
+
+    for (let i = 1; i <= 3; i++) {
+      const q = document.querySelector('input[name="q' + i + '"]:checked');
+      if (q) {
+        const questionDiv = document.querySelector('input[name="q' + i + '"]').closest('.question');
+        const correct = questionDiv.getAttribute('data-correct');
+        if (q.value === correct) score++;
+      }
+    }
+
+    ['describe-lego', 'describe-water', 'compare-warhol'].forEach(function(qId) {
+      const selects = document.querySelectorAll('#' + qId + ' select');
+      let allCorrect = selects.length > 0;
+      selects.forEach(function(s) {
+        if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+      });
+      if (allCorrect) score++;
+    });
+
+    const box = document.getElementById('score-box');
+    box.style.display = 'block';
+    box.textContent = 'Score : ' + score + ' / ' + total;
+  }
+</script>
+
+</body>
+</html>
