@@ -354,7 +354,7 @@
     <p class="qtext">10. Écris deux phrases sur ce que TOI tu as ressenti pendant l'histoire (utilise "I feel..." et "I think... because...")</p>
     <textarea id="writing10" placeholder="Write your two sentences here..."></textarea>
     <br>
-    <button class="check-btn" id="correct-btn" onclick="correctWriting()">🤖 Corriger avec l'IA</button>
+    <button class="check-btn" id="correct-btn" onclick="correctWriting()">✏️ Correction</button>
     <button class="reveal-btn" onclick="document.getElementById('model10').style.display='block'">Voir un exemple</button>
     <div class="feedback" id="ai-feedback"></div>
     <div class="model-answer" id="model10">
@@ -469,14 +469,14 @@ Consignes de correction :
       const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
 
       fb.className = 'feedback correct';
-      fb.innerHTML = '<div class="verdict">🤖 Correction :</div><div class="explanation">' + correction.replace(/\n/g, '<br>') + '</div>';
+      fb.innerHTML = '<div class="verdict">✅ Correction :</div><div class="explanation">' + correction.replace(/\n/g, '<br>') + '</div>';
     } catch (err) {
       fb.className = 'feedback incorrect';
       fb.innerHTML = '<div class="verdict">❌ Erreur de connexion.</div><div class="explanation">Vérifie ta connexion internet et réessaie.</div>';
     }
 
     btn.disabled = false;
-    btn.textContent = '🤖 Corriger avec l\'IA';
+    btn.textContent = '✏️ Correction';
   }
 
   // Score calculation (questions 1-9, out of 9)
