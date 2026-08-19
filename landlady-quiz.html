@@ -364,6 +364,16 @@
     </div>
   </div>
 
+  <div class="section-title">Entraînement à l'oral</div>
+
+  <div class="question">
+    <p class="qtext">11. Dis à voix haute une phrase sur ce que tu as ressenti pendant l'histoire (même consigne qu'à l'écrit, mais à l'oral !)</p>
+    <button class="check-btn" id="record-btn" onclick="toggleRecording()">🎤 Enregistrer ma réponse</button>
+    <div id="record-status" style="margin-top:8px;font-size:.85em;color:#cbb994;"></div>
+    <div class="feedback" id="oral-transcript" style="display:none;"></div>
+    <div class="feedback" id="oral-feedback"></div>
+  </div>
+
   <button class="score-btn" onclick="showScore()">Voir mon score (questions 1 à 9)</button>
 
   <div id="score-box"></div>
@@ -477,6 +487,101 @@ Consignes de correction :
 
     btn.disabled = false;
     btn.textContent = '✏️ Correction';
+  }
+
+  // Entraînement oral — reconnaissance vocale + correction
+  let recognition = null;
+  let isRecording = false;
+
+  function toggleRecording() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = document.getElementById('record-status');
+    const transcriptBox = document.getElementById('oral-transcript');
+    const feedbackBox = document.getElementById('oral-feedback');
+    const btn = document.getElementById('record-btn');
+
+    if (!SpeechRecognition) {
+      status.textContent = "⚠️ La reconnaissance vocale n'est pas disponible sur ce navigateur. Essaie avec Google Chrome.";
+      return;
+    }
+
+    if (isRecording) {
+      recognition.stop();
+      return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+      isRecording = true;
+      btn.textContent = '🔴 Enregistrement... (parle maintenant)';
+      status.textContent = '';
+      transcriptBox.style.display = 'none';
+      feedbackBox.style.display = 'none';
+    };
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      transcriptBox.style.display = 'block';
+      transcriptBox.className = 'feedback';
+      transcriptBox.innerHTML = '<div class="verdict">🗣️ Ce que tu as dit :</div><div class="extract">"' + transcript + '"</div>';
+      correctOral(transcript);
+    };
+
+    recognition.onerror = function(event) {
+      status.textContent = '⚠️ Erreur : ' + event.error + '. Vérifie que le micro est autorisé.';
+      isRecording = false;
+      btn.textContent = '🎤 Enregistrer ma réponse';
+    };
+
+    recognition.onend = function() {
+      isRecording = false;
+      btn.textContent = '🎤 Enregistrer ma réponse';
+    };
+
+    recognition.start();
+  }
+
+  async function correctOral(transcript) {
+    const feedbackBox = document.getElementById('oral-feedback');
+    feedbackBox.style.display = 'block';
+    feedbackBox.className = 'feedback';
+    feedbackBox.innerHTML = '<div class="verdict">⏳ Correction en cours...</div>';
+
+    const prompt = `Tu es un professeur d'anglais bienveillant pour des élèves A1-A2 avec parfois des difficultés (dyslexie, TDAH).
+Un élève a dit à l'oral cette phrase en anglais sur ses émotions en lisant "The Landlady" (texte transcrit automatiquement depuis sa voix, il peut y avoir de petites erreurs de transcription) :
+"${transcript}"
+
+Consignes de correction :
+- Ton bienveillant et encourageant, jamais sévère
+- Si la transcription semble étrange ou incohérente à certains endroits, suppose que c'est un souci de reconnaissance vocale, pas une erreur de l'élève, et concentre-toi sur ce qui est compréhensible
+- Signale les erreurs de grammaire/vocabulaire simplement
+- Vérifie si l'élève a bien utilisé un mot d'émotion + "because"
+- Maximum 300 caractères
+- Réponds en français, garde les exemples en anglais`;
+
+    try {
+      const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 250,
+          messages: [{role: 'user', content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+
+      feedbackBox.className = 'feedback correct';
+      feedbackBox.innerHTML = '<div class="verdict">✅ Correction :</div><div class="explanation">' + correction.replace(/\n/g, '<br>') + '</div>';
+    } catch (err) {
+      feedbackBox.className = 'feedback incorrect';
+      feedbackBox.innerHTML = '<div class="verdict">❌ Erreur de connexion.</div><div class="explanation">Vérifie ta connexion internet et réessaie.</div>';
+    }
   }
 
   // Score calculation (questions 1-9, out of 9)
