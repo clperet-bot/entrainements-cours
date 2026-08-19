@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Landlady - Quiz de révision</title>
+<style>
+  body {
+    font-family: 'Georgia', serif;
+    background-color: #1a1410;
+    color: #f4e9d8;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #f4c542;
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+  .subtitle {
+    color: #cbb994;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+  }
+  .container {
+    max-width: 600px;
+    width: 100%;
+  }
+  .section-title {
+    color: #f4c542;
+    font-size: 1.2em;
+    margin: 30px 0 10px 0;
+    border-bottom: 1px solid #3d3020;
+    padding-bottom: 6px;
+  }
+  .question {
+    background-color: #2a2118;
+    border: 1px solid #3d3020;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .question p.qtext {
+    font-size: 1em;
+    color: #f4e9d8;
+    margin: 0 0 12px 0;
+    font-weight: bold;
+  }
+  .options label {
+    display: block;
+    background-color: #1f1810;
+    border: 1px solid #3d3020;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 0.92em;
+  }
+  .options label:hover {
+    background-color: #33271a;
+  }
+  .options input {
+    margin-right: 8px;
+  }
+  button.check-btn {
+    background-color: #f4c542;
+    color: #1a1410;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: 'Georgia', serif;
+  }
+  button.check-btn:hover {
+    background-color: #ffd966;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    display: none;
+  }
+  .feedback.correct {
+    background-color: #2b3d24;
+    color: #b6e6a0;
+    border: 1px solid #4a6b3a;
+  }
+  .feedback.incorrect {
+    background-color: #3d2424;
+    color: #e6a0a0;
+    border: 1px solid #6b3a3a;
+  }
+  select {
+    background-color: #1f1810;
+    color: #f4e9d8;
+    border: 1px solid #f4c542;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-family: 'Georgia', serif;
+    font-size: 0.95em;
+  }
+  .fill-text {
+    line-height: 2.2em;
+    font-size: 0.98em;
+  }
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #1f1810;
+    color: #f4e9d8;
+    border: 1px solid #3d3020;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: 'Georgia', serif;
+    font-size: 0.92em;
+    resize: vertical;
+    min-height: 60px;
+  }
+  .model-answer {
+    display: none;
+    margin-top: 10px;
+    background-color: #2b2a1f;
+    border: 1px solid #5a5637;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 0.88em;
+    color: #e6dcae;
+  }
+  .reveal-btn {
+    background: none;
+    border: 1px solid #f4c542;
+    color: #f4c542;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    font-size: 0.88em;
+    margin-top: 8px;
+  }
+  .reveal-btn:hover {
+    background-color: #33271a;
+  }
+  #score-box {
+    background-color: #2a2118;
+    border: 1px solid #f4c542;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #f4c542;
+    display: none;
+  }
+  button.score-btn {
+    background-color: #f4c542;
+    color: #1a1410;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    font-size: 1em;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  footer {
+    margin-top: 30px;
+    font-size: 0.75em;
+    color: #7a6b52;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>The Landlady — Quiz de révision</h1>
+<p class="subtitle">Entraîne-toi avant le contrôle !</p>
+
+<div class="container">
+
+  <div class="section-title">Compréhension de l'histoire</div>
+
+  <div class="question" data-correct="b">
+    <p class="qtext">1. Pourquoi Billy cherche-t-il un logement ce soir-là ?</p>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> Il est en vacances à Bath</label>
+      <label><input type="radio" name="q1" value="b"> Il commence un nouveau travail à Bath</label>
+      <label><input type="radio" name="q1" value="c"> Il rend visite à sa famille</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" data-correct="a">
+    <p class="qtext">2. Qu'est-ce qui attire Billy vers le Bed and Breakfast plutôt qu'un grand hôtel ?</p>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> La lumière chaleureuse et l'ambiance accueillante</label>
+      <label><input type="radio" name="q2" value="b"> Le prix affiché dans la vitrine</label>
+      <label><input type="radio" name="q2" value="c"> Un ami le lui a recommandé</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <p class="qtext">3. Que dit la landlady à Billy quand elle ouvre la porte ?</p>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> Qu'elle n'a plus de chambre disponible</label>
+      <label><input type="radio" name="q3" value="b"> Qu'elle ne le connaît pas</label>
+      <label><input type="radio" name="q3" value="c"> Qu'elle l'attendait</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <p class="qtext">4. Pourquoi le livre d'or est-il étrange ?</p>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> Il est complètement vide</label>
+      <label><input type="radio" name="q4" value="b"> Il ne contient que deux noms, malgré une maison censée être un B&B actif</label>
+      <label><input type="radio" name="q4" value="c"> Les pages sont déchirées</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" data-correct="a">
+    <p class="qtext">5. Qu'est-ce qui est anormal chez le chien et le perroquet ?</p>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> Ils ne bougent pas du tout, comme empaillés</label>
+      <label><input type="radio" name="q5" value="b"> Ils aboient et crient sans arrêt</label>
+      <label><input type="radio" name="q5" value="c"> Ils ne sont pas dans la pièce</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <p class="qtext">6. Que se passe-t-il après que Billy boive le thé ?</p>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> Il se sent mieux et plus détendu</label>
+      <label><input type="radio" name="q6" value="b"> Il décide de partir immédiatement</label>
+      <label><input type="radio" name="q6" value="c"> Il se sent faible et étourdi, sa vision devient floue</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="section-title">Vocabulaire des émotions</div>
+
+  <div class="question" data-correct="b">
+    <p class="qtext">7. "Scared" veut dire :</p>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> Surpris</label>
+      <label><input type="radio" name="q7" value="b"> Effrayé</label>
+      <label><input type="radio" name="q7" value="c"> Curieux</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <p class="qtext">8. "Uncomfortable" veut dire :</p>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> Content</label>
+      <label><input type="radio" name="q8" value="b"> Calme</label>
+      <label><input type="radio" name="q8" value="c"> Mal à l'aise</label>
+    </div>
+    <button class="check-btn">Vérifier</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="question" id="fill-blank">
+    <p class="qtext">9. Complète le résumé avec les bons mots</p>
+    <p class="fill-text">
+      Billy is looking for a room and finds a small B&B. He feels
+      <select data-answer="calm"><option value="">--</option><option value="calm">calm</option><option value="angry">angry</option><option value="bored">bored</option></select>
+      when he sees the warm light. The landlady seems very kind, but Billy feels
+      <select data-answer="confused"><option value="">--</option><option value="confused">confused</option><option value="happy">happy</option><option value="tired">tired</option></select>
+      when she says she was waiting for him. When he notices the dog does not move, he feels
+      <select data-answer="worried"><option value="">--</option><option value="worried">worried</option><option value="excited">excited</option><option value="proud">proud</option></select>.
+      At the end, after drinking the tea, Billy feels very
+      <select data-answer="scared"><option value="">--</option><option value="scared">scared</option><option value="calm">calm</option><option value="happy">happy</option></select>.
+    </p>
+    <button class="check-btn" id="check-fill">Vérifier</button>
+    <div class="feedback" id="fill-feedback"></div>
+  </div>
+
+  <div class="section-title">Entraînement à la rédaction</div>
+
+  <div class="question">
+    <p class="qtext">10. Écris deux phrases sur ce que TOI tu as ressenti pendant l'histoire (utilise "I feel..." et "I think... because...")</p>
+    <textarea placeholder="Write your two sentences here..."></textarea>
+    <br>
+    <button class="reveal-btn" onclick="document.getElementById('model10').style.display='block'">Voir un exemple</button>
+    <div class="model-answer" id="model10">
+      Exemple : <em>"I feel worried when the dog does not move. I think it's strange because animals usually breathe and move."</em>
+      <br><br>
+      Ce n'est qu'un exemple parmi d'autres — l'important est d'utiliser une émotion + une explication avec "because".
+    </div>
+  </div>
+
+  <button class="score-btn" onclick="showScore()">Voir mon score (questions 1 à 9)</button>
+
+  <div id="score-box"></div>
+
+</div>
+
+<footer>Lycée Godefroy de Bouillon</footer>
+
+<script>
+  // QCM checking (questions 1-8)
+  document.querySelectorAll('.question[data-correct]').forEach(function(q) {
+    const btn = q.querySelector('.check-btn');
+    const feedback = q.querySelector('.feedback');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      const correct = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      feedback.style.display = 'block';
+      if (!selected) {
+        feedback.className = 'feedback incorrect';
+        feedback.textContent = 'Choisis une réponse avant de vérifier.';
+        return;
+      }
+      if (selected.value === correct) {
+        feedback.className = 'feedback correct';
+        feedback.textContent = '✅ Correct !';
+      } else {
+        feedback.className = 'feedback incorrect';
+        feedback.textContent = '❌ Pas tout à fait — relis ce passage de l\'histoire.';
+      }
+    });
+  });
+
+  // Fill in the blank checking (question 9)
+  document.getElementById('check-fill').addEventListener('click', function() {
+    const selects = document.querySelectorAll('#fill-blank select');
+    let allCorrect = true;
+    selects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+    });
+    const fb = document.getElementById('fill-feedback');
+    fb.style.display = 'block';
+    if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.textContent = '✅ Bravo, tout est correct !';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.textContent = '❌ Il y a au moins une erreur — vérifie chaque mot.';
+    }
+  });
+
+  // Score calculation (questions 1-9, out of 9)
+  function showScore() {
+    let score = 0;
+    let total = 9;
+
+    for (let i = 1; i <= 8; i++) {
+      const q = document.querySelector('input[name="q' + i + '"]:checked');
+      if (q) {
+        const questionDiv = document.querySelector('input[name="q' + i + '"]').closest('.question');
+        const correct = questionDiv.getAttribute('data-correct');
+        if (q.value === correct) score++;
+      }
+    }
+
+    const selects = document.querySelectorAll('#fill-blank select');
+    let fillCorrect = true;
+    selects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) fillCorrect = false;
+    });
+    if (fillCorrect) score++;
+
+    const box = document.getElementById('score-box');
+    box.style.display = 'block';
+    box.textContent = 'Score : ' + score + ' / ' + total;
+  }
+</script>
+
+</body>
+</html>
