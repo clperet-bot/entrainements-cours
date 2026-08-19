@@ -86,7 +86,7 @@
   }
   .feedback {
     margin-top: 10px;
-    padding: 10px;
+    padding: 10px 12px;
     border-radius: 6px;
     font-size: 0.9em;
     display: none;
@@ -100,6 +100,22 @@
     background-color: #3d2424;
     color: #e6a0a0;
     border: 1px solid #6b3a3a;
+  }
+  .feedback .verdict {
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .feedback .extract {
+    font-style: italic;
+    color: #f4e9d8;
+    margin: 4px 0;
+  }
+  .feedback .translation {
+    color: #cbb994;
+    margin: 4px 0 8px 0;
+  }
+  .feedback .explanation {
+    color: #d8c9a3;
   }
   select {
     background-color: #1f1810;
@@ -194,7 +210,11 @@
 
   <div class="section-title">Compréhension de l'histoire</div>
 
-  <div class="question" data-correct="b">
+  <div class="question"
+       data-correct="b"
+       data-extract="He was traveling to Bath for his new job. It was a cold and dark evening."
+       data-translation="Il voyageait vers Bath pour son nouveau travail. C'était une soirée froide et sombre."
+       data-explanation="Le texte précise dès le début que Billy va à Bath pour commencer un nouveau travail, pas pour des vacances.">
     <p class="qtext">1. Pourquoi Billy cherche-t-il un logement ce soir-là ?</p>
     <div class="options">
       <label><input type="radio" name="q1" value="a"> Il est en vacances à Bath</label>
@@ -205,7 +225,11 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="a">
+  <div class="question"
+       data-correct="a"
+       data-extract="He saw the yellow light shining through the curtains. It looked much better than a big, noisy hotel."
+       data-translation="Il a vu la lumière jaune briller à travers les rideaux. Cela semblait bien mieux qu'un grand hôtel bruyant."
+       data-explanation="Le contraste entre la lumière chaude et accueillante du B&B et l'hôtel jugé bruyant explique pourquoi Billy préfère ce logement.">
     <p class="qtext">2. Qu'est-ce qui attire Billy vers le Bed and Breakfast plutôt qu'un grand hôtel ?</p>
     <div class="options">
       <label><input type="radio" name="q2" value="a"> La lumière chaleureuse et l'ambiance accueillante</label>
@@ -216,7 +240,11 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="c">
+  <div class="question"
+       data-correct="c"
+       data-extract="Oh yes, she said. I was waiting for you!"
+       data-translation="Oh oui, dit-elle. Je vous attendais !"
+       data-explanation="Cette phrase est le premier vrai indice étrange : la landlady n'a aucune raison logique de savoir que Billy allait venir.">
     <p class="qtext">3. Que dit la landlady à Billy quand elle ouvre la porte ?</p>
     <div class="options">
       <label><input type="radio" name="q3" value="a"> Qu'elle n'a plus de chambre disponible</label>
@@ -227,7 +255,11 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="b">
+  <div class="question"
+       data-correct="b"
+       data-extract="Billy opened the book. There were only two names inside."
+       data-translation="Billy a ouvert le livre. Il n'y avait que deux noms à l'intérieur."
+       data-explanation="Un B&B en activité devrait avoir beaucoup de noms dans son livre d'or — n'en avoir que deux est un signe que quelque chose ne va pas.">
     <p class="qtext">4. Pourquoi le livre d'or est-il étrange ?</p>
     <div class="options">
       <label><input type="radio" name="q4" value="a"> Il est complètement vide</label>
@@ -238,7 +270,11 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="a">
+  <div class="question"
+       data-correct="a"
+       data-extract="The dog had not moved once. No breathing, no blinking."
+       data-translation="Le chien n'avait pas bougé une seule fois. Aucune respiration, aucun clignement des yeux."
+       data-explanation="L'immobilité totale du chien et du perroquet est un indice clé : on découvre plus tard qu'ils sont empaillés.">
     <p class="qtext">5. Qu'est-ce qui est anormal chez le chien et le perroquet ?</p>
     <div class="options">
       <label><input type="radio" name="q5" value="a"> Ils ne bougent pas du tout, comme empaillés</label>
@@ -249,7 +285,11 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="c">
+  <div class="question"
+       data-correct="c"
+       data-extract="Billy felt dizzy. His head became heavier and heavier."
+       data-translation="Billy se sentit étourdi. Sa tête devenait de plus en plus lourde."
+       data-explanation="Le thé était visiblement drogué : c'est ce qui explique le malaise soudain de Billy à la fin de l'histoire.">
     <p class="qtext">6. Que se passe-t-il après que Billy boive le thé ?</p>
     <div class="options">
       <label><input type="radio" name="q6" value="a"> Il se sent mieux et plus détendu</label>
@@ -262,7 +302,11 @@
 
   <div class="section-title">Vocabulaire des émotions</div>
 
-  <div class="question" data-correct="b">
+  <div class="question"
+       data-correct="b"
+       data-extract="Billy's hands started to shake."
+       data-translation="Les mains de Billy ont commencé à trembler."
+       data-explanation="Trembler de peur correspond à l'émotion 'scared' (effrayé) — Billy réalise que quelque chose de grave se passe.">
     <p class="qtext">7. "Scared" veut dire :</p>
     <div class="options">
       <label><input type="radio" name="q7" value="a"> Surpris</label>
@@ -273,7 +317,11 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="c">
+  <div class="question"
+       data-correct="c"
+       data-extract="Billy smiled awkwardly. He did not hear any sounds from upstairs."
+       data-translation="Billy sourit maladroitement. Il n'entendait aucun bruit venant de l'étage."
+       data-explanation="Ce moment de malaise silencieux illustre bien 'uncomfortable' (mal à l'aise) : Billy sent que quelque chose cloche sans pouvoir l'expliquer.">
     <p class="qtext">8. "Uncomfortable" veut dire :</p>
     <div class="options">
       <label><input type="radio" name="q8" value="a"> Content</label>
@@ -323,27 +371,33 @@
 <footer>Lycée Godefroy de Bouillon</footer>
 
 <script>
-  // QCM checking (questions 1-8)
+  // QCM checking (questions 1-8) — always shows extract + translation + explanation
   document.querySelectorAll('.question[data-correct]').forEach(function(q) {
     const btn = q.querySelector('.check-btn');
     const feedback = q.querySelector('.feedback');
     if (!btn) return;
     btn.addEventListener('click', function() {
       const correct = q.getAttribute('data-correct');
+      const extract = q.getAttribute('data-extract');
+      const translation = q.getAttribute('data-translation');
+      const explanation = q.getAttribute('data-explanation');
       const selected = q.querySelector('input[type="radio"]:checked');
+
       feedback.style.display = 'block';
+
       if (!selected) {
         feedback.className = 'feedback incorrect';
-        feedback.textContent = 'Choisis une réponse avant de vérifier.';
+        feedback.innerHTML = '<div class="verdict">Choisis une réponse avant de vérifier.</div>';
         return;
       }
-      if (selected.value === correct) {
-        feedback.className = 'feedback correct';
-        feedback.textContent = '✅ Correct !';
-      } else {
-        feedback.className = 'feedback incorrect';
-        feedback.textContent = '❌ Pas tout à fait — relis ce passage de l\'histoire.';
-      }
+
+      const isCorrect = selected.value === correct;
+      feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+      feedback.innerHTML =
+        '<div class="verdict">' + (isCorrect ? '✅ Correct !' : '❌ Pas tout à fait.') + '</div>' +
+        '<div class="extract">"' + extract + '"</div>' +
+        '<div class="translation">' + translation + '</div>' +
+        '<div class="explanation">' + explanation + '</div>';
     });
   });
 
@@ -358,10 +412,11 @@
     fb.style.display = 'block';
     if (allCorrect) {
       fb.className = 'feedback correct';
-      fb.textContent = '✅ Bravo, tout est correct !';
+      fb.innerHTML = '<div class="verdict">✅ Bravo, tout est correct !</div>';
     } else {
       fb.className = 'feedback incorrect';
-      fb.textContent = '❌ Il y a au moins une erreur — vérifie chaque mot.';
+      fb.innerHTML = '<div class="verdict">❌ Il y a au moins une erreur.</div>' +
+        '<div class="explanation">Relis chaque mot : calm/confused/worried/scared correspondent chacun à un moment précis de la montée du malaise dans l\'histoire.</div>';
     }
   });
 
