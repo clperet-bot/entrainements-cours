@@ -352,9 +352,11 @@
 
   <div class="question">
     <p class="qtext">10. Écris deux phrases sur ce que TOI tu as ressenti pendant l'histoire (utilise "I feel..." et "I think... because...")</p>
-    <textarea placeholder="Write your two sentences here..."></textarea>
+    <textarea id="writing10" placeholder="Write your two sentences here..."></textarea>
     <br>
+    <button class="check-btn" id="correct-btn" onclick="correctWriting()">🤖 Corriger avec l'IA</button>
     <button class="reveal-btn" onclick="document.getElementById('model10').style.display='block'">Voir un exemple</button>
+    <div class="feedback" id="ai-feedback"></div>
     <div class="model-answer" id="model10">
       Exemple : <em>"I feel worried when the dog does not move. I think it's strange because animals usually breathe and move."</em>
       <br><br>
@@ -419,6 +421,63 @@
         '<div class="explanation">Relis chaque mot : calm/confused/worried/scared correspondent chacun à un moment précis de la montée du malaise dans l\'histoire.</div>';
     }
   });
+
+  // Correction de la rédaction via le Worker IA
+  async function correctWriting() {
+    const text = document.getElementById('writing10').value.trim();
+    const fb = document.getElementById('ai-feedback');
+    const btn = document.getElementById('correct-btn');
+
+    if (!text) {
+      fb.style.display = 'block';
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '<div class="verdict">Écris tes deux phrases avant de demander une correction.</div>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Correction en cours...';
+    fb.style.display = 'block';
+    fb.className = 'feedback';
+    fb.style.display = 'block';
+    fb.innerHTML = '<div class="verdict">⏳ Correction en cours...</div>';
+
+    const prompt = `Tu es un professeur d'anglais bienveillant pour des élèves A1-A2 avec parfois des difficultés (dyslexie, TDAH).
+Un élève a écrit ce texte en anglais sur ses émotions en lisant "The Landlady":
+"${text}"
+
+Consignes de correction :
+- Ton bienveillant et encourageant, jamais sévère
+- Signale les erreurs de grammaire/orthographe/vocabulaire simplement, sans jargon grammatical complexe
+- Propose une version corrigée
+- Vérifie si l'élève a bien utilisé un mot d'émotion + "because"
+- Maximum 400 caractères
+- Réponds en français pour les explications, mais garde les exemples de phrases corrigées en anglais
+- Structure ta réponse ainsi : d'abord ce qui est réussi, puis les corrections, puis la version corrigée complète`;
+
+    try {
+      const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 300,
+          messages: [{role: 'user', content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+
+      fb.className = 'feedback correct';
+      fb.innerHTML = '<div class="verdict">🤖 Correction :</div><div class="explanation">' + correction.replace(/\n/g, '<br>') + '</div>';
+    } catch (err) {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '<div class="verdict">❌ Erreur de connexion.</div><div class="explanation">Vérifie ta connexion internet et réessaie.</div>';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🤖 Corriger avec l\'IA';
+  }
 
   // Score calculation (questions 1-9, out of 9)
   function showScore() {
