@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spider-Man - Before You Watch</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #0d1b2a;
+    color: #e8eef2;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #e63946;
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 5px;
+    font-weight: 900;
+    text-shadow: 1px 1px 3px rgba(0,0,0,.4);
+  }
+  .subtitle {
+    color: #a8b2bd;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+  }
+  .container {
+    max-width: 600px;
+    width: 100%;
+  }
+  .section-title {
+    color: #f4a261;
+    font-size: 1.15em;
+    margin: 30px 0 10px 0;
+    border-bottom: 3px solid #e63946;
+    padding-bottom: 6px;
+    font-weight: 800;
+  }
+  .track {
+    background-color: #1b2a3d;
+    border: 1px solid #2d3f56;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .track h2 {
+    font-size: 1em;
+    color: #f4a261;
+    margin: 0 0 4px 0;
+  }
+  .track p.desc {
+    font-size: 0.85em;
+    color: #a8b2bd;
+    margin: 0 0 10px 0;
+  }
+  audio {
+    width: 100%;
+  }
+  .question {
+    background-color: #1b2a3d;
+    border: 1px solid #2d3f56;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .question p.qtext {
+    font-size: 0.95em;
+    color: #e8eef2;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+  }
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .checkbox-grid label {
+    display: block;
+    background-color: #0d1b2a;
+    border: 1.5px solid #2d3f56;
+    border-radius: 8px;
+    padding: 7px 10px;
+    cursor: pointer;
+    font-size: 0.88em;
+  }
+  .checkbox-grid label:hover {
+    background-color: #24354a;
+  }
+  .checkbox-grid input {
+    margin-right: 6px;
+  }
+  .options label {
+    display: block;
+    background-color: #0d1b2a;
+    border: 1.5px solid #2d3f56;
+    border-radius: 8px;
+    padding: 7px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  .options label:hover {
+    background-color: #24354a;
+  }
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #0d1b2a;
+    color: #e8eef2;
+    border: 1.5px solid #2d3f56;
+    border-radius: 8px;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 0.9em;
+    resize: vertical;
+    min-height: 55px;
+    margin-bottom: 10px;
+  }
+  button.check-btn {
+    background-color: #e63946;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: inherit;
+    font-size: 0.9em;
+  }
+  button.check-btn:hover {
+    background-color: #c9313d;
+  }
+  .reveal-btn {
+    background: none;
+    border: 1.5px solid #f4a261;
+    color: #f4a261;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85em;
+    margin-top: 6px;
+  }
+  .reveal-btn:hover {
+    background-color: #24354a;
+  }
+  .model-answer {
+    display: none;
+    margin-top: 10px;
+    background-color: #2a2418;
+    border: 1.5px solid #f4a261;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.85em;
+    color: #e6d3a8;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 0.87em;
+    display: none;
+  }
+  .feedback.correct {
+    background-color: #1e3a2a;
+    color: #8fd19e;
+    border: 1.5px solid #3a6b4a;
+  }
+  .feedback.incorrect {
+    background-color: #3a1e1e;
+    color: #e79a9a;
+    border: 1.5px solid #6b3a3a;
+  }
+  #score-box {
+    background-color: #1b2a3d;
+    border: 2px solid #f4a261;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.05em;
+    color: #f4a261;
+    display: none;
+    font-weight: 800;
+  }
+  button.score-btn {
+    background-color: #f4a261;
+    color: #0d1b2a;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1em;
+    margin-top: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  footer {
+    margin-top: 30px;
+    font-size: 0.75em;
+    color: #5c6b7a;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>🕷️ BEFORE YOU WATCH</h1>
+<p class="subtitle">Écoute le résumé de l'histoire avant d'aller voir le film !</p>
+
+<div class="container">
+
+  <div class="track">
+    <h2>🎧 Listen to the story</h2>
+    <p class="desc">Un narrateur raconte le début de l'histoire, en anglais simple. Réécoute autant de fois que tu veux.</p>
+    <audio controls>
+      <source src="movie-synopsis.mp3" type="audio/mpeg">
+      Ton navigateur ne supporte pas l'audio.
+    </audio>
+  </div>
+
+  <div class="section-title">🟢 A — Coche les mots que tu as entendus</div>
+
+  <div class="question" id="words-quiz">
+    <p class="qtext">Parmi ces mots, coche uniquement ceux que tu as entendus dans l'audio (attention, certains sont des pièges !)</p>
+    <div class="checkbox-grid">
+      <label><input type="checkbox" data-real="true" value="secret"> secret</label>
+      <label><input type="checkbox" data-real="false" value="money"> money</label>
+      <label><input type="checkbox" data-real="true" value="forget"> forget</label>
+      <label><input type="checkbox" data-real="false" value="school"> school</label>
+      <label><input type="checkbox" data-real="true" value="city"> city</label>
+      <label><input type="checkbox" data-real="false" value="family"> family</label>
+      <label><input type="checkbox" data-real="true" value="alone"> alone</label>
+      <label><input type="checkbox" data-real="false" value="weather"> weather</label>
+      <label><input type="checkbox" data-real="true" value="danger"> danger</label>
+      <label><input type="checkbox" data-real="false" value="teacher"> teacher</label>
+      <label><input type="checkbox" data-real="true" value="powers"> powers</label>
+      <label><input type="checkbox" data-real="false" value="holiday"> holiday</label>
+      <label><input type="checkbox" data-real="true" value="letter"> letter</label>
+      <label><input type="checkbox" data-real="false" value="car"> car</label>
+    </div>
+    <button class="check-btn" id="check-words">Vérifier</button>
+    <div class="feedback" id="fb-words"></div>
+  </div>
+
+  <div class="section-title">🟡 B — Vrai ou faux ?</div>
+
+  <div class="question" id="tf-quiz">
+    <p class="qtext">D'après ce que tu as entendu, coche Vrai ou Faux</p>
+
+    <div style="margin-bottom:12px;">
+      1. Un sort magique a fait oublier Peter à tout le monde.
+      <div class="options">
+        <label><input type="radio" name="tf1" value="true"> Vrai</label>
+        <label><input type="radio" name="tf1" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      2. MJ se souvient parfaitement de Peter.
+      <div class="options">
+        <label><input type="radio" name="tf2" value="true"> Vrai</label>
+        <label><input type="radio" name="tf2" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      3. Peter se sent très seul.
+      <div class="options">
+        <label><input type="radio" name="tf3" value="true"> Vrai</label>
+        <label><input type="radio" name="tf3" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      4. Il n'y a aucun nouveau danger dans l'histoire.
+      <div class="options">
+        <label><input type="radio" name="tf4" value="true"> Vrai</label>
+        <label><input type="radio" name="tf4" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      5. Peter écrit une lettre à MJ.
+      <div class="options">
+        <label><input type="radio" name="tf5" value="true"> Vrai</label>
+        <label><input type="radio" name="tf5" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <button class="check-btn" id="check-tf">Vérifier</button>
+    <div class="feedback" id="fb-tf"></div>
+  </div>
+
+  <div class="section-title">🌸 C — Réponds librement</div>
+
+  <div class="question">
+    <p class="qtext">1. Why doesn't anyone remember Peter? (Pourquoi personne ne se souvient de Peter ?)</p>
+    <textarea placeholder="Write your answer in English..."></textarea>
+  </div>
+
+  <div class="question">
+    <p class="qtext">2. How does Peter feel about this situation? (Comment se sent Peter ?)</p>
+    <textarea placeholder="Write your answer in English..."></textarea>
+  </div>
+
+  <div class="question">
+    <p class="qtext">3. What does Peter write to MJ, and why? (Qu'écrit Peter à MJ, et pourquoi ?)</p>
+    <textarea placeholder="Write your answer in English..."></textarea>
+  </div>
+
+  <div class="question">
+    <p class="qtext">4. What is happening to Peter's powers? (Que se passe-t-il avec les pouvoirs de Peter ?)</p>
+    <textarea placeholder="Write your answer in English..."></textarea>
+    <br>
+    <button class="reveal-btn" onclick="document.getElementById('modelC').style.display='block'">Voir des exemples de réponses</button>
+    <div class="model-answer" id="modelC">
+      1. Nobody remembers Peter because a magic spell erased him from everyone's memory.<br>
+      2. Peter feels very lonely and sad.<br>
+      3. Peter writes MJ a letter to explain everything that happened between them.<br>
+      4. Peter's powers are becoming stronger, but also more dangerous and harder to control.
+    </div>
+  </div>
+
+  <button class="score-btn" onclick="showScore()">Voir mon score (A et B)</button>
+
+  <div id="score-box"></div>
+
+</div>
+
+<footer>Lycée Godefroy de Bouillon</footer>
+
+<script>
+  document.getElementById('check-words').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('#words-quiz input[type="checkbox"]');
+    let allCorrect = true;
+    checkboxes.forEach(function(cb) {
+      const isReal = cb.getAttribute('data-real') === 'true';
+      if (cb.checked !== isReal) allCorrect = false;
+    });
+    const fb = document.getElementById('fb-words');
+    fb.style.display = 'block';
+    if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Bravo, tu as bien repéré tous les mots entendus (et évité les pièges) !';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Il y a au moins une erreur — réécoute l\'audio et fais attention aux mots pièges.';
+    }
+  });
+
+  const tfAnswers = { tf1: 'true', tf2: 'false', tf3: 'true', tf4: 'false', tf5: 'true' };
+  document.getElementById('check-tf').addEventListener('click', function() {
+    let allCorrect = true;
+    let allAnswered = true;
+    Object.keys(tfAnswers).forEach(function(name) {
+      const selected = document.querySelector('input[name="' + name + '"]:checked');
+      if (!selected) allAnswered = false;
+      else if (selected.value !== tfAnswers[name]) allCorrect = false;
+    });
+    const fb = document.getElementById('fb-tf');
+    fb.style.display = 'block';
+    if (!allAnswered) {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = 'Réponds à toutes les phrases avant de vérifier.';
+    } else if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Bravo, tu as bien compris l\'histoire !';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Il y a au moins une erreur — réécoute l\'audio si besoin.';
+    }
+  });
+
+  function showScore() {
+    let score = 0;
+    let total = 2;
+
+    const checkboxes = document.querySelectorAll('#words-quiz input[type="checkbox"]');
+    let wordsCorrect = true;
+    checkboxes.forEach(function(cb) {
+      const isReal = cb.getAttribute('data-real') === 'true';
+      if (cb.checked !== isReal) wordsCorrect = false;
+    });
+    if (wordsCorrect) score++;
+
+    let tfCorrect = true;
+    Object.keys(tfAnswers).forEach(function(name) {
+      const selected = document.querySelector('input[name="' + name + '"]:checked');
+      if (!selected || selected.value !== tfAnswers[name]) tfCorrect = false;
+    });
+    if (tfCorrect) score++;
+
+    const box = document.getElementById('score-box');
+    box.style.display = 'block';
+    box.textContent = 'Score : ' + score + ' / ' + total + ' (les réponses libres de la partie C ne sont pas notées automatiquement)';
+  }
+</script>
+
+</body>
+</html>
