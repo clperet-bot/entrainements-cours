@@ -306,22 +306,30 @@
 
   <div class="question">
     <p class="qtext">1. Why doesn't anyone remember Peter? (Pourquoi personne ne se souvient de Peter ?)</p>
-    <textarea placeholder="Write your answer in English..."></textarea>
+    <textarea id="c1" placeholder="Write your answer in English..."></textarea>
+    <button class="check-btn" onclick="correctAnswer('c1', 'fb-c1', 'Why doesn\'t anyone remember Peter?')">✏️ Correction</button>
+    <div class="feedback" id="fb-c1"></div>
   </div>
 
   <div class="question">
     <p class="qtext">2. How does Peter feel about this situation? (Comment se sent Peter ?)</p>
-    <textarea placeholder="Write your answer in English..."></textarea>
+    <textarea id="c2" placeholder="Write your answer in English..."></textarea>
+    <button class="check-btn" onclick="correctAnswer('c2', 'fb-c2', 'How does Peter feel about this situation?')">✏️ Correction</button>
+    <div class="feedback" id="fb-c2"></div>
   </div>
 
   <div class="question">
     <p class="qtext">3. What does Peter write to MJ, and why? (Qu'écrit Peter à MJ, et pourquoi ?)</p>
-    <textarea placeholder="Write your answer in English..."></textarea>
+    <textarea id="c3" placeholder="Write your answer in English..."></textarea>
+    <button class="check-btn" onclick="correctAnswer('c3', 'fb-c3', 'What does Peter write to MJ, and why?')">✏️ Correction</button>
+    <div class="feedback" id="fb-c3"></div>
   </div>
 
   <div class="question">
     <p class="qtext">4. What is happening to Peter's powers? (Que se passe-t-il avec les pouvoirs de Peter ?)</p>
-    <textarea placeholder="Write your answer in English..."></textarea>
+    <textarea id="c4" placeholder="Write your answer in English..."></textarea>
+    <button class="check-btn" onclick="correctAnswer('c4', 'fb-c4', 'What is happening to Peter\'s powers?')">✏️ Correction</button>
+    <div class="feedback" id="fb-c4"></div>
     <br>
     <button class="reveal-btn" onclick="document.getElementById('modelC').style.display='block'">Voir des exemples de réponses</button>
     <div class="model-answer" id="modelC">
@@ -381,6 +389,54 @@
       fb.innerHTML = '❌ Il y a au moins une erreur — réécoute l\'audio si besoin.';
     }
   });
+
+  async function correctAnswer(textareaId, feedbackId, questionText) {
+    const text = document.getElementById(textareaId).value.trim();
+    const fb = document.getElementById(feedbackId);
+
+    if (!text) {
+      fb.style.display = 'block';
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = 'Écris ta réponse avant de demander une correction.';
+      return;
+    }
+
+    fb.style.display = 'block';
+    fb.className = 'feedback';
+    fb.innerHTML = '⏳ Correction en cours...';
+
+    const prompt = `Tu es un professeur d'anglais bienveillant pour des élèves A1-A2 avec parfois des difficultés (dyslexie, TDAH).
+Question posée à l'élève : "${questionText}"
+Réponse de l'élève en anglais : "${text}"
+
+Consignes de correction :
+- Ton bienveillant et encourageant, jamais sévère
+- Signale les erreurs de grammaire/orthographe/vocabulaire simplement, sans jargon grammatical complexe
+- Vérifie que la réponse correspond bien à la question posée
+- Propose une version corrigée si besoin
+- Maximum 300 caractères
+- Réponds en français pour les explications, garde les exemples en anglais`;
+
+    try {
+      const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 250,
+          messages: [{role: 'user', content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+
+      fb.className = 'feedback correct';
+      fb.innerHTML = '<strong>✅ Correction :</strong><br>' + correction.replace(/\n/g, '<br>');
+    } catch (err) {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Erreur de connexion. Vérifie ta connexion internet et réessaie.';
+    }
+  }
 
   function showScore() {
     let score = 0;
