@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spider-Man - Get Ready to Watch</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #0d1b2a;
+    color: #e8eef2;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #e63946;
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 5px;
+    font-weight: 900;
+    text-shadow: 1px 1px 3px rgba(0,0,0,.4);
+  }
+  .subtitle {
+    color: #a8b2bd;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+  }
+  .container {
+    max-width: 600px;
+    width: 100%;
+  }
+  .section-title {
+    color: #f4a261;
+    font-size: 1.15em;
+    margin: 30px 0 10px 0;
+    border-bottom: 3px solid #e63946;
+    padding-bottom: 6px;
+    font-weight: 800;
+  }
+  .track {
+    background-color: #1b2a3d;
+    border: 1px solid #2d3f56;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .track h2 {
+    font-size: 1em;
+    color: #f4a261;
+    margin: 0 0 4px 0;
+  }
+  .track p.desc {
+    font-size: 0.85em;
+    color: #a8b2bd;
+    margin: 0 0 10px 0;
+  }
+  audio {
+    width: 100%;
+  }
+  .question {
+    background-color: #1b2a3d;
+    border: 1px solid #2d3f56;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .question p.qtext {
+    font-size: 0.95em;
+    color: #e8eef2;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+  }
+  select {
+    background-color: #0d1b2a;
+    color: #e8eef2;
+    border: 1.5px solid #e63946;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-family: inherit;
+    font-size: 0.92em;
+  }
+  .options label {
+    display: block;
+    background-color: #0d1b2a;
+    border: 1.5px solid #2d3f56;
+    border-radius: 8px;
+    padding: 7px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  .options label:hover {
+    background-color: #24354a;
+  }
+  button.check-btn {
+    background-color: #e63946;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: inherit;
+    font-size: 0.9em;
+  }
+  button.check-btn:hover {
+    background-color: #c9313d;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 0.87em;
+    display: none;
+  }
+  .feedback.correct {
+    background-color: #1e3a2a;
+    color: #8fd19e;
+    border: 1.5px solid #3a6b4a;
+  }
+  .feedback.incorrect {
+    background-color: #3a1e1e;
+    color: #e79a9a;
+    border: 1.5px solid #6b3a3a;
+  }
+  #score-box {
+    background-color: #1b2a3d;
+    border: 2px solid #f4a261;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.05em;
+    color: #f4a261;
+    display: none;
+    font-weight: 800;
+  }
+  button.score-btn {
+    background-color: #f4a261;
+    color: #0d1b2a;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1em;
+    margin-top: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  footer {
+    margin-top: 30px;
+    font-size: 0.75em;
+    color: #5c6b7a;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>🕷️ GET READY TO WATCH</h1>
+<p class="subtitle">Entraîne ton oreille avant de voir la bande-annonce !</p>
+
+<div class="container">
+
+  <div class="section-title">🟢 A — Isolated words</div>
+
+  <div class="track">
+    <h2>Écoute les mots</h2>
+    <p class="desc">Tu peux réécouter autant de fois que tu veux.</p>
+    <audio controls>
+      <source src="words.mp3" type="audio/mpeg">
+      Ton navigateur ne supporte pas l'audio.
+    </audio>
+  </div>
+
+  <div class="question" id="words-quiz">
+    <p class="qtext">Associe chaque numéro au bon mot français</p>
+    1. secret → <select data-answer="secret"><option value="">--</option><option value="secret">le secret</option><option value="best_friend">le meilleur ami</option><option value="letter">la lettre</option></select><br><br>
+    2. best friend → <select data-answer="best_friend"><option value="">--</option><option value="secret">le secret</option><option value="best_friend">le meilleur ami</option><option value="app">l'application</option></select><br><br>
+    3. girlfriend → <select data-answer="girlfriend"><option value="">--</option><option value="girlfriend">la petite amie</option><option value="plan">le plan</option><option value="remember">se souvenir</option></select><br><br>
+    4. forget → <select data-answer="forget"><option value="">--</option><option value="remember">se souvenir</option><option value="forget">oublier</option><option value="letter">la lettre</option></select><br><br>
+    5. remember → <select data-answer="remember"><option value="">--</option><option value="forget">oublier</option><option value="remember">se souvenir</option><option value="plan">le plan</option></select><br><br>
+    6. plan → <select data-answer="plan"><option value="">--</option><option value="app">l'application</option><option value="plan">le plan</option><option value="secret">le secret</option></select><br><br>
+    7. letter → <select data-answer="letter"><option value="">--</option><option value="letter">la lettre</option><option value="girlfriend">la petite amie</option><option value="best_friend">le meilleur ami</option></select><br><br>
+    8. app → <select data-answer="app"><option value="">--</option><option value="plan">le plan</option><option value="app">l'application</option><option value="forget">oublier</option></select>
+    <br><br>
+    <button class="check-btn" id="check-words">Vérifier</button>
+    <div class="feedback" id="fb-words"></div>
+  </div>
+
+  <div class="section-title">🟡 B — Short sentences</div>
+
+  <div class="track">
+    <h2>Écoute les phrases</h2>
+    <p class="desc">Des phrases inventées, dans le même esprit que l'histoire (pas des répliques du vrai film !).</p>
+    <audio controls>
+      <source src="sentences.mp3" type="audio/mpeg">
+      Ton navigateur ne supporte pas l'audio.
+    </audio>
+  </div>
+
+  <div class="question" id="sent-quiz">
+    <p class="qtext">Vrai ou faux, d'après ce que tu entends ?</p>
+
+    <div style="margin-bottom:14px;">
+      <em>Phrase 1 : "I have a big secret."</em> → Le personnage cache quelque chose.
+      <div class="options">
+        <label><input type="radio" name="s1" value="true"> Vrai</label>
+        <label><input type="radio" name="s1" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <em>Phrase 3 : "We used to be together."</em> → Ils sont encore en couple aujourd'hui.
+      <div class="options">
+        <label><input type="radio" name="s3" value="true"> Vrai</label>
+        <label><input type="radio" name="s3" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <em>Phrase 4 : "She doesn't remember me anymore."</em> → Elle a perdu la mémoire de lui.
+      <div class="options">
+        <label><input type="radio" name="s4" value="true"> Vrai</label>
+        <label><input type="radio" name="s4" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <em>Phrase 8 : "There's an app to track him."</em> → Une application permet de le localiser.
+      <div class="options">
+        <label><input type="radio" name="s8" value="true"> Vrai</label>
+        <label><input type="radio" name="s8" value="false"> Faux</label>
+      </div>
+    </div>
+
+    <button class="check-btn" id="check-sent">Vérifier</button>
+    <div class="feedback" id="fb-sent"></div>
+  </div>
+
+  <div class="section-title">🌸 C — Predict the story</div>
+
+  <div class="question" id="predict-quiz">
+    <p class="qtext">D'après les mots et les phrases que tu as entendus, mets ces événements dans l'ordre le plus logique (1 à 4)</p>
+
+    <div style="margin-bottom:8px;">
+      <select data-answer="1"><option value="">--</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option></select>
+      He has a secret and tells his best friend.
+    </div>
+    <div style="margin-bottom:8px;">
+      <select data-answer="2"><option value="">--</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option></select>
+      He talks to his ex-girlfriend about their past.
+    </div>
+    <div style="margin-bottom:8px;">
+      <select data-answer="3"><option value="">--</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option></select>
+      He writes her a letter and makes a plan.
+    </div>
+    <div style="margin-bottom:8px;">
+      <select data-answer="4"><option value="">--</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option></select>
+      People use an app to try to find him.
+    </div>
+
+    <button class="check-btn" id="check-predict">Vérifier</button>
+    <div class="feedback" id="fb-predict"></div>
+  </div>
+
+  <button class="score-btn" onclick="showScore()">Voir mon score</button>
+
+  <div id="score-box"></div>
+
+</div>
+
+<footer>Lycée Godefroy de Bouillon</footer>
+
+<script>
+  document.getElementById('check-words').addEventListener('click', function() {
+    const selects = document.querySelectorAll('#words-quiz select');
+    let allCorrect = true;
+    selects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+    });
+    const fb = document.getElementById('fb-words');
+    fb.style.display = 'block';
+    if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Bravo, tous les mots sont bien associés !';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Il y a au moins une erreur — réécoute le fichier audio si besoin.';
+    }
+  });
+
+  const sentAnswers = { s1: 'true', s3: 'false', s4: 'true', s8: 'true' };
+  document.getElementById('check-sent').addEventListener('click', function() {
+    let allCorrect = true;
+    let allAnswered = true;
+    Object.keys(sentAnswers).forEach(function(name) {
+      const selected = document.querySelector('input[name="' + name + '"]:checked');
+      if (!selected) allAnswered = false;
+      else if (selected.value !== sentAnswers[name]) allCorrect = false;
+    });
+    const fb = document.getElementById('fb-sent');
+    fb.style.display = 'block';
+    if (!allAnswered) {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = 'Réponds à toutes les phrases avant de vérifier.';
+    } else if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Bravo, tu as bien compris les phrases !';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Il y a au moins une erreur — réécoute le fichier audio si besoin.';
+    }
+  });
+
+  document.getElementById('check-predict').addEventListener('click', function() {
+    const selects = document.querySelectorAll('#predict-quiz select');
+    let allCorrect = true;
+    selects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+    });
+    const fb = document.getElementById('fb-predict');
+    fb.style.display = 'block';
+    if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Bel ordre logique ! Tu es prêt·e à regarder la bande-annonce.';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = 'Pas tout à fait — mais il n\'y a pas de mauvaise réponse ici, c\'est juste une prédiction. Regarde la bande-annonce pour vérifier !';
+    }
+  });
+
+  function showScore() {
+    let score = 0;
+    let total = 2;
+
+    const wordSelects = document.querySelectorAll('#words-quiz select');
+    let wordsCorrect = true;
+    wordSelects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) wordsCorrect = false;
+    });
+    if (wordsCorrect) score++;
+
+    let sentCorrect = true;
+    Object.keys(sentAnswers).forEach(function(name) {
+      const selected = document.querySelector('input[name="' + name + '"]:checked');
+      if (!selected || selected.value !== sentAnswers[name]) sentCorrect = false;
+    });
+    if (sentCorrect) score++;
+
+    const box = document.getElementById('score-box');
+    box.style.display = 'block';
+    box.textContent = 'Score : ' + score + ' / ' + total + ' (la prédiction C n\'est pas notée, c\'est un jeu !)';
+  }
+</script>
+
+</body>
+</html>
