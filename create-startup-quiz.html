@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Your Startup - Quiz de révision</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(160deg, #d9f0e6 0%, #cfe0f0 50%, #c3c9ec 100%);
+    background-attachment: fixed;
+    color: #1f2a44;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #1f3a8f;
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 5px;
+    font-weight: 900;
+  }
+  .subtitle {
+    color: #3f4f6f;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+  }
+  .container { max-width: 600px; width: 100%; }
+  .section-title {
+    color: #1f3a8f;
+    font-size: 1.15em;
+    margin: 30px 0 10px 0;
+    border-bottom: 3px solid #7b8ff0;
+    padding-bottom: 6px;
+    font-weight: 800;
+  }
+  .question {
+    background-color: #ffffff;
+    border: 1px solid #d4dcf0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .question p.qtext {
+    font-size: 0.95em;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+  }
+  select {
+    background-color: #f4f7ff;
+    color: #1f2a44;
+    border: 1.5px solid #7b8ff0;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-family: inherit;
+    font-size: 0.9em;
+  }
+  .fill-text { line-height: 2.2em; font-size: 0.93em; }
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #f4f7ff;
+    color: #1f2a44;
+    border: 1.5px solid #d4dcf0;
+    border-radius: 8px;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 0.9em;
+    resize: vertical;
+    min-height: 70px;
+    margin-bottom: 8px;
+  }
+  button.check-btn {
+    background-color: #1f3a8f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: inherit;
+    font-size: 0.9em;
+  }
+  button.check-btn:hover { background-color: #16297a; }
+  .feedback {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 0.87em;
+    display: none;
+  }
+  .feedback.correct { background-color: #e2f6e6; color: #1e6b3a; border: 1.5px solid #a8ddb5; }
+  .feedback.incorrect { background-color: #fdeaea; color: #a4383a; border: 1.5px solid #f3b6b6; }
+  #score-box {
+    background-color: #ffffff;
+    border: 2px solid #1f3a8f;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.05em;
+    color: #1f3a8f;
+    display: none;
+    font-weight: 800;
+  }
+  button.score-btn {
+    background-color: #1f3a8f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1em;
+    margin-top: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .step-box {
+    background-color: #f4f7ff;
+    border: 1px solid #d4dcf0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 0.88em;
+  }
+  #record-status { margin-top: 8px; font-size: 0.85em; color: #3f4f6f; }
+  footer { margin-top: 30px; font-size: 0.75em; color: #5a6a8a; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>🚀 CREATE YOUR STARTUP</h1>
+<p class="subtitle">Quiz de révision — vocabulaire, description et pitch oral</p>
+
+<div class="container">
+
+  <div class="section-title">🟢 Vocabulaire technique</div>
+
+  <div class="question" id="vocab-quiz">
+    <p class="qtext">Associe chaque mot technique français à sa traduction anglaise</p>
+    1. Capteur → <select data-answer="a"><option value="">--</option><option value="a">Sensor</option><option value="b">Chip</option><option value="c">Resistor</option></select><br><br>
+    2. Circuit imprimé → <select data-answer="b"><option value="">--</option><option value="a">Diode</option><option value="b">Circuit board</option><option value="c">Probe</option></select><br><br>
+    3. Puce (électronique) → <select data-answer="c"><option value="">--</option><option value="a">Capacitor</option><option value="b">Optical fibre</option><option value="c">Chip</option></select><br><br>
+    4. Résistance → <select data-answer="d"><option value="">--</option><option value="d">Resistor</option><option value="a">Sensor</option><option value="b">Conductive fabric</option></select><br><br>
+    5. Fibre optique → <select data-answer="e"><option value="">--</option><option value="e">Optical fibre</option><option value="a">Circuit board</option><option value="b">Diode</option></select><br><br>
+    6. Sonde → <select data-answer="f"><option value="">--</option><option value="f">Probe</option><option value="a">Capacitor</option><option value="b">Chip</option></select><br><br>
+    7. Tissu conducteur → <select data-answer="g"><option value="">--</option><option value="g">Conductive fabric</option><option value="a">Layer of fabric</option><option value="b">Sensor</option></select><br><br>
+    8. Condensateur → <select data-answer="h"><option value="">--</option><option value="h">Capacitor</option><option value="a">Resistor</option><option value="b">Diode</option></select>
+    <br><br>
+    <button class="check-btn" id="check-vocab">Vérifier</button>
+    <div class="feedback" id="fb-vocab"></div>
+  </div>
+
+  <div class="section-title">🟡 Décris ton produit</div>
+
+  <div class="question">
+    <p class="qtext">Complète avec les infos de TON propre produit (celui que tu as inventé en classe).</p>
+    <p class="fill-text">
+      My product is used at / for _______________________________. It solves the problem of _______________________________. It's / It works with _______________________________.
+    </p>
+    <textarea id="descPart1" placeholder="Write your full sentence here..."></textarea>
+    <button class="check-btn" onclick="correctText('descPart1', 'fb-desc1', 'description générale du produit (usage, problème résolu, alimentation)')">✏️ Correction</button>
+    <div class="feedback" id="fb-desc1"></div>
+  </div>
+
+  <div class="question">
+    <p class="qtext">Décris maintenant les composants de ton produit (It has a.../It includes a.../There is a...)</p>
+    <textarea id="descPart2" placeholder="It has a... It includes a... There is a..."></textarea>
+    <button class="check-btn" onclick="correctText('descPart2', 'fb-desc2', 'description des composants techniques du produit')">✏️ Correction</button>
+    <div class="feedback" id="fb-desc2"></div>
+  </div>
+
+  <div class="section-title">🌸 Entraînement à l'oral — étape par étape</div>
+
+  <div class="question">
+    <p class="qtext">Étape 1 — Le déclencheur : dis à voix haute une phrase avec "When..." (qu'est-ce qui active ton produit ?)</p>
+    <button class="check-btn" id="record-btn-1" onclick="toggleRecording(1)">🎤 Enregistrer "When..."</button>
+    <div id="record-status-1"></div>
+    <div class="feedback" id="oral-transcript-1" style="display:none;"></div>
+    <div class="feedback" id="oral-feedback-1"></div>
+  </div>
+
+  <div class="question">
+    <p class="qtext">Étape 2 — L'action : dis à voix haute une phrase avec "The product..." (que fait ton produit ?)</p>
+    <button class="check-btn" id="record-btn-2" onclick="toggleRecording(2)">🎤 Enregistrer "The product..."</button>
+    <div id="record-status-2"></div>
+    <div class="feedback" id="oral-transcript-2" style="display:none;"></div>
+    <div class="feedback" id="oral-feedback-2"></div>
+  </div>
+
+  <div class="question">
+    <p class="qtext">Étape 3 — Le bénéfice : dis à voix haute une phrase avec "So..." (pourquoi c'est utile ?)</p>
+    <button class="check-btn" id="record-btn-3" onclick="toggleRecording(3)">🎤 Enregistrer "So..."</button>
+    <div id="record-status-3"></div>
+    <div class="feedback" id="oral-transcript-3" style="display:none;"></div>
+    <div class="feedback" id="oral-feedback-3"></div>
+  </div>
+
+  <div class="section-title">🎤 Le pitch complet</div>
+
+  <div class="question">
+    <p class="qtext">Maintenant, enchaîne tes 3 phrases à voix haute pour présenter ton produit en entier, comme au contrôle !</p>
+    <button class="check-btn" id="record-btn-4" onclick="toggleRecording(4)">🎤 Enregistrer mon pitch complet</button>
+    <div id="record-status-4"></div>
+    <div class="feedback" id="oral-transcript-4" style="display:none;"></div>
+    <div class="feedback" id="oral-feedback-4"></div>
+  </div>
+
+  <button class="score-btn" onclick="showScore()">Voir mon score (vocabulaire)</button>
+
+  <div id="score-box"></div>
+
+</div>
+
+<footer>Lycée Godefroy de Bouillon</footer>
+
+<script>
+  document.getElementById('check-vocab').addEventListener('click', function() {
+    const selects = document.querySelectorAll('#vocab-quiz select');
+    let allCorrect = true;
+    selects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+    });
+    const fb = document.getElementById('fb-vocab');
+    fb.style.display = 'block';
+    if (allCorrect) {
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Bravo, tout est correct !';
+    } else {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Il y a au moins une erreur, réessaie.';
+    }
+  });
+
+  async function correctText(textareaId, feedbackId, context) {
+    const text = document.getElementById(textareaId).value.trim();
+    const fb = document.getElementById(feedbackId);
+
+    if (!text) {
+      fb.style.display = 'block';
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = 'Écris ta réponse avant de demander une correction.';
+      return;
+    }
+
+    fb.style.display = 'block';
+    fb.className = 'feedback';
+    fb.innerHTML = '⏳ Correction en cours...';
+
+    const prompt = `Tu es un professeur d'anglais bienveillant pour des élèves A1-A2 en filière technique (lycée professionnel), avec parfois des difficultés (dyslexie, TDAH).
+Un élève a écrit ce texte en anglais pour une ${context}, dans le cadre d'un projet "Create Your Startup" (invention d'un produit connecté) :
+"${text}"
+
+Consignes de correction :
+- Ton bienveillant et encourageant, jamais sévère
+- Signale les erreurs de grammaire/orthographe/vocabulaire simplement, sans jargon grammatical complexe
+- Propose une version corrigée si besoin
+- Maximum 350 caractères
+- Réponds en français pour les explications, garde les exemples en anglais`;
+
+    try {
+      const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 300,
+          messages: [{role: 'user', content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+
+      fb.className = 'feedback correct';
+      fb.innerHTML = '<strong>✅ Correction :</strong><br>' + correction.replace(/\n/g, '<br>');
+    } catch (err) {
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = '❌ Erreur de connexion. Vérifie ta connexion internet et réessaie.';
+    }
+  }
+
+  // Entraînement oral — reconnaissance vocale + correction
+  let recognitions = {};
+  let recordingStates = {};
+
+  function toggleRecording(step) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = document.getElementById('record-status-' + step);
+    const transcriptBox = document.getElementById('oral-transcript-' + step);
+    const feedbackBox = document.getElementById('oral-feedback-' + step);
+    const btn = document.getElementById('record-btn-' + step);
+
+    if (!SpeechRecognition) {
+      status.textContent = "⚠️ La reconnaissance vocale n'est pas disponible sur ce navigateur. Essaie avec Google Chrome.";
+      return;
+    }
+
+    if (recordingStates[step]) {
+      recognitions[step].stop();
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitions[step] = recognition;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+      recordingStates[step] = true;
+      btn.textContent = '🔴 Enregistrement... (parle maintenant)';
+      status.textContent = '';
+      transcriptBox.style.display = 'none';
+      feedbackBox.style.display = 'none';
+    };
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      transcriptBox.style.display = 'block';
+      transcriptBox.className = 'feedback';
+      transcriptBox.innerHTML = '<strong>🗣️ Ce que tu as dit :</strong><br>"' + transcript + '"';
+      correctOral(transcript, step);
+    };
+
+    recognition.onerror = function(event) {
+      status.textContent = '⚠️ Erreur : ' + event.error + '. Vérifie que le micro est autorisé.';
+      recordingStates[step] = false;
+      btn.textContent = '🎤 Réessayer';
+    };
+
+    recognition.onend = function() {
+      recordingStates[step] = false;
+      btn.textContent = '🎤 Réenregistrer';
+    };
+
+    recognition.start();
+  }
+
+  async function correctOral(transcript, step) {
+    const feedbackBox = document.getElementById('oral-feedback-' + step);
+    feedbackBox.style.display = 'block';
+    feedbackBox.className = 'feedback';
+    feedbackBox.innerHTML = '⏳ Correction en cours...';
+
+    const stepContext = step === 4
+      ? 'un pitch complet (When... / the product... / so...) présentant un produit inventé'
+      : 'une phrase de pitch pour présenter un produit inventé, utilisant la structure "When.../The product.../So..."';
+
+    const prompt = `Tu es un professeur d'anglais bienveillant pour des élèves A1-A2 en filière technique (lycée professionnel), avec parfois des difficultés (dyslexie, TDAH).
+Un élève a dit à l'oral cette phrase en anglais (texte transcrit automatiquement depuis sa voix, il peut y avoir de petites erreurs de transcription), pour ${stepContext} :
+"${transcript}"
+
+Consignes de correction :
+- Ton bienveillant et encourageant, jamais sévère
+- Si la transcription semble étrange à certains endroits, suppose que c'est un souci de reconnaissance vocale, pas une erreur de l'élève
+- Signale les erreurs de grammaire/vocabulaire simplement
+- Vérifie que la structure de phrase attendue est bien présente
+- Maximum 300 caractères
+- Réponds en français, garde les exemples en anglais`;
+
+    try {
+      const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 250,
+          messages: [{role: 'user', content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+
+      feedbackBox.className = 'feedback correct';
+      feedbackBox.innerHTML = '<strong>✅ Correction :</strong><br>' + correction.replace(/\n/g, '<br>');
+    } catch (err) {
+      feedbackBox.className = 'feedback incorrect';
+      feedbackBox.innerHTML = '❌ Erreur de connexion. Vérifie ta connexion internet et réessaie.';
+    }
+  }
+
+  function showScore() {
+    let score = 0;
+    let total = 1;
+    const selects = document.querySelectorAll('#vocab-quiz select');
+    let allCorrect = selects.length > 0;
+    selects.forEach(function(s) {
+      if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+    });
+    if (allCorrect) score++;
+
+    const box = document.getElementById('score-box');
+    box.style.display = 'block';
+    box.textContent = 'Score vocabulaire : ' + score + ' / ' + total + ' (les autres parties sont corrigées séparément)';
+  }
+</script>
+
+</body>
+</html>
