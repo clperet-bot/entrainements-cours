@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informer, s'informer — Quiz</title>
+<title>Rédiger un article — Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Special+Elite&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -151,20 +151,35 @@
     background:var(--paper-dark); font-size:14.5px; white-space:pre-wrap;
   }
   .ai-feedback.show{display:block;}
+
+  .checklist{
+    background:var(--paper-dark); border:1px solid var(--line); border-left:4px solid var(--ink);
+    padding:14px 18px; margin-bottom:18px; font-size:14px;
+  }
+  .checklist-title{
+    font-family:'Special Elite',monospace; font-size:12px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--red); margin:0 0 8px;
+  }
+  .checklist ul{margin:0; padding-left:20px;}
+  .checklist li{margin-bottom:4px;}
+  .scenario-box{
+    background:var(--white); border:1px solid var(--line); padding:14px 18px; margin-bottom:16px;
+    font-size:15px; font-style:italic;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="kicker">Français 2nde — Édition spéciale</div>
-  <h1>Informer, s'informer</h1>
-  <p class="subtitle">Entraîne-toi sur les ateliers : info ou intox, les 5W, écrire comme un journaliste, relecture, types d'articles.</p>
+  <div class="kicker">Français 2nde — Rédaction et enquête</div>
+  <h1>Rédiger un article</h1>
+  <p class="subtitle">Entraîne-toi sur la démarche du journaliste, puis rédige tes propres articles guidés.</p>
 </header>
 
 <main>
 
   <div class="scorebar">
-    <div><span class="label">Question</span><br><span class="value" id="q-pos">1 / 23</span></div>
+    <div><span class="label">Question</span><br><span class="value" id="q-pos">1 / 12</span></div>
     <div style="text-align:right"><span class="label">Score</span><br><span class="value" id="q-score">0</span></div>
   </div>
 
@@ -174,7 +189,7 @@
     <div class="report">
       <div class="report-head">Carte de journaliste — Résultat</div>
       <div class="report-body">
-        <div class="big-score" id="final-score">0<span>/20</span></div>
+        <div class="big-score" id="final-score">0<span>/10</span></div>
         <p style="color:var(--ink-soft); margin-top:0;">Résultat final</p>
         <div class="verdict-final" id="final-verdict">GREAT</div>
       </div>
@@ -188,35 +203,24 @@
 
 <script>
 const QUESTIONS = [
-{topic:"Info ou intox ?", prompt:"« Il paraît que le proviseur va démissionner. » Il s'agit...", options:["D'une rumeur","D'une information","D'une anecdote","D'une opinion"], correct:0, explanation:"Une rumeur est une affirmation non vérifiée, qui circule sans preuve."},
-{topic:"Info ou intox ?", prompt:"« Le conseil régional a voté une baisse de 10% du budget cantine, comme l'indique le procès-verbal officiel. » Il s'agit...", options:["D'une anecdote","D'une opinion","D'une information","D'une rumeur"], correct:2, explanation:"Une information est un fait vérifié et sourcé."},
-{topic:"Info ou intox ?", prompt:"« Je trouve que les repas à la cantine sont vraiment trop sucrés. » Il s'agit...", options:["D'une anecdote","D'une rumeur","D'une opinion","D'une information"], correct:2, explanation:"Une opinion exprime un point de vue personnel, pas un fait vérifiable."},
-{topic:"Info ou intox ?", prompt:"« L'an dernier, un élève avait glissé sur le sol de la cantine juste devant le CPE, c'était mémorable. » Il s'agit...", options:["D'une information","D'une rumeur","D'une opinion","D'une anecdote"], correct:3, explanation:"Une anecdote est un petit fait vécu, souvent amusant, raconté à titre personnel."},
-{topic:"Les 5W", prompt:"Dans la règle des 5W, la question 'Who' permet de savoir...", options:["Quand l'événement a eu lieu","Pourquoi l'événement a eu lieu","Où l'événement a eu lieu","Qui est concerné par l'événement"], correct:3, explanation:"Who = Qui : identifie clairement les personnes ou groupes impliqués."},
-{topic:"Les 5W", prompt:"La question 'Why' sert à expliquer...", options:["Le lieu de l'événement","La date de l'événement","Les personnes impliquées","La raison ou la cause de l'événement"], correct:3, explanation:"Why = Pourquoi : donne la raison, la cause de l'événement."},
-{topic:"Les 5W", prompt:"« Le concert aura lieu vendredi 12 septembre. » Cette phrase répond à quelle question des 5W ?", options:["Why","When","Where","Who"], correct:1, explanation:"When = Quand : cette phrase donne la date de l'événement."},
-{topic:"Les 5W", prompt:"« Le spectacle se déroulera dans le gymnase du lycée. » Cette phrase répond à quelle question des 5W ?", options:["Why","What","Who","Where"], correct:3, explanation:"Where = Où : cette phrase précise le lieu."},
-{topic:"Écrire comme un journaliste", prompt:"Pour commencer fort un article, quelle formulation est la plus adaptée ?", options:["Un jour, il s'est passé un truc bizarre au lycée...","On sait pas trop ce qui s'est passé exactement.","Bref, ça fait un peu désordre en ce moment.","Ce matin, un incident a eu lieu au lycée Jean-Monnet."], correct:3, explanation:"Un bon début d'article donne un fait précis et daté, dans un style neutre."},
-{topic:"Écrire comme un journaliste", prompt:"Pour intégrer un témoignage dans un article, laquelle de ces formulations convient ?", options:["Il paraît qu'un élève a tout vu.","On raconte qu'un élève était choqué.","Selon un élève présent, « la scène était impressionnante ».","Un élève aurait dit un truc comme quoi c'était choquant."], correct:2, explanation:"« Selon [nom/fonction]... » suivi d'une citation entre guillemets est la structure attendue pour un témoignage."},
-{topic:"Écrire comme un journaliste", prompt:"Pour exprimer la cause d'un événement dans un article, quelle formulation est correcte ?", options:["L'incident aurait été causé par un problème technique.","Et donc après ça a fait...","On sait pas trop pourquoi mais bon.","Ça arrive parfois, c'est la vie."], correct:0, explanation:"« [Événement] aurait été causé par... » est une structure journalistique pour exprimer une cause avec prudence (conditionnel)."},
-{topic:"Écrire comme un journaliste", prompt:"Pour conclure un article en évoquant la suite des événements, quelle formulation convient le mieux ?", options:["Le établissement prévoit de réorganiser les horaires dans les prochains jours.","Voilà, c'est à peu près tout.","Franchement, on est un peu perdus.","On verra bien ce qui va se passer."], correct:0, explanation:"Une bonne conclusion évoque la suite de façon factuelle et précise, souvent au futur."},
-{topic:"Relecture et correction", prompt:"D'après la grille de relecture, un bon article doit éviter...", options:["Les témoignages","Les phrases trop longues","Les citations","Les dates précises"], correct:1, explanation:"Les phrases trop longues nuisent à la clarté et à la lisibilité de l'article."},
-{topic:"Relecture et correction", prompt:"Quel ton un article d'information doit-il adopter, selon la grille de relecture ?", options:["Un ton neutre et objectif, pas d'avis personnel","Un ton passionné et engagé","Un ton humoristique","Un ton very familier"], correct:0, explanation:"La grille de relecture demande un ton neutre, objectif, sans opinion personnelle pour un article d'information."},
-{topic:"Relecture et correction", prompt:"Sur la grille de relecture, quel critère concerne l'organisation du texte ?", options:["Pas de répétitions inutiles","Informations bien organisées","Vocabulaire adapté","Orthographe correcte"], correct:1, explanation:"« Informations bien organisées » vérifie la structure logique du texte, indépendamment de l'orthographe ou du vocabulaire."},
-{topic:"Relecture et correction", prompt:"Pourquoi faut-il éviter les répétitions inutiles dans un article ?", options:["Parce que les lecteurs n'aiment pas les mots longs","Parce que ça allonge artificiellement le texte sans apporter d'information et nuit à la qualité de lecture","Parce que ça coûte plus cher à imprimer","Parce que c'est interdit par la loi"], correct:1, explanation:"Les répétitions inutiles alourdissent le texte sans ajouter d'information, ce qui nuit à sa qualité."},
-{topic:"Types d'articles", prompt:"Un article qui rapporte un fait brut, de façon factuelle (reportage), s'appelle...", options:["Une brève","Un éditorial","Un article d'information","Une critique"], correct:2, explanation:"L'article d'information (reportage / fait brut) rapporte les faits de façon neutre."},
-{topic:"Types d'articles", prompt:"Un article qui donne l'opinion personnelle de l'auteur sur un sujet s'appelle...", options:["Une brève / annonce","Un éditorial / une tribune","Une interview","Un article de fond / une enquête"], correct:1, explanation:"L'éditorial (ou tribune) exprime un point de vue, une opinion assumée par l'auteur."},
-{topic:"Types d'articles", prompt:"Un article très court qui donne une information rapide, sans développement, s'appelle...", options:["Une brève / annonce","Un article de fond","Une critique / revue","Une chronique / billet"], correct:0, explanation:"La brève (ou annonce) est un texte court, rapide à lire, qui donne une information sans développement."},
-{topic:"Types d'articles", prompt:"Un article structuré en questions/réponses avec une personne interrogée s'appelle...", options:["Une critique","Une chronique","Une interview","Un éditorial"], correct:2, explanation:"L'interview est construite sous forme de questions posées à une personne, suivies de ses réponses."},
-{type:"write", topic:"Écrire comme un journaliste", prompt:"Rédige une phrase d'accroche pour commencer un article sur une panne de chauffage qui a perturbé les cours hier.", hint:"Pense à un fait précis, daté, dans un style neutre.", aiInstructions:"Un(e) élève de 2nde doit rédiger une phrase d'accroche journalistique (début d'article) sur une panne de chauffage ayant perturbé les cours la veille. Vérifie que la phrase : donne un fait précis et daté, reste dans un style neutre et factuel (pas d'avis personnel), et est grammaticalement correcte."},
-{type:"write", topic:"Écrire comme un journaliste", prompt:"Rédige une phrase qui intègre le témoignage d'un élève, en utilisant la structure « Selon... ».", hint:"Utilise : Selon [nom/fonction]... suivi d'une citation entre guillemets.", aiInstructions:"Un(e) élève de 2nde doit rédiger une phrase intégrant un témoignage avec la structure journalistique « Selon [nom/fonction]... » suivie d'une citation entre guillemets. Vérifie que la structure est bien utilisée, que la citation est entre guillemets, et que la grammaire est correcte."},
-{type:"write", topic:"Écrire comme un journaliste", prompt:"Rédige une phrase de conclusion pour cet article, qui évoque la suite des événements (ex. réparation prévue).", hint:"Une bonne conclusion est factuelle, souvent au futur, et évoque ce qui va se passer ensuite.", aiInstructions:"Un(e) élève de 2nde doit rédiger une phrase de conclusion d'article journalistique évoquant la suite des événements (par exemple une réparation prévue), de façon factuelle, souvent au futur. Vérifie que la phrase respecte bien ce rôle de conclusion et que la grammaire est correcte."}
+{topic:"Étape 1 — Choisir son sujet", prompt:"Un bon sujet d'article doit surtout être...", options:["Le plus long possible","Copié d'un autre journal","Écrit par le professeur","En lien avec le lycée ou les élèves"], correct:3, explanation:"Le sujet doit être en lien avec le lycée ou les élèves pour intéresser les lecteurs."},
+{topic:"Étape 1 — Choisir son sujet", prompt:"Quelle question faut-il se poser pour vérifier que le sujet est pertinent ?", options:["« Est-ce que c'est déjà arrivé ailleurs ? »","« Est-ce que mon professeur va valider ? »","« Est-ce que les élèves du lycée auront envie de lire ça ? »","« Est-ce que ça va me prendre longtemps à écrire ? »"], correct:2, explanation:"Cette question permet de vérifier que le sujet intéressera les lecteurs visés."},
+{topic:"Étape 2 — Préparer l'enquête", prompt:"Avant d'écrire, que faut-il lister en utilisant les 5W ?", options:["Les informations nécessaires à l'article","La liste des photos à prendre","Les fautes d'orthographe possibles","Le nombre de mots attendu"], correct:0, explanation:"Les 5W (Qui, Quoi, Où, Quand, Pourquoi) permettent de lister toutes les informations nécessaires."},
+{topic:"Étape 2 — Préparer l'enquête", prompt:"Que faut-il toujours noter à propos de chaque information recueillie ?", options:["Sa couleur préférée","Le nombre de témoins","D'où elle vient (la source)","Sa longueur en mots"], correct:2, explanation:"Il faut vérifier ses sources : noter toujours d'où vient l'information (interview, affiche, site officiel...)."},
+{topic:"Étape 3 — Mener l'enquête", prompt:"Pendant l'enquête, quelle distinction est essentielle à faire ?", options:["Entre le matin et l'après-midi","Entre les faits vérifiables et les opinions","Entre les élèves et les professeurs","Entre les phrases courtes et longues"], correct:1, explanation:"Il faut distinguer les faits (vérifiables) des opinions (à citer comme témoignages, pas comme des vérités absolues)."},
+{topic:"Étape 3 — Mener l'enquête", prompt:"Comment doit-on présenter l'opinion d'une personne interrogée ?", options:["Comme une vérité absolue","Comme un témoignage, clairement attribué à cette personne","En la modifiant pour qu'elle soit plus intéressante","Il ne faut jamais la mentionner"], correct:1, explanation:"Une opinion doit être citée comme un témoignage, pas présentée comme un fait vérifié."},
+{topic:"Étape 4 — Rédiger l'article", prompt:"Quel plan doit-on utiliser pour rédiger l'article ?", options:["Titre accrocheur, accroche, développement clair","Une seule très longue phrase","Une liste à puces uniquement","Introduction, développement, conclusion scolaire classique"], correct:0, explanation:"Le plan du journaliste : titre accrocheur, accroche, développement clair."},
+{topic:"Étape 4 — Rédiger l'article", prompt:"Pour que l'article soit clair et précis, les phrases doivent être...", options:["Longues et très détaillées","Le plus techniques possible","Écrites uniquement au futur","Courtes, avec un vocabulaire adapté et sans répétitions inutiles"], correct:3, explanation:"Phrases courtes, vocabulaire adapté, pas de répétitions inutiles : c'est la clé de la clarté."},
+{topic:"Étape 4 — Rédiger l'article", prompt:"Avant de rendre son article, que recommande-t-on de faire ?", options:["Le faire relire par un camarade","Le traduire en anglais","Le rendre sans le relire, pour gagner du temps","Le faire relire uniquement par soi-même"], correct:0, explanation:"Faire relire son article par un camarade permet de corriger les fautes et vérifier la compréhension."},
+{topic:"Étape 5 — Finaliser", prompt:"À la dernière étape, qu'ajoute-t-on si besoin à l'article ?", options:["Une nouvelle enquête complète","Une photo, un dessin ou un encadré","Un deuxième titre","Une note de bas de page obligatoire"], correct:1, explanation:"À l'étape 5, on ajoute si besoin une photo, un dessin, un encadré, puis on rend l'article à temps."},
+{type:"write-article", topic:"Rédaction guidée", prompt:"Rédige un article complet à partir du sujet suivant.", scenario:"Le club de robotique du lycée a remporté le 1er prix du concours régional de robotique, avec un robot autonome conçu par cinq élèves de terminale MELEC.", checklist:["Réponds aux 5W : Qui ? Quoi ? Où ? Quand ? Pourquoi ?","Utilise le plan du journaliste : titre accrocheur, accroche, développement clair","Phrases courtes, ton neutre, pas de répétitions inutiles","Longueur attendue : environ 5 à 8 phrases"], aiInstructions:"Un(e) élève de 2nde doit rédiger un article de presse complet à partir du sujet suivant : « Le club de robotique du lycée a remporté le 1er prix du concours régional de robotique, avec un robot autonome conçu par cinq élèves de terminale MELEC. » Évalue : la présence des 5W (Qui, Quoi, Où, Quand, Pourquoi), la structure (titre accrocheur + accroche + développement clair), le style (phrases courtes, ton neutre, pas de répétitions), et la grammaire/orthographe. Donne un retour structuré et encourageant."},
+{type:"write-article", topic:"Rédaction guidée", prompt:"Rédige un article complet à partir du sujet suivant.", scenario:"Le lycée organisera sa première « Journée du Sport » le mois prochain, avec des tournois inter-classes et des démonstrations d'anciens élèves sportifs de haut niveau.", checklist:["Réponds aux 5W : Qui ? Quoi ? Où ? Quand ? Pourquoi ?","Utilise le plan du journaliste : titre accrocheur, accroche, développement clair","Phrases courtes, ton neutre, pas de répétitions inutiles","Longueur attendue : environ 5 à 8 phrases"], aiInstructions:"Un(e) élève de 2nde doit rédiger un article de presse complet à partir du sujet suivant : « Le lycée organisera sa première 'Journée du Sport' le mois prochain, avec des tournois inter-classes et des démonstrations d'anciens élèves sportifs de haut niveau. » Évalue : la présence des 5W (Qui, Quoi, Où, Quand, Pourquoi), la structure (titre accrocheur + accroche + développement clair), le style (phrases courtes, ton neutre, pas de répétitions), et la grammaire/orthographe. Donne un retour structuré et encourageant."}
 ];
 
 let current = 0;
 let score = 0;
 let answered = [];
-const SCORABLE_TOTAL = QUESTIONS.filter(q => q.type !== 'write').length;
+const SCORABLE_TOTAL = QUESTIONS.filter(q => q.type !== 'write' && q.type !== 'write-article').length;
 
 const quizArea = document.getElementById('quiz-area');
 const qPos = document.getElementById('q-pos');
@@ -243,6 +247,28 @@ function renderAll(){
           <span class="write-hint">${q.hint}</span>
         </div>
         <button class="correct-btn" data-correct="${i}">Corriger</button>
+        <div class="ai-feedback" id="ai-fb${i}"></div>
+        <div class="nav-row">
+          <button class="next" data-next="${i}">Suivant →</button>
+        </div>
+      `;
+    } else if(q.type === 'write-article'){
+      div.innerHTML = `
+        <div class="q-meta">
+          <div class="q-number">${i+1}</div>
+          <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+        </div>
+        <p class="q-topic">${q.topic}</p>
+        <p class="prompt">${q.prompt}</p>
+        <div class="scenario-box">${q.scenario}</div>
+        <div class="checklist">
+          <p class="checklist-title">Pense à...</p>
+          <ul>${q.checklist.map(c => `<li>${c}</li>`).join('')}</ul>
+        </div>
+        <div class="write-box">
+          <textarea id="write-input${i}" style="min-height:220px;" placeholder="Rédige ton article ici..."></textarea>
+        </div>
+        <button class="correct-btn" data-correct="${i}">Corriger mon article</button>
         <div class="ai-feedback" id="ai-fb${i}"></div>
         <div class="nav-row">
           <button class="next" data-next="${i}">Suivant →</button>
@@ -306,7 +332,7 @@ Phrase de l'élève :
 ${text}
 """
 
-Donne un retour bref et encourageant en français : dis si la phrase respecte bien la consigne, corrige les éventuelles erreurs de grammaire/orthographe, et propose une reformulation si besoin. Reste concis (100 mots maximum).`;
+Donne un retour bref et encourageant en français : dis si le texte respecte bien la consigne, corrige les éventuelles erreurs de grammaire/orthographe, et propose une amélioration si besoin. Reste concis (100 mots maximum pour une phrase, 200 mots maximum pour un article complet).`;
 
   try {
     const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
@@ -314,7 +340,7 @@ Donne un retour bref et encourageant en français : dis si la phrase respecte bi
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 400,
+        max_tokens: 700,
         messages: [{role: 'user', content: prompt}]
       })
     });
@@ -374,8 +400,8 @@ function showResults(){
   resultsEl.classList.add('show');
   document.getElementById('final-score').innerHTML = score + '<span>/'+SCORABLE_TOTAL+'</span>';
   const v = document.getElementById('final-verdict');
-  if(score >= 16){ v.textContent = 'Prêt(e) pour la rédaction !'; v.className = 'verdict-final great'; }
-  else if(score >= 11){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
+  if(score >= 8){ v.textContent = 'Prêt(e) pour la rédaction !'; v.className = 'verdict-final great'; }
+  else if(score >= 5){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
   else { v.textContent = 'À revoir avant l\'examen'; v.className = 'verdict-final retry'; }
 }
 
