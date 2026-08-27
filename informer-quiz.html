@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informer, s'informer — Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Special+Elite&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EEE1;
+    --paper-dark:#E8E0CC;
+    --ink:#221F1A;
+    --ink-soft:#5C5648;
+    --red:#B3241C;
+    --red-dark:#8A1B15;
+    --white:#FFFCF5;
+    --line:rgba(34,31,26,0.15);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    line-height:1.55;
+  }
+  header{
+    padding:34px 20px 26px;
+    text-align:center;
+    background:var(--ink);
+    color:var(--paper);
+    border-bottom:4px double var(--red);
+  }
+  .kicker{
+    font-family:'Special Elite',monospace;
+    font-size:12px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Playfair Display',serif;
+    font-weight:800;
+    font-size:clamp(28px,6vw,44px);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    font-family:'Special Elite',monospace;
+    font-size:12.5px;
+    color:#C9C2AE;
+    max-width:440px;
+    margin:14px auto 0;
+  }
+  main{max-width:640px; margin:0 auto; padding:28px 18px 80px;}
+  .scorebar{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--white); border:1px solid var(--line);
+    padding:14px 18px; margin-bottom:24px; font-size:14px;
+  }
+  .scorebar .label{color:var(--ink-soft); text-transform:uppercase; font-size:11px; letter-spacing:0.08em; font-family:'Special Elite',monospace;}
+  .scorebar .value{font-family:'Playfair Display',serif; font-weight:800; color:var(--red); font-size:20px;}
+
+  #quiz-area{display:flex; flex-direction:column;}
+  .question{display:none; animation:fade .3s ease;}
+  .question.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .q-meta{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .q-number{
+    font-family:'Playfair Display',serif; font-weight:800; font-size:16px;
+    color:var(--white); background:var(--ink);
+    width:34px; height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .q-track{flex:1; height:3px; background:var(--line); position:relative; overflow:hidden;}
+  .q-track-fill{height:100%; background:var(--red); transition:width .3s ease;}
+  .q-topic{
+    font-family:'Special Elite',monospace;
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--red); margin:14px 0 6px;
+  }
+  .prompt{font-size:clamp(18px,4vw,22px); font-weight:600; margin:0 0 20px; color:var(--ink);}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    text-align:left; background:var(--white); border:1px solid var(--line);
+    color:var(--ink); padding:14px 16px; font-family:'Work Sans',sans-serif; font-size:16px;
+    cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .option:hover:not(:disabled){border-color:var(--red);}
+  .option:disabled{cursor:default;}
+  .option.correct{background:rgba(58,110,74,0.12); border-color:#3A6E4A; color:#2A5038;}
+  .option.incorrect{background:rgba(179,36,28,0.10); border-color:var(--red); color:var(--red-dark);}
+  .feedback{
+    margin-top:16px; padding:14px 16px; border-left:4px solid var(--red);
+    background:var(--paper-dark); font-size:14.5px; display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback .verdict{
+    font-family:'Special Elite',monospace; font-size:12.5px; letter-spacing:0.05em;
+    text-transform:uppercase; display:block; margin-bottom:6px;
+  }
+  .feedback.ok .verdict{color:#2A5038;}
+  .feedback.ko .verdict{color:var(--red-dark);}
+  .nav-row{display:flex; justify-content:flex-end; align-items:center; margin-top:22px;}
+  button.next{
+    font-family:'Special Elite',monospace; font-size:13px; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--red); color:var(--white); border:none; padding:13px 22px; cursor:pointer; display:none;
+  }
+  button.next.show{display:inline-block;}
+  button.next:hover{background:var(--red-dark);}
+
+  #results{display:none; text-align:center;}
+  #results.show{display:block;}
+  .report{border:2px solid var(--ink); margin-top:10px; background:var(--white);}
+  .report-head{
+    background:var(--ink); color:var(--paper);
+    font-family:'Playfair Display',serif; font-weight:800; padding:16px; font-size:18px; letter-spacing:0.01em;
+  }
+  .report-body{padding:26px 22px;}
+  .big-score{font-family:'Playfair Display',serif; font-weight:800; font-size:58px; color:var(--red); line-height:1; margin-bottom:6px;}
+  .big-score span{font-size:24px; color:var(--ink-soft);}
+  .verdict-final{
+    display:inline-block; margin-top:14px; padding:8px 18px;
+    font-family:'Special Elite',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+  }
+  .verdict-final.great{background:rgba(58,110,74,0.15); color:#2A5038; border:1px solid #3A6E4A;}
+  .verdict-final.ok{background:rgba(179,36,28,0.10); color:var(--red-dark); border:1px solid var(--red);}
+  .verdict-final.retry{background:rgba(179,36,28,0.16); color:var(--red-dark); border:1px solid var(--red-dark);}
+  .retry-btn{
+    margin-top:22px; background:transparent; border:1px solid var(--ink); color:var(--ink);
+    font-family:'Special Elite',monospace; font-size:12px; letter-spacing:0.04em; text-transform:uppercase;
+    padding:12px 20px; cursor:pointer;
+  }
+  .retry-btn:hover{background:var(--ink); color:var(--paper);}
+  footer{text-align:center; padding:22px; color:var(--ink-soft); font-size:12px; font-family:'Special Elite',monospace;}
+
+  .write-box textarea{
+    width:100%; min-height:110px; background:var(--white); border:1px solid var(--line);
+    color:var(--ink); font-family:'Work Sans',sans-serif; font-size:16px; padding:14px 16px; resize:vertical;
+  }
+  .write-box textarea:focus{outline:none; border-color:var(--red);}
+  .write-hint{display:block; margin:8px 0 14px; font-size:13px; color:var(--ink-soft); font-style:italic;}
+  .correct-btn{
+    font-family:'Special Elite',monospace; font-size:13px; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--ink); color:var(--paper); border:none; padding:12px 20px; cursor:pointer;
+  }
+  .correct-btn:hover{background:var(--red);}
+  .correct-btn:disabled{background:var(--ink-soft); cursor:wait;}
+  .ai-feedback{
+    display:none; margin-top:16px; padding:14px 16px; border-left:4px solid var(--red);
+    background:var(--paper-dark); font-size:14.5px; white-space:pre-wrap;
+  }
+  .ai-feedback.show{display:block;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Français 2nde — Édition spéciale</div>
+  <h1>Informer, s'informer</h1>
+  <p class="subtitle">Entraîne-toi sur les ateliers : info ou intox, les 5W, écrire comme un journaliste, relecture, types d'articles.</p>
+</header>
+
+<main>
+
+  <div class="scorebar">
+    <div><span class="label">Question</span><br><span class="value" id="q-pos">1 / 23</span></div>
+    <div style="text-align:right"><span class="label">Score</span><br><span class="value" id="q-score">0</span></div>
+  </div>
+
+  <div id="quiz-area"></div>
+
+  <div id="results">
+    <div class="report">
+      <div class="report-head">Carte de journaliste — Résultat</div>
+      <div class="report-body">
+        <div class="big-score" id="final-score">0<span>/20</span></div>
+        <p style="color:var(--ink-soft); margin-top:0;">Résultat final</p>
+        <div class="verdict-final" id="final-verdict">GREAT</div>
+      </div>
+    </div>
+    <button class="retry-btn" id="retry-btn">↻ Recommencer</button>
+  </div>
+
+</main>
+
+<footer>Lycée Godefroy de Bouillon — Informer, s'informer : les circuits de l'information</footer>
+
+<script>
+const QUESTIONS = [
+{topic:"Info ou intox ?", prompt:"« Il paraît que le proviseur va démissionner. » Il s'agit...", options:["D'une information","D'une rumeur","D'une anecdote","D'une opinion"], correct:1, explanation:"Une rumeur est une affirmation non vérifiée, qui circule sans preuve."},
+{topic:"Info ou intox ?", prompt:"« Le conseil régional a voté une baisse de 10% du budget cantine, comme l'indique le procès-verbal officiel. » Il s'agit...", options:["D'une opinion","D'une anecdote","D'une information","D'une rumeur"], correct:2, explanation:"Une information est un fait vérifié et sourcé."},
+{topic:"Info ou intox ?", prompt:"« Je trouve que les repas à la cantine sont vraiment trop sucrés. » Il s'agit...", options:["D'une information","D'une opinion","D'une rumeur","D'une anecdote"], correct:1, explanation:"Une opinion exprime un point de vue personnel, pas un fait vérifiable."},
+{topic:"Info ou intox ?", prompt:"« L'an dernier, un élève avait glissé sur le sol de la cantine juste devant le CPE, c'était mémorable. » Il s'agit...", options:["D'une anecdote","D'une rumeur","D'une information","D'une opinion"], correct:0, explanation:"Une anecdote est un petit fait vécu, souvent amusant, raconté à titre personnel."},
+{topic:"Les 5W", prompt:"Dans la règle des 5W, la question 'Who' permet de savoir...", options:["Quand l'événement a eu lieu","Qui est concerné par l'événement","Pourquoi l'événement a eu lieu","Où l'événement a eu lieu"], correct:1, explanation:"Who = Qui : identifie clairement les personnes ou groupes impliqués."},
+{topic:"Les 5W", prompt:"La question 'Why' sert à expliquer...", options:["Le lieu de l'événement","La date de l'événement","La raison ou la cause de l'événement","Les personnes impliquées"], correct:2, explanation:"Why = Pourquoi : donne la raison, la cause de l'événement."},
+{topic:"Les 5W", prompt:"« Le concert aura lieu vendredi 12 septembre. » Cette phrase répond à quelle question des 5W ?", options:["Who","When","Where","Why"], correct:1, explanation:"When = Quand : cette phrase donne la date de l'événement."},
+{topic:"Les 5W", prompt:"« Le spectacle se déroulera dans le gymnase du lycée. » Cette phrase répond à quelle question des 5W ?", options:["Where","What","Who","Why"], correct:0, explanation:"Where = Où : cette phrase précise le lieu."},
+{topic:"Écrire comme un journaliste", prompt:"Pour commencer fort un article, quelle formulation est la plus adaptée ?", options:["Un jour, il s'est passé un truc bizarre au lycée...","Ce matin, un incident a eu lieu au lycée Jean-Monnet.","Bref, ça fait un peu désordre en ce moment.","On sait pas trop ce qui s'est passé exactement."], correct:1, explanation:"Un bon début d'article donne un fait précis et daté, dans un style neutre."},
+{topic:"Écrire comme un journaliste", prompt:"Pour intégrer un témoignage dans un article, laquelle de ces formulations convient ?", options:["Un élève aurait dit un truc comme quoi c'était choquant.","Selon un élève présent, « la scène était impressionnante ».","Il paraît qu'un élève a tout vu.","On raconte qu'un élève était choqué."], correct:1, explanation:"« Selon [nom/fonction]... » suivi d'une citation entre guillemets est la structure attendue pour un témoignage."},
+{topic:"Écrire comme un journaliste", prompt:"Pour exprimer la cause d'un événement dans un article, quelle formulation est correcte ?", options:["Et donc après ça a fait...","L'incident aurait été causé par un problème technique.","On sait pas trop pourquoi mais bon.","Ça arrive parfois, c'est la vie."], correct:1, explanation:"« [Événement] aurait été causé par... » est une structure journalistique pour exprimer une cause avec prudence (conditionnel)."},
+{topic:"Écrire comme un journaliste", prompt:"Pour conclure un article en évoquant la suite des événements, quelle formulation convient le mieux ?", options:["Voilà, c'est à peu près tout.","Le établissement prévoit de réorganiser les horaires dans les prochains jours.","On verra bien ce qui va se passer.","Franchement, on est un peu perdus."], correct:1, explanation:"Une bonne conclusion évoque la suite de façon factuelle et précise, souvent au futur."},
+{topic:"Relecture et correction", prompt:"D'après la grille de relecture, un bon article doit éviter...", options:["Les phrases trop longues","Les témoignages","Les dates précises","Les citations"], correct:0, explanation:"Les phrases trop longues nuisent à la clarté et à la lisibilité de l'article."},
+{topic:"Relecture et correction", prompt:"Quel ton un article d'information doit-il adopter, selon la grille de relecture ?", options:["Un ton passionné et engagé","Un ton neutre et objectif, pas d'avis personnel","Un ton humoristique","Un ton very familier"], correct:1, explanation:"La grille de relecture demande un ton neutre, objectif, sans opinion personnelle pour un article d'information."},
+{topic:"Relecture et correction", prompt:"Sur la grille de relecture, quel critère concerne l'organisation du texte ?", options:["Orthographe correcte","Informations bien organisées","Vocabulaire adapté","Pas de répétitions inutiles"], correct:1, explanation:"« Informations bien organisées » vérifie la structure logique du texte, indépendamment de l'orthographe ou du vocabulaire."},
+{topic:"Relecture et correction", prompt:"Pourquoi faut-il éviter les répétitions inutiles dans un article ?", options:["Parce que ça allonge artificiellement le texte sans apporter d'information et nuit à la qualité de lecture","Parce que c'est interdit par la loi","Parce que ça coûte plus cher à imprimer","Parce que les lecteurs n'aiment pas les mots longs"], correct:0, explanation:"Les répétitions inutiles alourdissent le texte sans ajouter d'information, ce qui nuit à sa qualité."},
+{topic:"Types d'articles", prompt:"Un article qui rapporte un fait brut, de façon factuelle (reportage), s'appelle...", options:["Un éditorial","Un article d'information","Une critique","Une brève"], correct:1, explanation:"L'article d'information (reportage / fait brut) rapporte les faits de façon neutre."},
+{topic:"Types d'articles", prompt:"Un article qui donne l'opinion personnelle de l'auteur sur un sujet s'appelle...", options:["Un article de fond / une enquête","Une interview","Un éditorial / une tribune","Une brève / annonce"], correct:2, explanation:"L'éditorial (ou tribune) exprime un point de vue, une opinion assumée par l'auteur."},
+{topic:"Types d'articles", prompt:"Un article très court qui donne une information rapide, sans développement, s'appelle...", options:["Une brève / annonce","Une critique / revue","Un article de fond","Une chronique / billet"], correct:0, explanation:"La brève (ou annonce) est un texte court, rapide à lire, qui donne une information sans développement."},
+{topic:"Types d'articles", prompt:"Un article structuré en questions/réponses avec une personne interrogée s'appelle...", options:["Une chronique","Une interview","Un éditorial","Une critique"], correct:1, explanation:"L'interview est construite sous forme de questions posées à une personne, suivies de ses réponses."},
+{type:"write", topic:"Écrire comme un journaliste", prompt:"Rédige une phrase d'accroche pour commencer un article sur une panne de chauffage qui a perturbé les cours hier.", hint:"Pense à un fait précis, daté, dans un style neutre.", aiInstructions:"Un(e) élève de 2nde doit rédiger une phrase d'accroche journalistique (début d'article) sur une panne de chauffage ayant perturbé les cours la veille. Vérifie que la phrase : donne un fait précis et daté, reste dans un style neutre et factuel (pas d'avis personnel), et est grammaticalement correcte."},
+{type:"write", topic:"Écrire comme un journaliste", prompt:"Rédige une phrase qui intègre le témoignage d'un élève, en utilisant la structure « Selon... ».", hint:"Utilise : Selon [nom/fonction]... suivi d'une citation entre guillemets.", aiInstructions:"Un(e) élève de 2nde doit rédiger une phrase intégrant un témoignage avec la structure journalistique « Selon [nom/fonction]... » suivie d'une citation entre guillemets. Vérifie que la structure est bien utilisée, que la citation est entre guillemets, et que la grammaire est correcte."},
+{type:"write", topic:"Écrire comme un journaliste", prompt:"Rédige une phrase de conclusion pour cet article, qui évoque la suite des événements (ex. réparation prévue).", hint:"Une bonne conclusion est factuelle, souvent au futur, et évoque ce qui va se passer ensuite.", aiInstructions:"Un(e) élève de 2nde doit rédiger une phrase de conclusion d'article journalistique évoquant la suite des événements (par exemple une réparation prévue), de façon factuelle, souvent au futur. Vérifie que la phrase respecte bien ce rôle de conclusion et que la grammaire est correcte."}
+];
+
+let current = 0;
+let score = 0;
+let answered = [];
+const SCORABLE_TOTAL = QUESTIONS.filter(q => q.type !== 'write').length;
+
+const quizArea = document.getElementById('quiz-area');
+const qPos = document.getElementById('q-pos');
+const qScore = document.getElementById('q-score');
+const resultsEl = document.getElementById('results');
+
+function renderAll(){
+  quizArea.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question' + (i===0 ? ' active' : '');
+    div.id = 'q'+i;
+
+    if(q.type === 'write'){
+      div.innerHTML = `
+        <div class="q-meta">
+          <div class="q-number">${i+1}</div>
+          <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+        </div>
+        <p class="q-topic">${q.topic}</p>
+        <p class="prompt">${q.prompt}</p>
+        <div class="write-box">
+          <textarea id="write-input${i}" placeholder="Écris ta phrase ici..."></textarea>
+          <span class="write-hint">${q.hint}</span>
+        </div>
+        <button class="correct-btn" data-correct="${i}">Corriger</button>
+        <div class="ai-feedback" id="ai-fb${i}"></div>
+        <div class="nav-row">
+          <button class="next" data-next="${i}">Suivant →</button>
+        </div>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="q-meta">
+          <div class="q-number">${i+1}</div>
+          <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+        </div>
+        <p class="q-topic">${q.topic}</p>
+        <p class="prompt">${q.prompt}</p>
+        <div class="options">
+          ${q.options.map((opt, oi) => `<button class="option" data-i="${oi}">${opt}</button>`).join('')}
+        </div>
+        <div class="feedback" id="fb${i}">
+          <span class="verdict"></span>
+          <span class="explanation"></span>
+        </div>
+        <div class="nav-row">
+          <button class="next" data-next="${i}">Suivant →</button>
+        </div>
+      `;
+    }
+    quizArea.appendChild(div);
+  });
+
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => goTo(parseInt(btn.dataset.next) + 1));
+  });
+  document.querySelectorAll('[data-correct]').forEach(btn => {
+    btn.addEventListener('click', () => handleWriteCorrection(parseInt(btn.dataset.correct)));
+  });
+}
+
+async function handleWriteCorrection(qi){
+  const q = QUESTIONS[qi];
+  const input = document.getElementById('write-input'+qi);
+  const btn = document.querySelector(`[data-correct="${qi}"]`);
+  const fbBox = document.getElementById('ai-fb'+qi);
+  const text = input.value.trim();
+
+  if(text.length < 3){
+    fbBox.classList.add('show');
+    fbBox.textContent = "Écris d'abord ta phrase avant de demander la correction.";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Correction en cours...";
+  fbBox.classList.remove('show');
+
+  const prompt = `Tu es un professeur de français bienveillant pour des élèves de 2nde en filière professionnelle, sur une séquence d'initiation au journalisme. ${q.aiInstructions}
+
+Phrase de l'élève :
+"""
+${text}
+"""
+
+Donne un retour bref et encourageant en français : dis si la phrase respecte bien la consigne, corrige les éventuelles erreurs de grammaire/orthographe, et propose une reformulation si besoin. Reste concis (100 mots maximum).`;
+
+  try {
+    const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+    if(!response.ok) throw new Error('network');
+    const data = await response.json();
+    const textOut = (data.content || []).map(b => b.text || '').filter(Boolean).join('\n');
+    fbBox.textContent = textOut || "Pas de réponse reçue, réessaie.";
+  } catch(err){
+    fbBox.textContent = "La correction n'a pas pu être générée (problème de connexion). Réessaie dans un instant.";
+  } finally {
+    fbBox.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = "Corriger à nouveau";
+    document.querySelector(`#q${qi} .next`).classList.add('show');
+  }
+}
+
+function handleAnswer(e){
+  const btn = e.currentTarget;
+  const qDiv = btn.closest('.question');
+  const qi = parseInt(qDiv.id.replace('q',''));
+  if(answered[qi] !== undefined) return;
+
+  const chosen = parseInt(btn.dataset.i);
+  const q = QUESTIONS[qi];
+  const correct = chosen === q.correct;
+  answered[qi] = correct;
+  if(correct) score++;
+
+  qDiv.querySelectorAll('.option').forEach((o, oi) => {
+    o.disabled = true;
+    if(oi === q.correct) o.classList.add('correct');
+    else if(oi === chosen) o.classList.add('incorrect');
+  });
+
+  const fb = document.getElementById('fb'+qi);
+  fb.classList.add('show', correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = correct ? "Exact !" : "Pas tout à fait.";
+  fb.querySelector('.explanation').textContent = q.explanation;
+
+  qDiv.querySelector('.next').classList.add('show');
+  qScore.textContent = score;
+}
+
+function goTo(i){
+  if(i >= QUESTIONS.length){
+    showResults();
+    return;
+  }
+  document.querySelectorAll('.question').forEach(d => d.classList.remove('active'));
+  document.getElementById('q'+i).classList.add('active');
+  current = i;
+  qPos.textContent = (i+1) + ' / ' + QUESTIONS.length;
+}
+
+function showResults(){
+  resultsEl.classList.add('show');
+  document.getElementById('final-score').innerHTML = score + '<span>/'+SCORABLE_TOTAL+'</span>';
+  const v = document.getElementById('final-verdict');
+  if(score >= 16){ v.textContent = 'Prêt(e) pour la rédaction !'; v.className = 'verdict-final great'; }
+  else if(score >= 11){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
+  else { v.textContent = 'À revoir avant l\'examen'; v.className = 'verdict-final retry'; }
+}
+
+document.getElementById('retry-btn').addEventListener('click', () => {
+  current = 0; score = 0; answered = [];
+  resultsEl.classList.remove('show');
+  qScore.textContent = 0;
+  renderAll();
+  qPos.textContent = '1 / ' + QUESTIONS.length;
+});
+
+renderAll();
+</script>
+
+</body>
+</html>
