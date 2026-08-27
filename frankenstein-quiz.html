@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frankenstein — Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#161210;
+    --panel:#1F1A16;
+    --parchment:#E9DFC4;
+    --parchment-dim:#DCD0AE;
+    --wine:#6E1F1F;
+    --wine-light:#8A2E2E;
+    --gold:#B9974A;
+    --gold-light:#D8BE7E;
+    --white:#FBF7EC;
+    --ink-soft:#7A7266;
+    --line:rgba(233,223,196,0.14);
+    --green:#4C6B4A;
+    --red:#8A2E2E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'EB Garamond',serif;
+    font-size:17px;
+    line-height:1.6;
+  }
+  header{
+    padding:44px 20px 34px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse at top, rgba(185,151,74,0.10), transparent 60%),
+      var(--panel);
+    border-bottom:1px solid var(--line);
+  }
+  .kicker{
+    font-family:'EB Garamond',serif;
+    font-style:italic;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:800;
+    font-size:clamp(34px,7vw,54px);
+    margin:0;
+    letter-spacing:0.01em;
+    color:var(--white);
+  }
+  .subtitle{
+    color:var(--ink-soft);
+    font-size:15px;
+    max-width:460px;
+    margin:16px auto 0;
+    font-style:italic;
+  }
+  main{max-width:660px; margin:0 auto; padding:32px 18px 90px;}
+  .scorebar{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--panel); border:1px solid var(--line);
+    padding:14px 18px; margin-bottom:26px; font-size:14px;
+  }
+  .scorebar .label{color:var(--ink-soft); text-transform:uppercase; font-size:11px; letter-spacing:0.08em;}
+  .scorebar .value{font-family:'Cormorant Garamond',serif; font-weight:800; color:var(--gold-light); font-size:22px;}
+
+  .text-panel{
+    display:none;
+    background:var(--parchment); color:var(--ink);
+    padding:22px 24px; margin-bottom:24px;
+    border-left:5px solid var(--wine);
+    font-family:'EB Garamond',serif; font-size:16px; line-height:1.75;
+  }
+  .text-panel.show{display:block;}
+  .text-panel .caption{
+    display:block; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:14px;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--wine); margin-bottom:10px;
+  }
+
+  #quiz-area{display:flex; flex-direction:column;}
+  .question{display:none; animation:fade .3s ease;}
+  .question.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .q-meta{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .q-number{
+    font-family:'Cormorant Garamond',serif; font-weight:800; font-size:17px;
+    color:var(--ink); background:var(--gold-light);
+    width:34px; height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .q-track{flex:1; height:2px; background:var(--line); position:relative; overflow:hidden;}
+  .q-track-fill{height:100%; background:var(--wine-light); transition:width .3s ease;}
+  .q-topic{
+    font-family:'EB Garamond',serif; font-style:italic;
+    font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase;
+    color:var(--gold-light); margin:14px 0 6px;
+  }
+  .prompt{font-family:'Cormorant Garamond',serif; font-size:clamp(20px,4vw,24px); font-weight:700; margin:0 0 20px; color:var(--white);}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    text-align:left; background:var(--panel); border:1px solid var(--line);
+    color:var(--parchment); padding:14px 16px; font-family:'EB Garamond',serif; font-size:16.5px;
+    cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .option:hover:not(:disabled){border-color:var(--gold-light);}
+  .option:disabled{cursor:default;}
+  .option.correct{background:rgba(76,107,74,0.20); border-color:var(--green); color:#B9D6B4;}
+  .option.incorrect{background:rgba(138,46,46,0.20); border-color:var(--red); color:#F0B8B8;}
+  .feedback{
+    margin-top:16px; padding:14px 16px; border-left:4px solid var(--gold);
+    background:var(--panel); font-size:15px; display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback .verdict{
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:14px;
+    letter-spacing:0.03em; text-transform:uppercase; display:block; margin-bottom:6px;
+  }
+  .feedback.ok .verdict{color:#8FCB86;}
+  .feedback.ko .verdict{color:#E08F8F;}
+  .nav-row{display:flex; justify-content:flex-end; align-items:center; margin-top:22px;}
+  button.next{
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:14px; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--wine); color:var(--white); border:none; padding:13px 24px; cursor:pointer; display:none;
+  }
+  button.next.show{display:inline-block;}
+  button.next:hover{background:var(--wine-light);}
+
+  .write-box textarea{
+    width:100%; min-height:130px; background:var(--panel); border:1px solid var(--line);
+    color:var(--parchment); font-family:'EB Garamond',serif; font-size:16px; padding:14px 16px; resize:vertical;
+  }
+  .write-box textarea:focus{outline:none; border-color:var(--gold-light);}
+  .write-hint{display:block; margin:8px 0 14px; font-size:13.5px; color:var(--ink-soft); font-style:italic;}
+  .template-box{
+    background:var(--panel); border:1px dashed var(--gold);
+    padding:14px 18px; margin-bottom:16px; font-size:15px; line-height:1.7;
+    color:var(--parchment);
+  }
+  .correct-btn{
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:14px; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--gold); color:var(--ink); border:none; padding:12px 20px; cursor:pointer;
+  }
+  .correct-btn:hover{background:var(--gold-light);}
+  .correct-btn:disabled{background:var(--ink-soft); cursor:wait;}
+  .ai-feedback{
+    display:none; margin-top:16px; padding:14px 16px; border-left:4px solid var(--gold);
+    background:var(--panel); font-size:15px; white-space:pre-wrap;
+  }
+  .ai-feedback.show{display:block;}
+
+  #results{display:none; text-align:center;}
+  #results.show{display:block;}
+  .report{border:2px solid var(--gold); margin-top:10px; background:var(--panel);}
+  .report-head{
+    background:var(--gold); color:var(--ink);
+    font-family:'Cormorant Garamond',serif; font-weight:800; padding:16px; font-size:19px; letter-spacing:0.01em;
+  }
+  .report-body{padding:26px 22px;}
+  .big-score{font-family:'Cormorant Garamond',serif; font-weight:800; font-size:58px; color:var(--gold-light); line-height:1; margin-bottom:6px;}
+  .big-score span{font-size:24px; color:var(--ink-soft);}
+  .verdict-final{
+    display:inline-block; margin-top:14px; padding:8px 18px;
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:13px; letter-spacing:0.04em; text-transform:uppercase;
+  }
+  .verdict-final.great{background:rgba(76,107,74,0.20); color:#8FCB86; border:1px solid var(--green);}
+  .verdict-final.ok{background:rgba(185,151,74,0.16); color:var(--gold-light); border:1px solid var(--gold);}
+  .verdict-final.retry{background:rgba(138,46,46,0.20); color:#E08F8F; border:1px solid var(--red);}
+  .retry-btn{
+    margin-top:22px; background:transparent; border:1px solid var(--gold); color:var(--gold-light);
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:13px; letter-spacing:0.04em; text-transform:uppercase;
+    padding:12px 20px; cursor:pointer;
+  }
+  .retry-btn:hover{background:var(--gold); color:var(--ink);}
+  footer{text-align:center; padding:22px; color:var(--ink-soft); font-size:12.5px; font-style:italic;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Français 1ère — Parcours d'œuvre</div>
+  <h1>Frankenstein</h1>
+  <p class="subtitle">Entraîne-toi sur les registres, les procédés littéraires, les thèmes des lettres, et l'extrait de la création.</p>
+</header>
+
+<main>
+
+  <div class="scorebar">
+    <div><span class="label">Question</span><br><span class="value" id="q-pos">1 / 18</span></div>
+    <div style="text-align:right"><span class="label">Score</span><br><span class="value" id="q-score">0</span></div>
+  </div>
+
+  <div class="text-panel" id="text-panel">
+    <span class="caption">Extrait — La nuit de la création</span>
+    <p>« Ce fut par une sinistre nuit de novembre que je parvins à mettre un terme à mes travaux. Avec une anxiété qui me rapprochait de l'agonie, je rassemblai autour de moi les instruments qui devaient donner la vie et introduire une étincelle d'existence dans cette matière inerte qui gisait à mes pieds. [...] je vis s'ouvrir l'œil jaune stupide de la créature. Elle se mit à respirer et des mouvements convulsifs lui agitèrent les membres. Comment pourrais-je décrire mon émoi devant un tel prodige ? Comment pourrais-je dépeindre cet être horrible dont la création m'avait coûté tant de peines et tant de soins ? [...] Sa peau jaunâtre, tendue à l'extrême, dissimulait à peine ses muscles et ses artères. [...] mais ces avantages ne formaient qu'un contraste plus monstrueux avec ses yeux stupides [...]. J'avais, pendant deux ans, travaillé sans répit pour donner la vie à un corps inanimé. [...] mais maintenant que j'y étais parvenu, la beauté de mon rêve s'évanouissait et j'avais le cœur rempli d'épouvante et de dégoût. Incapable de supporter la vue de l'être que j'avais créé, je sortis de mon laboratoire [...] »</p>
+  </div>
+
+  <div id="quiz-area"></div>
+
+  <div id="results">
+    <div class="report">
+      <div class="report-head">Carnet de lecture — Résultat</div>
+      <div class="report-body">
+        <div class="big-score" id="final-score">0<span>/13</span></div>
+        <p style="color:var(--ink-soft); margin-top:0;">Résultat final</p>
+        <div class="verdict-final" id="final-verdict">GREAT</div>
+      </div>
+    </div>
+    <button class="retry-btn" id="retry-btn">↻ Recommencer</button>
+  </div>
+
+</main>
+
+<footer>Lycée Godefroy de Bouillon — Frankenstein, parcours d'œuvre</footer>
+
+<script>
+const QUESTIONS = [
+{topic:"L'œuvre et sa structure", prompt:"Frankenstein est un roman construit sous quelle forme ?", options:["Un recueil de poèmes","Un journal intime","Un roman épistolaire (par lettres)","Une pièce de théâtre"], correct:2, referencesText:false, explanation:"Le roman commence par des lettres écrites par Walton, un explorateur, à sa sœur."},
+{topic:"L'œuvre et sa structure", prompt:"Qui écrit la première lettre du roman ?", options:["Victor Frankenstein","Walton, un explorateur","La créature","Elizabeth"], correct:1, referencesText:false, explanation:"La lettre 1 est écrite par Walton, qui explore les régions polaires."},
+{topic:"L'œuvre et sa structure", prompt:"Dans la lettre 4, quel événement important se produit ?", options:["La mort d'Elizabeth","La rencontre entre Walton et Victor","La création de la créature","Le retour de Victor à Genève"], correct:1, referencesText:false, explanation:"La lettre 4 raconte la rencontre entre Walton et Victor Frankenstein, recueilli en pleine mer polaire."},
+{topic:"Thèmes de la lettre 1", prompt:"Le thème « ambition / dépassement de soi » dans la lettre 1 est associé à quelle idée ?", options:["Le regret du passé","La peur de l'inconnu","L'amour familial","La volonté de repousser les limites humaines"], correct:3, referencesText:false, explanation:"Ce thème correspond à la volonté de Walton de repousser les limites humaines dans son expédition."},
+{topic:"Thèmes de la lettre 1", prompt:"Le thème « solitude / danger » dans la lettre 1 évoque notamment...", options:["La conscience du risque, la possibilité de ne jamais revenir","L'enthousiasme du départ","Le rêve d'atteindre le pôle","La rencontre à venir"], correct:0, referencesText:false, explanation:"Ce thème exprime la conscience du danger et le risque de ne jamais revenir de l'expédition."},
+{topic:"Thèmes de la lettre 1", prompt:"Le thème « exploration / découverte » est lié à quelle idée dans la lettre 1 ?", options:["La solitude extrême","Le rêve d'atteindre le pôle, la curiosité scientifique","Le dépassement de soi","L'annonce d'une rencontre"], correct:1, referencesText:false, explanation:"Ce thème exprime la curiosité scientifique et le rêve d'atteindre le pôle."},
+{topic:"Registres littéraires", prompt:"Le registre lyrique sert principalement à...", options:["Décrire un cadre scientifique","Faire rire le lecteur","Exprimer des sentiments personnels forts","Raconter des exploits héroïques"], correct:2, referencesText:false, explanation:"Le registre lyrique exprime des émotions et sentiments personnels."},
+{topic:"Registres littéraires", prompt:"Le registre épique met en avant...", options:["La tristesse et la pitié","Le quotidien banal","L'humour et la légèreté","Des exploits grandioses, une dimension héroïque"], correct:3, referencesText:false, explanation:"Le registre épique valorise des exploits grandioses et une dimension héroïque, souvent amplifiée."},
+{topic:"Registres littéraires", prompt:"Le registre pathétique cherche à...", options:["Provoquer la pitié, l'émotion douloureuse chez le lecteur","Impressionner par l'héroïsme","Amuser le lecteur","Informer de façon neutre"], correct:0, referencesText:false, explanation:"Le registre pathétique vise à susciter la pitié et une émotion douloureuse."},
+{topic:"Procédés littéraires", prompt:"Un champ lexical est...", options:["Un ensemble de mots liés à une même idée","Une comparaison implicite entre deux éléments","Une exagération volontaire","Une opposition entre deux idées contraires"], correct:0, referencesText:false, explanation:"Le champ lexical rassemble des mots liés à une même idée ou un même thème."},
+{topic:"Procédés littéraires", prompt:"Une antithèse est...", options:["Une énumération de mots pour renforcer une impression","Une marque d'intensité des émotions","Une opposition de deux idées contraires (ex. beauté / laideur)","Un ensemble de mots liés à une même idée"], correct:2, referencesText:false, explanation:"L'antithèse oppose deux idées contraires, comme la beauté et la laideur."},
+{topic:"Procédés littéraires", prompt:"Une hyperbole est...", options:["Une exagération volontaire","Un ensemble de mots sur un même thème","Une comparaison implicite","Une opposition entre deux idées"], correct:0, referencesText:false, explanation:"L'hyperbole consiste en une exagération volontaire pour intensifier un propos."},
+{topic:"Procédés littéraires", prompt:"Une métaphore est...", options:["Une opposition entre deux idées contraires","Une comparaison implicite (sans « comme »)","Une énumération de mots","Une exagération volontaire"], correct:1, referencesText:false, explanation:"La métaphore est une comparaison implicite, sans mot de comparaison comme « comme »."},
+{type:"write", topic:"L'extrait — la création", prompt:"D'après l'extrait, à quel moment la créature prend-elle vie ? Réponds par une phrase complète.", hint:"Exemple de structure : « La créature prend vie... »", referencesText:true, aiInstructions:"Un(e) élève de 1ère doit répondre par une phrase complète à la question : « D'après l'extrait, à quel moment la créature prend-elle vie ? ». La bonne réponse attendue est : une sinistre nuit de novembre (le narrateur dit « Ce fut par une sinistre nuit de novembre que je parvins à mettre un terme à mes travaux »). Vérifie que la réponse de l'élève contient bien cette information, qu'elle est rédigée en phrase complète (sujet + verbe), et que la grammaire/orthographe est correcte."},
+{type:"write", topic:"L'extrait — la création", prompt:"D'après l'extrait, de quelle couleur sont les yeux de la créature ? Réponds par une phrase complète.", hint:"Exemple de structure : « Les yeux de la créature sont... »", referencesText:true, aiInstructions:"Un(e) élève de 1ère doit répondre par une phrase complète à la question : « D'après l'extrait, de quelle couleur sont les yeux de la créature ? ». La bonne réponse attendue est : jaunes (le texte dit « l'œil jaune stupide de la créature »). Vérifie que la réponse de l'élève contient bien cette information, qu'elle est rédigée en phrase complète (sujet + verbe), et que la grammaire/orthographe est correcte."},
+{type:"write", topic:"L'extrait — la création", prompt:"D'après l'extrait, quels sentiments envahissent Victor juste après la création ? Réponds par une phrase complète.", hint:"Exemple de structure : « Après la création, Victor ressent... »", referencesText:true, aiInstructions:"Un(e) élève de 1ère doit répondre par une phrase complète à la question : « D'après l'extrait, quels sentiments envahissent Victor juste après la création ? ». La bonne réponse attendue est : l'épouvante et le dégoût (le texte dit « j'avais le cœur rempli d'épouvante et de dégoût »). Vérifie que la réponse de l'élève contient bien cette information, qu'elle est rédigée en phrase complète (sujet + verbe), et que la grammaire/orthographe est correcte."},
+{type:"write", topic:"Champ lexical", prompt:"Relève un mot de l'extrait qui appartient au champ lexical de la fascination, et un mot qui appartient au champ lexical du rejet ou de l'horreur.", template:"- Un mot de la fascination : ______\n- Un mot du rejet / de l'horreur : ______", referencesText:true, aiInstructions:"Un(e) élève de 1ère doit relever, dans l'extrait de la création de Frankenstein, un mot appartenant au champ lexical de la fascination (par exemple : prodige, émoi, beauté) et un mot appartenant au champ lexical du rejet ou de l'horreur (par exemple : horrible, monstrueux, épouvante, dégoût, stupide). Vérifie que les deux mots proposés appartiennent bien aux bons champs lexicaux et sont bien présents dans l'extrait fourni. Si un mot ne convient pas, dis-le clairement et propose un exemple tiré du texte."},
+{type:"write", topic:"Analyse littéraire", prompt:"En reprenant la méthode vue en cours, analyse un des deux mots que tu as relevés.", template:"- L'utilisation du mot « ___ » appartient au champ lexical de ______ (fascination / rejet).\n- Cela crée une impression de ______ chez le lecteur.", referencesText:true, aiInstructions:"Un(e) élève de 1ère doit analyser un mot relevé dans l'extrait de Frankenstein en suivant exactement la méthode vue en cours : « L'utilisation du mot \"___\" appartient au champ lexical de ___ (fascination ou rejet). Cela crée une impression de ___ chez le lecteur. » Vérifie que l'élève a bien identifié le bon champ lexical pour le mot choisi, que l'impression décrite est cohérente (ex. malaise, horreur, dégoût pour le rejet ; émerveillement, admiration pour la fascination), et que la grammaire est correcte. Si un élément manque, dis-le clairement."}
+];
+
+let current = 0;
+let score = 0;
+let answered = [];
+const SCORABLE_TOTAL = QUESTIONS.filter(q => q.type !== 'write').length;
+
+const quizArea = document.getElementById('quiz-area');
+const qPos = document.getElementById('q-pos');
+const qScore = document.getElementById('q-score');
+const resultsEl = document.getElementById('results');
+const textPanel = document.getElementById('text-panel');
+
+function renderAll(){
+  quizArea.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question' + (i===0 ? ' active' : '');
+    div.id = 'q'+i;
+
+    if(q.type === 'write'){
+      div.innerHTML = `
+        <div class="q-meta">
+          <div class="q-number">${i+1}</div>
+          <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+        </div>
+        <p class="q-topic">${q.topic}</p>
+        <p class="prompt">${q.prompt}</p>
+        ${q.template ? `<div class="template-box">${q.template.replace(/\n/g,'<br>')}</div>` : ''}
+        <div class="write-box">
+          <textarea id="write-input${i}" placeholder="Écris ta réponse ici..."></textarea>
+          ${q.hint ? `<span class="write-hint">${q.hint}</span>` : ''}
+        </div>
+        <button class="correct-btn" data-correct="${i}">Corriger</button>
+        <div class="ai-feedback" id="ai-fb${i}"></div>
+        <div class="nav-row">
+          <button class="next" data-next="${i}">Suivant →</button>
+        </div>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="q-meta">
+          <div class="q-number">${i+1}</div>
+          <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+        </div>
+        <p class="q-topic">${q.topic}</p>
+        <p class="prompt">${q.prompt}</p>
+        <div class="options">
+          ${q.options.map((opt, oi) => `<button class="option" data-i="${oi}">${opt}</button>`).join('')}
+        </div>
+        <div class="feedback" id="fb${i}">
+          <span class="verdict"></span>
+          <span class="explanation"></span>
+        </div>
+        <div class="nav-row">
+          <button class="next" data-next="${i}">Suivant →</button>
+        </div>
+      `;
+    }
+    quizArea.appendChild(div);
+  });
+
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => goTo(parseInt(btn.dataset.next) + 1));
+  });
+  document.querySelectorAll('[data-correct]').forEach(btn => {
+    btn.addEventListener('click', () => handleWriteCorrection(parseInt(btn.dataset.correct)));
+  });
+
+  updateTextPanel(0);
+}
+
+function updateTextPanel(i){
+  const q = QUESTIONS[i];
+  if(q && q.referencesText){
+    textPanel.classList.add('show');
+  } else {
+    textPanel.classList.remove('show');
+  }
+}
+
+async function handleWriteCorrection(qi){
+  const q = QUESTIONS[qi];
+  const input = document.getElementById('write-input'+qi);
+  const btn = document.querySelector(`[data-correct="${qi}"]`);
+  const fbBox = document.getElementById('ai-fb'+qi);
+  const text = input.value.trim();
+
+  if(text.length < 3){
+    fbBox.classList.add('show');
+    fbBox.textContent = "Écris d'abord ta phrase avant de demander la correction.";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Correction en cours...";
+  fbBox.classList.remove('show');
+
+  const prompt = `Tu es un professeur de français bienveillant pour des élèves de 1ère, sur le parcours d'œuvre Frankenstein de Mary Shelley. ${q.aiInstructions}
+
+Phrase de l'élève :
+"""
+${text}
+"""
+
+Donne un retour bref et encourageant en français : dis si la phrase respecte bien la consigne, corrige les éventuelles erreurs de grammaire/orthographe, et propose une reformulation si besoin. Reste concis (100 mots maximum).`;
+
+  try {
+    const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+    if(!response.ok) throw new Error('network');
+    const data = await response.json();
+    const textOut = (data.content || []).map(b => b.text || '').filter(Boolean).join('\n');
+    fbBox.textContent = textOut || "Pas de réponse reçue, réessaie.";
+  } catch(err){
+    fbBox.textContent = "La correction n'a pas pu être générée (problème de connexion). Réessaie dans un instant.";
+  } finally {
+    fbBox.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = "Corriger à nouveau";
+    document.querySelector(`#q${qi} .next`).classList.add('show');
+  }
+}
+
+function handleAnswer(e){
+  const btn = e.currentTarget;
+  const qDiv = btn.closest('.question');
+  const qi = parseInt(qDiv.id.replace('q',''));
+  if(answered[qi] !== undefined) return;
+
+  const chosen = parseInt(btn.dataset.i);
+  const q = QUESTIONS[qi];
+  const correct = chosen === q.correct;
+  answered[qi] = correct;
+  if(correct) score++;
+
+  qDiv.querySelectorAll('.option').forEach((o, oi) => {
+    o.disabled = true;
+    if(oi === q.correct) o.classList.add('correct');
+    else if(oi === chosen) o.classList.add('incorrect');
+  });
+
+  const fb = document.getElementById('fb'+qi);
+  fb.classList.add('show', correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = correct ? "Exact !" : "Pas tout à fait.";
+  fb.querySelector('.explanation').textContent = q.explanation;
+
+  qDiv.querySelector('.next').classList.add('show');
+  qScore.textContent = score;
+}
+
+function goTo(i){
+  if(i >= QUESTIONS.length){
+    document.querySelectorAll('.question').forEach(d => d.classList.remove('active'));
+    showResults();
+    return;
+  }
+  document.querySelectorAll('.question').forEach(d => d.classList.remove('active'));
+  document.getElementById('q'+i).classList.add('active');
+  current = i;
+  qPos.textContent = (i+1) + ' / ' + QUESTIONS.length;
+  updateTextPanel(i);
+}
+
+function showResults(){
+  resultsEl.classList.add('show');
+  document.getElementById('final-score').innerHTML = score + '<span>/'+SCORABLE_TOTAL+'</span>';
+  const v = document.getElementById('final-verdict');
+  if(score >= 10){ v.textContent = 'Prêt(e) pour l\'analyse !'; v.className = 'verdict-final great'; }
+  else if(score >= 7){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
+  else { v.textContent = 'À revoir avant le contrôle'; v.className = 'verdict-final retry'; }
+}
+
+document.getElementById('retry-btn').addEventListener('click', () => {
+  current = 0; score = 0; answered = [];
+  resultsEl.classList.remove('show');
+  qScore.textContent = 0;
+  renderAll();
+  qPos.textContent = '1 / ' + QUESTIONS.length;
+});
+
+renderAll();
+</script>
+
+</body>
+</html>
