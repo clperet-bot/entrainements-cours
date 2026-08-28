@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fascination et rejet du monstrueux - Quiz de révision</title>
+<style>
+  body {
+    font-family: 'Georgia', serif;
+    background-color: #1a1410;
+    color: #f4e9d8;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    color: #f4c542;
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+  .subtitle {
+    color: #cbb994;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 24px;
+    font-size: 0.95em;
+    max-width: 560px;
+  }
+  .container { max-width: 600px; width: 100%; }
+  .progress-bar {
+    background: #2a2118;
+    border-radius: 20px;
+    height: 10px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #3d3020;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #8b1a1a, #f4c542);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .question {
+    background-color: #2a2118;
+    border: 1px solid #3d3020;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .q-count { color: #cbb994; font-size: 0.85em; margin-bottom: 8px; }
+  .qtext { font-size: 1.05em; color: #f4e9d8; margin: 0 0 16px 0; font-weight: bold; line-height: 1.4; }
+  .options label {
+    display: block;
+    background-color: #1f1912;
+    border: 1px solid #3d3020;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .options label:hover { background-color: #332818; border-color: #f4c542; }
+  .options input { margin-right: 10px; }
+  .options label.correct { background-color: #1e3d1e; border-color: #4caf50; }
+  .options label.incorrect { background-color: #3d1e1e; border-color: #c0392b; }
+  .hint-btn {
+    background: none;
+    border: 1px solid #cbb994;
+    color: #cbb994;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .hint-btn:hover { background-color: #332818; }
+  .hint-text { color: #cbb994; font-style: italic; font-size: 0.9em; margin-bottom: 10px; display:none; }
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.92em;
+    line-height: 1.4;
+    display: none;
+  }
+  .feedback.correct { background-color: #1e3d1e; border: 1px solid #4caf50; color: #d4f4d4; }
+  .feedback.incorrect { background-color: #3d1e1e; border: 1px solid #c0392b; color: #f4d4d4; }
+  .feedback .verdict { font-weight: bold; display: block; margin-bottom: 4px; }
+  .next-btn, #finish-btn {
+    background: linear-gradient(135deg, #8b1a1a, #6b1414);
+    color: #f4e9d8;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1em;
+    font-family: 'Georgia', serif;
+    cursor: pointer;
+    margin-top: 18px;
+    display: none;
+    width: 100%;
+  }
+  .next-btn:hover { background: linear-gradient(135deg, #a52222, #8b1a1a); }
+  #results {
+    display: none;
+    text-align: center;
+    background-color: #2a2118;
+    border: 1px solid #3d3020;
+    border-radius: 10px;
+    padding: 30px 20px;
+  }
+  #results .score { font-size: 2.2em; color: #f4c542; margin-bottom: 6px; }
+  #results .score-label { color: #cbb994; margin-bottom: 20px; }
+  #continue-btn {
+    background: linear-gradient(135deg, #8b1a1a, #6b1414);
+    color: #f4e9d8; border: none; border-radius: 8px;
+    padding: 12px 24px; font-size: 1em; font-family: 'Georgia', serif;
+    cursor: pointer; width: 100%;
+  }
+  .aide-box {
+    background-color: #1f1912;
+    border: 1px solid #cbb994;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 0.9em;
+    color: #f4e9d8;
+  }
+  .aide-box ol { margin: 8px 0; padding-left: 20px; }
+  .aide-box li { margin-bottom: 4px; }
+  .phrases { color: #cbb994; font-style: italic; margin-top: 8px; font-size: 0.88em; }
+  textarea {
+    width: 100%; min-height: 110px;
+    background-color: #1f1912; color: #f4e9d8;
+    border: 1px solid #3d3020; border-radius: 8px;
+    padding: 12px; font-family: 'Georgia', serif; font-size: 0.95em;
+    box-sizing: border-box; margin-bottom: 10px; resize: vertical;
+  }
+  .model-answer {
+    display: none;
+    background-color: #1e3d1e;
+    border: 1px solid #4caf50;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #d4f4d4;
+    line-height: 1.5;
+  }
+  .correction-btn {
+    background: linear-gradient(135deg, #8b1a1a, #6b1414);
+    color: #f4e9d8; border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 0.95em; font-family: 'Georgia', serif;
+    cursor: pointer;
+  }
+  .correction-btn:disabled { opacity: 0.6; cursor: default; }
+  .correction-result {
+    display: none;
+    background-color: #1f1912;
+    border: 1px solid #cbb994;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 0.9em;
+    color: #f4e9d8;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+
+<h1>🌑 Fascination et rejet du monstrueux</h1>
+<div class="subtitle">Quiz de révision : entraîne-toi à réutiliser tes outils (champ lexical, registres, procédés, analyse d'image) sur des exemples nouveaux, avant le contrôle.</div>
+
+<div class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div id="quiz"></div>
+  <div id="results">
+    <div class="score" id="score-display"></div>
+    <div class="score-label">bonnes réponses sur <span id="total-display"></span></div>
+    <button id="continue-btn" style="display:inline-block;">Continuer vers les questions ouvertes →</button>
+  </div>
+
+  <div id="writing-section" style="display:none;">
+
+    <div class="question">
+      <div class="q-count">Question ouverte 1 / 2 — Analyse d'image</div>
+      <p class="qtext">Observe l'image « Le Cauchemar » de Füssli (1781) et décris les émotions qui s'en dégagent, en t'appuyant sur la méthode.</p>
+      <div id="image-slot" style="text-align:center; margin-bottom:14px;">
+        <img src="fuseli-nightmare.jpg" alt="Le Cauchemar, Füssli" style="max-width:100%; border-radius:8px; border:1px solid #3d3020;">
+      </div>
+      <div class="aide-box">
+        <b>🔎 Aide — la méthode en 3 points</b>
+        <ol>
+          <li>Les <b>couleurs</b> : chaudes (agitation, danger) ou froides (tristesse, angoisse, calme) ?</li>
+          <li>Les <b>lignes/formes</b> : courbes (rassurant) ou brisées/anguleuses (tension) ?</li>
+          <li>La <b>composition</b> : qu'est-ce qui est mis en valeur, le personnage est-il isolé ou écrasé par le décor ?</li>
+        </ol>
+        <div class="phrases">Phrases-outils : « Les couleurs [froides/vives] traduisent... » · « Les lignes [brisées/courbes] créent une impression de... » · « Ce qui est mis en valeur, c'est... »</div>
+      </div>
+      <textarea id="answer1" placeholder="Rédige ta réponse ici (5-6 lignes)..."></textarea>
+      <button class="correction-btn" id="correct-btn-1" onclick="getCorrection(1)">✏️ Correction</button>
+      <div class="correction-result" id="correction-1"></div>
+    </div>
+
+    <div class="question">
+      <div class="q-count">Question ouverte 2 / 2 — Synthèse de corpus</div>
+      <p class="qtext">Le Texte C (le gardien du phare) et l'image que tu as observée ont-ils un point commun ? Justifie en une phrase par document.</p>
+      <div class="aide-box">
+        <b>🔎 Aide — la méthode en 2 étapes</b>
+        <ol>
+          <li>Trouve <b>une émotion commune</b> aux deux documents (ou un contraste intéressant).</li>
+          <li>Explique <b>comment chaque document la construit</b> : par des mots (champ lexical, procédés) pour le texte, par des couleurs/formes pour l'image.</li>
+        </ol>
+        <div class="phrases">Phrases-outils : « Dans les deux documents, on retrouve... » · « Le texte l'exprime par..., tandis que l'image le montre par... » · « Ces deux œuvres cherchent à faire ressentir... »</div>
+      </div>
+      <textarea id="answer2" placeholder="Rédige ta réponse ici (3-4 lignes)..."></textarea>
+      <button class="correction-btn" id="correct-btn-2" onclick="getCorrection(2)">✏️ Correction</button>
+      <div class="correction-result" id="correction-2"></div>
+    </div>
+
+    <button id="finish-btn" style="display:block;">Terminé ✓</button>
+  </div>
+
+  <div id="final-screen" style="display:none; text-align:center; background-color:#2a2118; border:1px solid #3d3020; border-radius:10px; padding:30px 20px;">
+    <p style="color:#f4c542; font-size:1.3em;">Bien joué 🌙</p>
+    <p style="color:#cbb994;">Relis tes réponses ouvertes et compare-les aux exemples avant le contrôle.</p>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {prompt:"Dans un texte, comment repère-t-on le champ lexical de la fascination ?",
+   options:["On cherche des phrases longues","On cherche des mots liés à l'admiration, la beauté, l'émerveillement","On cherche des dialogues"],
+   correct:1,
+   hint:"Repense à la définition vue en cours.",
+   explanation:"Un champ lexical est un ensemble de mots liés à une même idée — ici tout ce qui exprime l'admiration ou l'émerveillement (« prodige », « beauté », « ardeur »...)."},
+
+  {prompt:"Un texte décrit un visage « monstrueux, mais dont le regard trahissait une douceur inattendue ». Quel procédé reconnais-tu ?",
+   options:["Une accumulation","Une métaphore","Une antithèse (opposition de deux idées vraiment contraires)"],
+   correct:2,
+   hint:"Cherche deux mots qui sont de vrais contraires, pas juste deux idées différentes.",
+   explanation:"« Monstrueux » et « douceur » sont deux idées véritablement opposées (laideur/effroi contre tendresse) mises en contact dans la même phrase : c'est une antithèse, comme « Quelque beauté ! Grand Dieu ! » dans Frankenstein."},
+
+  {prompt:"Un personnage est décrit ainsi : « boiteux, borgne, voûté, le visage grêlé ». Quel procédé permet d'insister sur sa laideur ?",
+   options:["Une exclamation","Une accumulation de défauts physiques","Un registre lyrique"],
+   correct:1,
+   hint:"Plusieurs éléments négatifs mis bout à bout.",
+   explanation:"Énumérer plusieurs défauts à la suite renforce l'impression de monstruosité — c'est une accumulation, comme la description de la créature (« peau jaunâtre... dents blanches... yeux stupides... »)."},
+
+  {prompt:"Quel registre cherche à provoquer la pitié du lecteur envers un personnage qui souffre ?",
+   options:["Le registre pathétique","Le registre épique","Le registre comique"],
+   correct:0,
+   hint:"C'est un registre déjà étudié plusieurs fois cette séquence.",
+   explanation:"Le registre pathétique vise à provoquer la pitié — c'est celui du plaidoyer de la créature dans le Document 2, mais aussi de tout personnage rejeté qui inspire compassion."},
+
+  {prompt:"Dans une image, des lignes brisées et anguleuses créent en général une impression de...",
+   options:["Calme et douceur","Ennui","Tension, angoisse"],
+   correct:2,
+   hint:"Pense à une forme qui semble se déformer.",
+   explanation:"Contrairement aux lignes courbes qui apaisent, les lignes brisées ou tordues créent une tension visuelle et inquiètent — c'est un des points de la méthode d'analyse d'image."},
+
+  {prompt:"Dans une image, des couleurs froides (bleu, gris) évoquent le plus souvent...",
+   options:["La tristesse, le calme ou l'angoisse","La joie et la fête","La colère"],
+   correct:0,
+   hint:"Pense à ce qu'évoque la couleur d'un ciel gris.",
+   explanation:"Les couleurs froides sont associées à la tristesse, au calme ou à l'angoisse selon le contexte, contrairement aux couleurs chaudes (rouge, orange) plutôt liées à l'agitation ou au danger."},
+
+  {prompt:"Un texte crée l'horreur avec des mots, une image crée l'horreur avec des couleurs et des formes. Que peut-on dire de leur objectif ?",
+   options:["Ils n'ont rien en commun, ce sont deux arts différents","Ils peuvent viser le même effet sur le lecteur/spectateur, par des moyens différents","Seul le texte peut vraiment faire ressentir une émotion"],
+   correct:1,
+   hint:"Pense à ce qu'on cherche à démontrer dans une question sur plusieurs documents.",
+   explanation:"C'est l'idée clé pour répondre à une question de corpus : des œuvres de nature différente (texte, image) peuvent chercher le même effet (ici, un mélange de fascination et de rejet) par des procédés propres à leur art."},
+
+  {prompt:"Pour répondre à une question qui porte sur plusieurs documents à la fois (question de corpus), il faut avant tout...",
+   options:["Résumer chaque document séparément, l'un après l'autre","Choisir le document que l'on préfère et l'analyser seul","Trouver un point commun (ou une différence) entre les documents et l'expliquer"],
+   correct:2,
+   hint:"Le mot clé est « corpus » : on regarde l'ensemble, pas un document isolé.",
+   explanation:"Une question de corpus demande de croiser les documents : on part d'une idée commune (ou d'un contraste) et on l'illustre avec chacun, plutôt que de les traiter un par un sans les relier."}
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const quizDiv = document.getElementById('quiz');
+  answered = false;
+
+  let optionsHtml = q.options.map((opt, i) =>
+    `<label id="opt-${i}"><input type="radio" name="answer" value="${i}" onchange="selectAnswer(${i})"> ${opt}</label>`
+  ).join('');
+
+  quizDiv.innerHTML = `
+    <div class="question">
+      <div class="q-count">Question ${current + 1} / ${QUESTIONS.length}</div>
+      <p class="qtext">${q.prompt}</p>
+      ${q.hint ? `<button class="hint-btn" onclick="toggleHint()">💡 Indice</button><div class="hint-text" id="hint-text">${q.hint}</div>` : ''}
+      <div class="options">${optionsHtml}</div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Suivant →</button>
+    </div>
+  `;
+  document.getElementById('progress').style.width = ((current) / QUESTIONS.length * 100) + '%';
+}
+
+function toggleHint() {
+  const hint = document.getElementById('hint-text');
+  hint.style.display = hint.style.display === 'block' ? 'none' : 'block';
+}
+
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const isCorrect = i === q.correct;
+  if (isCorrect) score++;
+
+  q.options.forEach((opt, idx) => {
+    const label = document.getElementById('opt-' + idx);
+    label.querySelector('input').disabled = true;
+    if (idx === q.correct) label.classList.add('correct');
+    else if (idx === i) label.classList.add('incorrect');
+  });
+
+  const feedback = document.getElementById('feedback');
+  feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  feedback.innerHTML = `<span class="verdict">${isCorrect ? '✓ Exactement !' : '✗ Pas tout à fait.'}</span>${q.explanation}`;
+  feedback.style.display = 'block';
+
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < QUESTIONS.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('progress').style.width = '100%';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('score-display').textContent = score + ' / ' + QUESTIONS.length;
+  document.getElementById('total-display').textContent = QUESTIONS.length;
+}
+
+function toggleModel(n) {
+  const el = document.getElementById('model' + n);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+const CORRECTION_PROMPTS = {
+  1: (text) => `Un élève de 1ère répond à cette question : "Observe l'image « Le Cauchemar » de Füssli (1781) et décris les émotions qui s'en dégagent, en t'appuyant sur la méthode (couleurs, lignes/formes, composition)."
+
+Réponse de l'élève :
+"""
+${text}
+"""
+
+Corrige cette réponse : dis si l'analyse est pertinente, si elle s'appuie bien sur des éléments visuels concrets (couleurs, lignes, composition) plutôt que de rester vague, et propose une amélioration courte si besoin. Sois encourageant. Réponds en français, 100 mots maximum.`,
+  2: (text) => `Un élève de 1ère répond à cette question de synthèse de corpus : "Le Texte C (un gardien de phare face à une créature) et une image ont-ils un point commun ? Justifie en une phrase par document."
+
+Réponse de l'élève :
+"""
+${text}
+"""
+
+Corrige cette réponse : dis si l'élève identifie bien un point commun (émotions contradictoires, fascination/rejet) et s'il explique bien COMMENT chaque document (texte vs image) le construit différemment. Sois encourageant. Réponds en français, 100 mots maximum.`
+};
+
+async function getCorrection(n) {
+  const text = document.getElementById('answer' + n).value.trim();
+  const resultBox = document.getElementById('correction-' + n);
+  const btn = document.getElementById('correct-btn-' + n);
+  if (!text) {
+    resultBox.textContent = "Écris d'abord ta réponse avant de demander une correction.";
+    resultBox.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = "Correction en cours...";
+  resultBox.style.display = 'none';
+
+  try {
+    const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        messages: [{role: 'user', content: CORRECTION_PROMPTS[n](text)}]
+      })
+    });
+    if (!response.ok) throw new Error('Erreur réseau');
+    const data = await response.json();
+    const textOut = (data.content || []).map(b => b.text || '').filter(Boolean).join('\n');
+    resultBox.textContent = textOut || "Pas de réponse reçue, réessaie.";
+    resultBox.style.display = 'block';
+  } catch (err) {
+    resultBox.textContent = "La correction n'a pas pu être générée (problème de connexion). Réessaie dans un instant.";
+    resultBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "✏️ Correction";
+  }
+}
+
+document.getElementById('continue-btn').addEventListener('click', () => {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('writing-section').style.display = 'block';
+});
+
+document.getElementById('finish-btn').addEventListener('click', () => {
+  document.getElementById('writing-section').style.display = 'none';
+  document.getElementById('final-screen').style.display = 'block';
+});
+
+renderQuestion();
+</script>
+
+</body>
+</html>
