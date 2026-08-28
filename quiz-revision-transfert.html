@@ -188,11 +188,18 @@
 
   <div id="writing-section" style="display:none;">
 
-    <div class="question">
+    <div class="aide-box" style="margin-bottom:18px;">
+      <b>📖 Texte C (extrait inédit) — à garder sous les yeux pour les deux questions</b>
+      <p style="margin-top:8px; font-style:italic; line-height:1.5;">
+        Le gardien du phare recula d'un pas lorsque la forme surgit des rochers. Sa peau, craquelée comme une écorce morte, luisait d'une phosphorescence malsaine ; ses mains, trop longues, tremblaient de froid. Et pourtant, dans ce visage difforme, deux yeux d'un bleu très doux le regardaient, suppliants, comme ceux d'un enfant perdu. « N'ayez pas peur », murmura la créature d'une voix brisée, « je ne veux que de la lumière, un instant, avant de retourner à la mer. »
+      </p>
+    </div>
+
+    <div class="question" id="open-q1">
       <div class="q-count">Question ouverte 1 / 2 — Analyse d'image</div>
       <p class="qtext">Observe l'image « Le Cauchemar » de Füssli (1781) et décris les émotions qui s'en dégagent, en t'appuyant sur la méthode.</p>
       <div id="image-slot" style="text-align:center; margin-bottom:14px;">
-        <img src="fuseli-nightmare.jpg" alt="Le Cauchemar, Füssli" style="max-width:100%; border-radius:8px; border:1px solid #3d3020;">
+        <img src="fuseli-nightmare.webp" alt="Le Cauchemar, Füssli" style="max-width:100%; border-radius:8px; border:1px solid #3d3020;">
       </div>
       <div class="aide-box">
         <b>🔎 Aide — la méthode en 3 points</b>
@@ -206,9 +213,10 @@
       <textarea id="answer1" placeholder="Rédige ta réponse ici (5-6 lignes)..."></textarea>
       <button class="correction-btn" id="correct-btn-1" onclick="getCorrection(1)">✏️ Correction</button>
       <div class="correction-result" id="correction-1"></div>
+      <button class="next-btn" id="next-open-btn" style="display:block;" onclick="showOpenQ2()">Suivant →</button>
     </div>
 
-    <div class="question">
+    <div class="question" id="open-q2" style="display:none;">
       <div class="q-count">Question ouverte 2 / 2 — Synthèse de corpus</div>
       <p class="qtext">Le Texte C (le gardien du phare) et l'image que tu as observée ont-ils un point commun ? Justifie en une phrase par document.</p>
       <div class="aide-box">
@@ -357,6 +365,11 @@ function showResults() {
 function toggleModel(n) {
   const el = document.getElementById('model' + n);
   el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function showOpenQ2() {
+  document.getElementById('open-q1').style.display = 'none';
+  document.getElementById('open-q2').style.display = 'block';
 }
 
 const CORRECTION_PROMPTS = {
