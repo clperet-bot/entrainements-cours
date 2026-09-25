@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Brief to Shop Sign — Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Special+Elite&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --ink:#221F1A;
+    --ink-soft:#5C5648;
+    --paper:#F3EEE1;
+    --paper-dim:#E8E0CC;
+    --brass:#B3241C;
+    --brass-light:#8A1B15;
+    --terracotta:#B3241C;
+    --sage:#3A6E4A;
+    --white:#FFFCF5;
+    --line:rgba(34,31,26,0.15);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    padding:56px 20px 40px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse at top, rgba(184,137,43,0.10), transparent 60%),
+      var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .hook{
+    width:2px;
+    height:26px;
+    background:var(--ink);
+    margin:0 auto;
+  }
+  .signboard{
+    display:inline-block;
+    background:var(--white);
+    border:2px solid var(--ink);
+    padding:22px 40px;
+    margin-top:0;
+    box-shadow:6px 6px 0 var(--brass);
+    position:relative;
+  }
+  .signboard::before{
+    content:'';
+    position:absolute;
+    top:-14px; left:50%;
+    transform:translateX(-50%);
+    width:10px;height:10px;
+    border-radius:50%;
+    background:var(--ink);
+  }
+  h1{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:clamp(30px,6vw,48px);
+    margin:0;
+    letter-spacing:0.01em;
+    color:var(--ink);
+  }
+  .tag{
+    display:block;
+    font-family:'Special Elite',monospace;
+    font-size:20px;
+    color:var(--terracotta);
+    margin-top:2px;
+  }
+  .kicker{
+    font-family:'Special Elite',monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--terracotta);
+    margin-bottom:10px;
+  }
+  header h1{
+    font-family:'Playfair Display',serif;
+    font-weight:800;
+    font-size:clamp(28px,6vw,42px);
+    margin:0;
+    color:var(--ink);
+  }
+  .eval-badge{
+    display:inline-block;
+    margin-top:14px;
+    background:var(--terracotta); color:var(--white);
+    font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    padding:5px 14px; border-radius:20px;
+  }
+  .subtitle{
+    color:var(--ink-soft);
+    font-size:15px;
+    max-width:460px;
+    margin:22px auto 0;
+    opacity:0.85;
+  }
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:32px 18px 90px;
+  }
+  .scorebar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--white);
+    border:1px solid var(--line);
+    padding:14px 18px;
+    margin-bottom:26px;
+    font-size:14px;
+  }
+  .scorebar .label{color:var(--ink-soft); text-transform:uppercase; font-size:11px; letter-spacing:0.1em; opacity:0.7;}
+  .scorebar .value{font-family:'Playfair Display',serif; font-weight:700; color:var(--terracotta); font-size:22px;}
+
+  .text-panel{
+    display:none;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-left:5px solid var(--brass);
+    padding:20px 22px;
+    margin-bottom:24px;
+    font-size:15px;
+  }
+  .text-panel.show{display:block;}
+  .text-panel .caption{
+    display:block;
+    font-family:'Special Elite',monospace;
+    font-size:18px;
+    color:var(--terracotta);
+    margin-bottom:8px;
+  }
+  .text-panel .email-meta{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 4px;
+  }
+  .text-panel .email-meta strong{color:var(--ink);}
+  .text-panel p{margin:10px 0 0;}
+  .text-panel .sig{margin-top:14px; font-style:italic; color:var(--ink-soft);}
+
+  #quiz-area{display:flex; flex-direction:column;}
+  .question{display:none; animation:fade .35s ease;}
+  .question.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .q-meta{display:flex; align-items:center; gap:10px; margin-bottom:16px;}
+  .q-number{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:17px;
+    color:var(--white);
+    background:var(--ink);
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    border-radius:2px;
+  }
+  .q-track{flex:1; height:3px; background:var(--line); position:relative; overflow:hidden;}
+  .q-track-fill{height:100%; background:var(--brass); transition:width .3s ease;}
+  .prompt{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(20px,4vw,25px);
+    font-weight:600;
+    margin:0 0 22px;
+    color:var(--ink);
+  }
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    text-align:left;
+    background:var(--white);
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:14px 16px;
+    font-family:'Work Sans',sans-serif;
+    font-size:16px;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .option:hover:not(:disabled){border-color:var(--brass);}
+  .option:disabled{cursor:default;}
+  .option.correct{background:rgba(124,136,99,0.18); border-color:var(--sage); color:#3d4a2c;}
+  .option.incorrect{background:rgba(191,91,52,0.14); border-color:var(--terracotta); color:#7a331a;}
+  .feedback{
+    margin-top:18px;
+    padding:16px 18px;
+    border-left:4px solid var(--brass);
+    background:var(--paper-dim);
+    font-size:15px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback .verdict{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:15px;
+    display:block;
+    margin-bottom:6px;
+  }
+  .feedback.ok .verdict{color:#4a5c33;}
+  .feedback.ko .verdict{color:var(--terracotta);}
+  .nav-row{display:flex; justify-content:space-between; align-items:center; margin-top:26px; gap:10px;}
+  button.next{
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:var(--white);
+    border:none;
+    padding:13px 24px;
+    cursor:pointer;
+    display:none;
+  }
+  button.next.show{display:inline-block;}
+  button.next:hover{background:var(--terracotta);}
+  .aide-btn{
+    background:transparent;
+    border:1px solid var(--ink-soft);
+    color:var(--ink-soft);
+    font-family:'Work Sans',sans-serif;
+    font-size:13px;
+    padding:9px 14px;
+    cursor:pointer;
+  }
+  .aide-btn:hover{border-color:var(--terracotta); color:var(--terracotta);}
+  .aide-box{
+    margin-top:14px;
+    padding:12px 16px;
+    background:rgba(184,137,43,0.08);
+    border:1px dashed rgba(184,137,43,0.4);
+    font-size:14px;
+    color:var(--ink-soft);
+    display:none;
+  }
+  .aide-box.show{display:block;}
+
+  .translate-box{display:flex; gap:10px; flex-wrap:wrap;}
+  .translate-input{
+    flex:1;
+    min-width:220px;
+    background:var(--white);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    font-size:16px;
+    padding:13px 16px;
+  }
+  .translate-input:focus{outline:none; border-color:var(--brass);}
+  .translate-input.correct{border-color:var(--sage); background:rgba(124,136,99,0.1);}
+  .translate-input.incorrect{border-color:var(--terracotta); background:rgba(191,91,52,0.08);}
+  .translate-input:disabled{cursor:default;}
+  .submit-translate{
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:var(--white);
+    border:none;
+    padding:13px 22px;
+    cursor:pointer;
+  }
+  .submit-translate:hover{background:var(--terracotta);}
+  .submit-translate:disabled{background:var(--ink-soft); cursor:default;}
+  .translate-hint{
+    display:block;
+    margin-top:8px;
+    font-size:12px;
+    color:var(--ink-soft);
+    opacity:0.75;
+    font-style:italic;
+  }
+
+  #results{display:none; text-align:center;}
+  #results.show{display:block;}
+  .report{border:2px solid var(--ink); margin-top:10px; background:var(--white); box-shadow:6px 6px 0 var(--brass);}
+  .report-head{
+    background:var(--ink);
+    color:var(--white);
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    padding:16px;
+    font-size:19px;
+    letter-spacing:0.02em;
+  }
+  .report-body{padding:28px 22px;}
+  .big-score{font-family:'Playfair Display',serif; font-weight:700; font-size:60px; color:var(--terracotta); line-height:1; margin-bottom:6px;}
+  .big-score span{font-size:26px; color:var(--ink-soft);}
+  .verdict-final{
+    display:inline-block;
+    margin-top:16px;
+    padding:8px 18px;
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  .verdict-final.great{background:rgba(124,136,99,0.18); color:#3d4a2c; border:1px solid var(--sage);}
+  .verdict-final.ok{background:rgba(184,137,43,0.15); color:#7a5c17; border:1px solid var(--brass);}
+  .verdict-final.retry{background:rgba(191,91,52,0.14); color:#7a331a; border:1px solid var(--terracotta);}
+  .retry-btn{
+    margin-top:24px;
+    background:transparent;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:12px 22px;
+    cursor:pointer;
+  }
+  .retry-btn:hover{background:var(--ink); color:var(--white);}
+
+  #writing{display:none;}
+  #writing.show{display:block; margin-top:44px;}
+  .writing-head{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .writing-head .q-number{background:var(--terracotta);}
+  .writing-title{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:19px;
+    color:var(--terracotta);
+  }
+  .writing-instructions{font-size:15px; color:var(--ink-soft); margin:14px 0 10px;}
+  .writing-starter{display:block; font-style:italic; color:var(--ink-soft); font-size:13px; margin:6px 0 14px;}
+  .cheat-banner{
+    display:none;
+    position:sticky; top:0; z-index:999;
+    background:var(--terracotta); color:var(--white);
+    text-align:center; padding:10px 16px; font-size:13px; font-weight:600;
+  }
+  .cheat-banner.show{display:block;}
+  .access-gate{
+    display:none;
+    min-height:100vh; align-items:center; justify-content:center;
+    padding:40px 20px; text-align:center; font-size:15px; color:var(--ink-soft);
+  }
+  .access-gate.show{display:flex;}
+  .eval-badge{
+    display:inline-block;
+    margin-top:10px;
+    background:var(--terracotta); color:var(--white);
+    font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    padding:5px 14px; border-radius:20px;
+  }
+  .cancelled-screen{
+    display:none;
+    min-height:60vh; align-items:center; justify-content:center;
+    padding:40px 20px; text-align:center;
+  }
+  .cancelled-screen.show{display:flex;}
+  .cancelled-screen p{font-size:16px; color:var(--terracotta); max-width:400px;}
+  textarea#writing-input{
+    width:100%;
+    min-height:150px;
+    background:var(--white);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    font-size:16px;
+    padding:14px 16px;
+    resize:vertical;
+  }
+  textarea#writing-input:focus{outline:none; border-color:var(--brass);}
+  #correction-btn{
+    margin-top:16px;
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:var(--white);
+    border:none;
+    padding:13px 24px;
+    cursor:pointer;
+  }
+  #correction-btn:hover{background:var(--terracotta);}
+  #correction-btn:disabled{background:var(--ink-soft); cursor:wait;}
+  .correction-result{
+    display:none;
+    margin-top:18px;
+    padding:16px 18px;
+    border-left:4px solid var(--brass);
+    background:var(--paper-dim);
+    font-size:15px;
+    white-space:pre-wrap;
+  }
+  .correction-result.show{display:block;}
+
+  footer{text-align:center; padding:24px; color:var(--ink-soft); font-size:12px; opacity:0.7;}
+</style>
+</head>
+<body>
+
+<div id="cheat-banner" class="cheat-banner">⚠ Si tu quittes cette page, ta prof sera notifiée et tes réponses seront effacées.</div>
+
+<div id="access-gate" class="access-gate">
+  <p>Ce quiz est évalué. Accède-y uniquement via le lien donné par ta prof (QR code de ta classe).</p>
+</div>
+
+<div id="quiz-wrapper" style="display:none;">
+
+<header>
+  <div class="kicker">Français 2nde — Formation journaliste</div>
+  <h1>Carte de journaliste</h1>
+  <span class="eval-badge">Quiz évalué</span>
+  <p class="subtitle">Contrôle final : info ou intox, les 5W, écrire comme un journaliste, relecture, types d'articles, rédaction.</p>
+</header>
+
+<main>
+
+  <div class="scorebar">
+    <div><span class="label">Question</span><br><span class="value" id="q-pos">1 / 20</span></div>
+    <div style="text-align:right"><span class="label">Score</span><br><span class="value" id="q-score">0</span></div>
+  </div>
+
+  <div id="quiz-area"></div>
+  <button id="btn-back" style="display:none; margin:4px 0 18px; background:none; border:1px solid var(--line); color:var(--ink-soft); border-radius:6px; padding:9px 16px; font-size:13.5px; cursor:pointer;">◀ Précédent</button>
+
+  <div id="writing">
+    <div class="writing-head">
+      <div class="q-number">✏️</div>
+      <span class="writing-title">Épreuve pratique</span>
+    </div>
+    <p class="writing-instructions">
+      Le lycée va installer des bornes de recharge pour vélos et trottinettes électriques d'ici la fin du trimestre.
+      Rédige un article de presse complet sur ce sujet.
+    </p>
+    <textarea id="writing-input" placeholder="Rédige ton article ici..." style="min-height:200px;"></textarea>
+    <button id="finish-btn">Terminer et voir ma note →</button>
+  </div>
+
+  <div id="results">
+    <div class="report">
+      <div class="report-head">Carte de journaliste — Résultat</div>
+      <div class="report-body">
+        <div class="big-score" id="final-score">0<span>/20</span></div>
+        <p style="color:var(--ink-soft); margin-top:0;">Note enregistrée</p>
+        <div class="verdict-final" id="final-verdict">GREAT</div>
+      </div>
+    </div>
+    <p style="font-size:13px; color:var(--ink-soft); margin-top:18px;">Ta note a été transmise à ta prof. Tu peux fermer cette page.</p>
+  </div>
+
+</main>
+
+<footer>Lycée Godefroy de Bouillon — From Client Brief to Shop Sign</footer>
+
+</div>
+<!-- fin #quiz-wrapper -->
+
+<script>
+// ============ CONFIG — mêmes valeurs que admin.html / eleve.html ============
+const SUPABASE_URL = "https://eyfqryrwivjwwaftehdc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5ZnFyeXJ3aXZqd3dhZnRlaGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczNDU2NjIsImV4cCI6MjEwMjkyMTY2Mn0.i9YiNL45rILlxyckLMl3SJVIIib8P40DSIaiNkm89tc";
+const GRADE_ENDPOINT = SUPABASE_URL + "/functions/v1/grade-advanced";
+// Classes pour lesquelles la note n'est PAS affichée à l'élève à la fin (en attente de validation manuelle) :
+const PENDING_VALIDATION_CLASSES = ["312b1566-e893-4cf1-8765-a6668b60347f"]; // 2nde TNE
+// ==============================================================================
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const params = new URLSearchParams(location.search);
+const studentName = params.get('student');
+const classId = params.get('class_id');
+const quizId = params.get('quiz_id');
+
+function normalizeName(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+}
+
+let studentHasAccommodation = false;
+async function checkAccommodation(){
+  if(!studentName) return;
+  try{
+    const { data } = await supa.from('accommodations')
+      .select('id')
+      .eq('student_name_normalized', normalizeName(studentName))
+      .maybeSingle();
+    studentHasAccommodation = !!data;
+  } catch(e){}
+}
+function levenshtein(a, b){
+  const m = a.length, n = b.length;
+  if(m === 0) return n;
+  if(n === 0) return m;
+  const dp = Array.from({length: m+1}, (_, i) => [i, ...Array(n).fill(0)]);
+  for(let j=0; j<=n; j++) dp[0][j] = j;
+  for(let i=1; i<=m; i++){
+    for(let j=1; j<=n; j++){
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+function matchesWithAccommodation(raw, answers){
+  const tolerance = Math.max(2, Math.ceil(raw.length / 2));
+  return answers.some(a => levenshtein(raw, a) <= tolerance);
+}
+
+if(!studentName || !classId || !quizId){
+  document.getElementById('access-gate').classList.add('show');
+} else {
+  document.getElementById('quiz-wrapper').style.display = 'block';
+  document.getElementById('cheat-banner').classList.add('show');
+  checkAccommodation();
+  runQuiz();
+}
+
+async function submitScore(score, total, answersDetail, writingText, writingCorrection){
+  let saveOk = false;
+  for(let tryN = 0; tryN < 2 && !saveOk; tryN++){
+    try{
+      const { error } = await supa.from('attempts').insert({
+        quiz_id: quizId,
+        class_id: classId,
+        student_name_raw: studentName,
+        student_name_normalized: normalizeName(studentName),
+        score: score,
+        total: total,
+        cancelled: false,
+        answers_detail: answersDetail || null,
+        writing_text: writingText || null,
+        writing_correction: writingCorrection || null
+      });
+      if(!error) saveOk = true;
+    } catch(e){}
+    if(!saveOk && tryN === 0) await new Promise(r => setTimeout(r, 1200));
+  }
+  return saveOk;
+}
+
+// ============ EMPÊCHE LA MISE EN VEILLE DE L'ÉCRAN PENDANT LE QUIZ ============
+// (une mise en veille déclenche le même événement qu'un changement d'onglet et
+// pouvait à tort annuler la tentative d'un élève — voir anti-triche ci-dessous)
+let wakeLock = null;
+async function requestWakeLock(){
+  try{
+    if('wakeLock' in navigator){
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch(e){ /* pas supporté ou refusé : tant pis, le reste du système reste fonctionnel */ }
+}
+if(studentName && classId && quizId){
+  requestWakeLock();
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible' && !wakeLock) requestWakeLock();
+  });
+}
+
+let cheatTriggered = false;
+let awayTimer = null;
+document.addEventListener('visibilitychange', () => {
+  if(cheatTriggered) return;
+  if(document.hidden){
+    awayTimer = Date.now();
+  } else if(awayTimer){
+    const awaySeconds = (Date.now() - awayTimer) / 1000;
+    awayTimer = null;
+    if(awaySeconds > 5){
+      cheatTriggered = true;
+      cancelAttempt();
+    } else {
+      document.getElementById('cheat-banner').textContent = "⚠ Tu es sorti(e) du quiz. Si tu recommences, tes réponses seront effacées et ta prof sera notifiée.";
+    }
+  }
+});
+
+async function cancelAttempt(){
+  // Récupère ce que l'élève avait déjà fait, avant de vider la page — au cas où
+  // ce soit un faux positif (mise en veille, etc.) et qu'il faille vérifier après coup.
+  let partialWriting = '';
+  try{
+    const wEl = document.getElementById('writing-input');
+    if(wEl) partialWriting = wEl.value || '';
+  } catch(e){}
+
+  document.getElementById('quiz-wrapper').innerHTML = `
+    <div class="cancelled-screen show">
+      <p>Tentative annulée : tu as quitté le quiz. Ta prof a été notifiée. Reviens demain pour réessayer.</p>
+    </div>
+  `;
+  try{
+    await supa.from('attempts').insert({
+      quiz_id: quizId,
+      class_id: classId,
+      student_name_raw: studentName,
+      student_name_normalized: normalizeName(studentName),
+      score: null,
+      total: null,
+      cancelled: true,
+      answers_detail: answersDetail && answersDetail.length ? answersDetail : null,
+      writing_text: partialWriting ? '[Tentative annulée — réponse partielle au moment de la coupure]\n\n' + partialWriting : null
+    });
+  } catch(e){}
+}
+
+function runQuiz(){
+
+const QUESTIONS = [
+{prompt:"« La cantine proposera un menu végétarien chaque semaine, selon l'annonce affichée par l'intendance. » Il s'agit...", options:["D'une anecdote","D'une information","D'une opinion","D'une rumeur"], correct:1, explanation:"Un fait annoncé par une source officielle est une information."},
+{prompt:"« Il paraît que le voyage scolaire en Espagne serait annulé, mais personne n'a rien confirmé. » Il s'agit...", options:["D'une opinion","D'une information","D'une anecdote","D'une rumeur"], correct:3, explanation:"Une affirmation non confirmée qui circule est une rumeur."},
+{prompt:"« Les casiers sont beaucoup trop petits, franchement. » Il s'agit...", options:["D'une opinion","D'une anecdote","D'une information","D'une rumeur"], correct:0, explanation:"Un avis personnel non vérifiable est une opinion."},
+{prompt:"« L'année dernière, un professeur avait oublié ses clés dans la salle et tout le monde avait dû attendre dehors sous la pluie. » Il s'agit...", options:["D'une opinion","D'une information","D'une rumeur","D'une anecdote"], correct:3, explanation:"Un petit fait vécu, raconté à titre personnel, est une anecdote."},
+{prompt:"Dans la règle des 5W, quelle question permet de savoir qui est concerné par un événement ?", options:["Why","Who","Where","When"], correct:1, explanation:"Who = Qui : identifie les personnes ou groupes concernés."},
+{prompt:"Dans la règle des 5W, quelle question permet de connaître la cause d'un événement ?", options:["Who","Where","Why","What"], correct:2, explanation:"Why = Pourquoi : donne la raison ou la cause."},
+{prompt:"« La kermesse aura lieu samedi 14 juin, dans la cour principale. » Cette phrase répond principalement à quelle question des 5W ?", options:["When","What","Who","Why"], correct:0, explanation:"When = Quand : la phrase donne la date de l'événement."},
+{prompt:"« C'est le foyer socio-éducatif qui a financé le nouveau baby-foot. » Cette phrase répond principalement à quelle question des 5W ?", options:["When","Who","Why","Where"], correct:1, explanation:"Who = Qui : la phrase identifie qui est à l'origine de l'action."},
+{prompt:"Pour commencer un article de façon journalistique, quelle formulation est la plus adaptée ?", options:["Jeudi après-midi, une alerte incendie a interrompu les cours pendant une heure.","Y'a eu un souci apparemment.","Bon bref, il s'est passé un truc.","En vrai on sait même pas comment résumer ça."], correct:0, explanation:"Un bon début d'article donne un fait précis, daté, dans un style neutre."},
+{prompt:"Pour intégrer correctement un témoignage dans un article, quelle formulation convient ?", options:["Il paraît qu'un surveillant a trouvé ça n'importe quoi.","Un surveillant aurait dit un truc du genre que ça allait.","Selon un surveillant présent, « l'évacuation s'est déroulée calmement ».","On raconte qu'un surveillant était pas content."], correct:2, explanation:"« Selon [nom/fonction]... » suivi d'une citation entre guillemets est la structure attendue."},
+{prompt:"Pour exprimer une cause dans un article, quelle formulation est correcte ?", options:["Enfin bref, c'est la vie.","L'alerte aurait été déclenchée par un problème technique.","Et du coup voilà ce qui s'est passé.","On sait pas trop pourquoi en fait."], correct:1, explanation:"« [Événement] aurait été déclenché par... » exprime une cause avec la prudence journalistique du conditionnel."},
+{prompt:"Pour conclure un article en évoquant la suite des événements, quelle formulation convient le mieux ?", options:["Franchement difficile à dire pour la suite.","Voilà, c'est à peu près tout.","La direction annoncera de nouvelles consignes de sécurité dans les prochains jours.","Bref, on verra bien."], correct:2, explanation:"Une bonne conclusion évoque la suite de façon factuelle et précise, souvent au futur."},
+{prompt:"D'après la grille de relecture, quel type de phrases faut-il privilégier dans un article ?", options:["Des phrases courtes et claires","Des phrases longues avec beaucoup de détails","Des phrases à la première personne","Des phrases très techniques"], correct:0, explanation:"Des phrases courtes et claires facilitent la lecture et la compréhension."},
+{prompt:"Quel ton un article d'information doit-il adopter ?", options:["Un ton engagé et militant","Un ton très familier","Un ton humoristique","Un ton neutre et objectif"], correct:3, explanation:"Un article d'information doit rester neutre et objectif, sans opinion personnelle."},
+{prompt:"Sur la grille de relecture, quel critère concerne le choix des mots utilisés ?", options:["Texte facile et lisible","Vocabulaire adapté au style journalistique","Informations bien organisées","Grammaire correcte"], correct:1, explanation:"« Vocabulaire adapté » évalue le choix des mots, distinct de la lisibilité générale ou de la grammaire."},
+{prompt:"Pourquoi doit-on vérifier l'orthographe et la grammaire avant de rendre un article ?", options:["Parce que les fautes nuisent au sérieux et à la crédibilité de l'article","Parce que le correcteur automatique ne sert à rien","Parce que ça n'a aucune importance pour un article","Parce que c'est noté sur 20 automatiquement"], correct:0, explanation:"Un article mal orthographié perd en sérieux et en crédibilité auprès des lecteurs."},
+{prompt:"Un article très court, qui donne une information rapide sans développement, s'appelle...", options:["Une critique / revue","Un article de fond","Une brève / annonce","Un éditorial"], correct:2, explanation:"La brève (ou annonce) est un texte court et rapide à lire."},
+{prompt:"Un article qui donne un avis personnel assumé sur un sujet, signé par son auteur, s'appelle...", options:["Une interview","Un article d'information","Un éditorial / une tribune","Une brève"], correct:2, explanation:"L'éditorial (ou tribune) exprime un point de vue assumé par l'auteur."},
+{prompt:"Un article qui rapporte un fait de façon neutre, sans opinion, s'appelle...", options:["Un éditorial","Une chronique","Une critique","Un article d'information"], correct:3, explanation:"L'article d'information rapporte les faits de façon neutre."},
+{prompt:"Un article construit à partir de questions posées à une personne, suivies de ses réponses, s'appelle...", options:["Une critique","Une chronique","Un éditorial","Une interview"], correct:3, explanation:"L'interview est structurée en questions/réponses avec une personne interrogée."}
+];
+
+let current = 0;
+let score = 0;
+let answered = [];
+let answersDetail = [];
+
+const quizArea = document.getElementById('quiz-area');
+const qPos = document.getElementById('q-pos');
+const qScore = document.getElementById('q-score');
+const resultsEl = document.getElementById('results');
+const writingEl = document.getElementById('writing');
+
+function renderAll(){
+  quizArea.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question' + (i===0 ? ' active' : '');
+    div.id = 'q'+i;
+
+    const bodyHtml = q.type === 'translate'
+      ? `
+        <div class="translate-box">
+          <input type="text" class="translate-input" id="input${i}" placeholder="Écris ta traduction en anglais" autocomplete="off">
+          <button class="submit-translate" data-submit="${i}">Valider</button>
+        </div>
+        <span class="translate-hint">Une seule réponse attendue, en anglais.</span>
+      `
+      : `
+        <div class="options">
+          ${q.options.map((opt, oi) => `<button class="option" data-i="${oi}">${opt}</button>`).join('')}
+        </div>
+      `;
+
+    div.innerHTML = `
+      <div class="q-meta">
+        <div class="q-number">${i+1}</div>
+        <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+      </div>
+      <p class="prompt">${q.prompt}</p>
+      ${bodyHtml}
+    `;
+    quizArea.appendChild(div);
+  });
+
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+  document.querySelectorAll('[data-submit]').forEach(btn => {
+    btn.addEventListener('click', () => handleTranslateAnswer(parseInt(btn.dataset.submit)));
+  });
+  document.querySelectorAll('.translate-input').forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const qi = parseInt(input.id.replace('input',''));
+        handleTranslateAnswer(qi);
+      }
+    });
+  });
+
+}
+
+function recordAnswer(qi, givenText, correctText, isCorrect){
+  const q = QUESTIONS[qi];
+  answersDetail[qi] = {
+    question: q.prompt,
+    given: givenText,
+    correct_answer: correctText,
+    is_correct: isCorrect,
+    explanation: q.explanation
+  };
+}
+
+function handleTranslateAnswer(qi){
+  const wasAnswered = answered[qi] !== undefined;
+  if(wasAnswered && score > 0 && answered[qi]) score--; // annule l'ancien point si la question était déjà correcte
+
+  const input = document.getElementById('input'+qi);
+  const q = QUESTIONS[qi];
+  const raw = input.value.trim().toLowerCase().replace(/[.!?]+$/,'');
+  const correct = raw.length > 0 && (q.answers.includes(raw) || (studentHasAccommodation && matchesWithAccommodation(raw, q.answers)));
+
+  answered[qi] = correct;
+  if(correct) score++;
+  recordAnswer(qi, input.value.trim(), q.answers[0], correct);
+
+  input.disabled = true;
+  document.querySelector(`[data-submit="${qi}"]`).disabled = true;
+  qScore.textContent = score;
+
+  if(!wasAnswered) setTimeout(() => goTo(qi + 1), 200);
+}
+
+function handleAnswer(e){
+  const btn = e.currentTarget;
+  const qDiv = btn.closest('.question');
+  const qi = parseInt(qDiv.id.replace('q',''));
+  const wasAnswered = answered[qi] !== undefined;
+  if(wasAnswered && score > 0 && answered[qi]) score--; // annule l'ancien point si la question était déjà correcte
+
+  const chosen = parseInt(btn.dataset.i);
+  const q = QUESTIONS[qi];
+  const correct = chosen === q.correct;
+  answered[qi] = correct;
+  if(correct) score++;
+  recordAnswer(qi, q.options[chosen], q.options[q.correct], correct);
+
+  qDiv.querySelectorAll('.option').forEach(o => o.disabled = true);
+  qScore.textContent = score;
+
+  if(!wasAnswered) setTimeout(() => goTo(qi + 1), 150);
+}
+
+function goTo(i){
+  if(i >= QUESTIONS.length){
+    document.querySelectorAll('.question').forEach(d => d.classList.remove('active'));
+    showWriting();
+    return;
+  }
+  document.querySelectorAll('.question').forEach(d => d.classList.remove('active'));
+  document.getElementById('q'+i).classList.add('active');
+  current = i;
+  qPos.textContent = (i+1) + ' / ' + QUESTIONS.length;
+
+  // Ré-active les champs/boutons de cette question pour permettre de modifier la réponse
+  const qDiv = document.getElementById('q'+i);
+  qDiv.querySelectorAll('.option').forEach(o => o.disabled = false);
+  const input = document.getElementById('input'+i);
+  if(input){
+    input.disabled = false;
+    const submitBtn = document.querySelector(`[data-submit="${i}"]`);
+    if(submitBtn) submitBtn.disabled = false;
+  }
+
+  document.getElementById('btn-back').style.display = i > 0 ? 'block' : 'none';
+}
+document.getElementById('btn-back').addEventListener('click', () => goTo(current - 1));
+
+function showWriting(){
+  document.querySelectorAll('.question').forEach(d => d.classList.remove('active'));
+  writingEl.classList.add('show');
+  qPos.textContent = QUESTIONS.length + ' / ' + QUESTIONS.length;
+}
+
+let finalDisplayScore = null;
+let finalDisplayPending = false;
+let finalDisplaySaveFailed = false;
+
+function showResults(){
+  writingEl.classList.remove('show');
+  resultsEl.classList.add('show');
+  const v = document.getElementById('final-verdict');
+
+  if(finalDisplaySaveFailed){
+    document.getElementById('final-score').innerHTML = (finalDisplayScore !== null ? finalDisplayScore : '–') + '<span>/20</span>';
+    v.textContent = "⚠ Ta copie n'a PAS pu être envoyée (problème de connexion). Fais une photo de cet écran et montre-la à ta prof.";
+    v.className = 'verdict-final retry';
+    return;
+  }
+  if(finalDisplayPending){
+    document.getElementById('final-score').innerHTML = finalDisplayScore + '<span>/10 (partiel)</span>';
+    v.textContent = "La correction de la rédaction n'a pas pu se faire automatiquement — ta prof la complétera.";
+    v.className = 'verdict-final ok';
+    return;
+  }
+  if(PENDING_VALIDATION_CLASSES.includes(classId)){
+    document.getElementById('final-score').innerHTML = '<span style="font-size:20px;">En attente de validation</span>';
+    v.textContent = "Ta copie a bien été envoyée. Ta prof valide chaque copie avant d'afficher la note.";
+    v.className = 'verdict-final ok';
+    return;
+  }
+  document.getElementById('final-score').innerHTML = finalDisplayScore + '<span>/20</span>';
+  if(finalDisplayScore >= 16){ v.textContent = 'Excellent brief !'; v.className = 'verdict-final great'; }
+  else if(finalDisplayScore >= 11){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
+  else { v.textContent = 'À retravailler'; v.className = 'verdict-final retry'; }
+}
+
+async function generateWritingCorrection(text){
+  const systemPrompt = `Tu es un professeur de français bienveillant pour des élèves de 2nde en filière professionnelle, qui évalue une épreuve pratique sur le journalisme (obtention de la "carte de journaliste"). L'élève a rédigé un article de presse complet sur le sujet suivant : « Le lycée va installer des bornes de recharge pour vélos et trottinettes électriques d'ici la fin du trimestre. »
+
+Ce sont des élèves débutants en journalisme (première épreuve du genre) : sois généreux.e sur la sophistication du style et de la structure — la présence des éléments de base suffit pour le maximum de points, inutile d'attendre un niveau professionnel. Note l'article sur 10 points, répartis ainsi :
+- 3 pts : les 5W (Qui ? Quoi ? Où ? Quand ? Pourquoi ? clairement présents)
+- 3 pts : la structure — un titre, une accroche même simple, un développement qui reste compréhensible ; n'exige pas de titre "accrocheur" sophistiqué, un titre factuel correct suffit pour le plein
+- 2 pts : le style — phrases globalement courtes et un ton plutôt neutre suffisent ; ne pénalise pas une tournure un peu maladroite tant que l'information reste claire
+- 2 pts : grammaire/orthographe — distingue les fautes de frappe/orthographe isolées qui ne gênent pas la compréhension (TOLÉRÉES, 0 point perdu : accents, majuscules, inversions mineures de lettres) des erreurs de grammaire qui cassent la construction de la phrase ou en changent le sens (celles-ci coûtent des points). Ne pénalise une erreur que si elle gêne réellement la compréhension — sois généreux.e, en cas d'hésitation choisis toujours le palier le plus favorable à l'élève.
+Un article vide ou hors sujet obtient 0. En cas de doute, donne le bénéfice du doute à l'élève.
+${studentHasAccommodation ? `
+ACCOMMODATION IMPORTANTE : cet élève bénéficie d'un aménagement (dyslexie/dysorthographie ou trouble apparenté). Donne-lui automatiquement les 2 points de grammaire/orthographe, quelle que soit la qualité orthographique réelle, et n'en parle pas dans le feedback. Note normalement les 3 autres critères (5W, structure, style) sur les 8 points restants ; le total reste sur 10.` : ''}
+
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après, sans balises markdown, avec EXACTEMENT cette forme :
+{"score":0,"feedback":"Retour concis en français (150 mots max), qui commente les 4 critères et se termine par une phrase d'encouragement."}
+Le score peut être un nombre entier ou avec un seul chiffre après la virgule (ex: 7.5).`;
+
+  try {
+    const res = await fetch(GRADE_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ systemPrompt, userContent: text || '(article vide)' })
+    });
+    if(!res.ok) throw new Error('grade-advanced http error');
+    const data = await res.json();
+    if(data.error || typeof data.score !== 'number') throw new Error('malformed response');
+    return { score: Math.max(0, Math.min(10, data.score)), feedback: data.feedback || '' };
+  } catch(err){
+    return null;
+  }
+}
+
+document.getElementById('finish-btn').addEventListener('click', async () => {
+  const input = document.getElementById('writing-input');
+  const btn = document.getElementById('finish-btn');
+  const text = input.value.trim();
+
+  btn.disabled = true;
+  btn.textContent = "Correction en cours...";
+
+  const qcmScore10 = Math.round((score / QUESTIONS.length) * 10 * 2) / 2; // QCM ramené sur 10
+  const writingResult = text.length >= 5 ? await generateWritingCorrection(text) : { score: 0, feedback: 'Rédaction vide.' };
+
+  if(writingResult){
+    finalDisplayScore = Math.round((qcmScore10 + writingResult.score) * 2) / 2;
+    finalDisplayPending = false;
+  } else {
+    finalDisplayScore = qcmScore10;
+    finalDisplayPending = true;
+  }
+
+  const writingCorrection = writingResult
+    ? `Vocabulaire/grammaire (QCM) : ${qcmScore10}/10\nRédaction : ${writingResult.score}/10\n\n${writingResult.feedback}`
+    : "Correction IA de la rédaction indisponible — à noter manuellement sur 10 et additionner au score QCM (" + qcmScore10 + "/10) pour la note finale.";
+
+  const saveOk = await submitScore(finalDisplayPending ? null : finalDisplayScore, 20, answersDetail, text, writingCorrection);
+  if(!saveOk) finalDisplaySaveFailed = true;
+
+  showResults();
+});
+
+renderAll();
+
+} // fin runQuiz()
+</script>
+
+</body>
+</html>
