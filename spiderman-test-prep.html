@@ -434,8 +434,10 @@ Consignes de correction :
     const box = document.getElementById('score-box');
     box.style.display = 'block';
     box.textContent = 'Score : ' + score + ' / ' + total + ' (la rédaction finale est corrigée séparément)';
+    if (window.logPracticeAttempt) logPracticeAttempt('Spider-Man - Test Prep', score, total);
   }
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

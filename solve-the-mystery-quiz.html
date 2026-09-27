@@ -379,7 +379,9 @@ Consignes de correction :
     box.style.display = 'block';
     box.textContent = 'Score : ' + score + ' / ' + total;
   }
+    if (window.logPracticeAttempt) logPracticeAttempt('Solve the Mystery', score, total);
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

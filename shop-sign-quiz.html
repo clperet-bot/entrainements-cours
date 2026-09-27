@@ -619,6 +619,7 @@ function showResults(){
   if(score >= 16){ v.textContent = 'Excellent brief !'; v.className = 'verdict-final great'; }
   else if(score >= 11){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
   else { v.textContent = 'À revoir avant le contrôle'; v.className = 'verdict-final retry'; }
+    if (window.logPracticeAttempt) logPracticeAttempt('Client Brief to Shop Sign', score, QUESTIONS.length);
 }
 
 document.getElementById('retry-btn').addEventListener('click', () => {
@@ -698,5 +699,6 @@ Corrige ses phrases (grammaire, vocabulaire, orthographe). Pour chaque erreur, e
 renderAll();
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

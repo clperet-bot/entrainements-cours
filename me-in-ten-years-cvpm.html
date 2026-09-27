@@ -305,8 +305,10 @@ Consignes de correction :
     const box = document.getElementById('score-box');
     box.style.display = 'block';
     box.textContent = 'Score : ' + score + ' / ' + total + ' (la lettre finale est corrigée séparément)';
+    if (window.logPracticeAttempt) logPracticeAttempt('Me in Ten Years (CVPM)', score, total);
   }
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

@@ -662,6 +662,7 @@ function showResults(){
   if(score >= 14){ v.textContent = 'Circuit OK !'; v.className = 'verdict-final great'; }
   else if(score >= 9){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
   else { v.textContent = 'À revoir avant le contrôle'; v.className = 'verdict-final retry'; }
+    if (window.logPracticeAttempt) logPracticeAttempt('At Work - Electrician\'s Check', score, QUESTIONS.length);
 }
 
 document.getElementById('retry-btn').addEventListener('click', () => {
@@ -807,5 +808,6 @@ Corrige ses phrases (grammaire, notamment l'usage du BE + V-ing, vocabulaire tec
 renderAll();
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

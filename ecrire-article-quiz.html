@@ -404,6 +404,7 @@ function showResults(){
   if(score >= 8){ v.textContent = 'Prêt(e) pour la rédaction !'; v.className = 'verdict-final great'; }
   else if(score >= 5){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
   else { v.textContent = 'À revoir avant l\'examen'; v.className = 'verdict-final retry'; }
+    if (window.logPracticeAttempt) logPracticeAttempt('Rédiger un article', score, SCORABLE_TOTAL);
 }
 
 document.getElementById('retry-btn').addEventListener('click', () => {
@@ -417,5 +418,6 @@ document.getElementById('retry-btn').addEventListener('click', () => {
 renderAll();
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

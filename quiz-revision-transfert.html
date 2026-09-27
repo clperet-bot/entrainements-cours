@@ -361,6 +361,7 @@ function showResults() {
   document.getElementById('results').style.display = 'block';
   document.getElementById('score-display').textContent = score + ' / ' + QUESTIONS.length;
   document.getElementById('total-display').textContent = QUESTIONS.length;
+    if (window.logPracticeAttempt) logPracticeAttempt('Fascination et rejet du monstrueux', score, QUESTIONS.length);
 }
 
 function toggleModel(n) {
@@ -442,5 +443,6 @@ document.getElementById('finish-btn').addEventListener('click', () => {
 renderQuestion();
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>

@@ -576,6 +576,7 @@ function showResults(){
   if(score >= 12){ v.textContent = 'This workshop is SAFE'; v.className = 'verdict-final safe'; }
   else if(score >= 8){ v.textContent = 'Needs IMPROVEMENT'; v.className = 'verdict-final improve'; }
   else { v.textContent = 'DANGEROUS — révise encore'; v.className = 'verdict-final danger'; }
+    if (window.logPracticeAttempt) logPracticeAttempt('Danger Zone', score, QUESTIONS.length);
 }
 
 document.getElementById('retry-btn').addEventListener('click', () => {
@@ -656,5 +657,6 @@ Corrige ses phrases (grammaire, vocabulaire, orthographe). Pour chaque erreur, e
 renderAll();
 </script>
 
+<script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 </body>
 </html>
