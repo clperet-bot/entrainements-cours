@@ -90,6 +90,20 @@
   .option:disabled{cursor:default;}
   .option.correct{background:rgba(58,110,74,0.12); border-color:#3A6E4A; color:#2A5038;}
   .option.incorrect{background:rgba(179,36,28,0.10); border-color:var(--red); color:var(--red-dark);}
+  .written-box{display:flex; flex-direction:column; gap:10px;}
+  .written-input{
+    background:var(--white); border:1px solid var(--line); color:var(--ink);
+    font-family:'Work Sans',sans-serif; font-size:16px; padding:13px 16px;
+  }
+  .written-input:focus{outline:none; border-color:var(--red);}
+  .written-input:disabled{opacity:0.6;}
+  button.submit-written{
+    align-self:flex-start;
+    font-family:'Special Elite',monospace; font-size:13px; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--red); color:var(--white); border:none; padding:12px 20px; cursor:pointer;
+  }
+  button.submit-written:hover:not(:disabled){background:var(--red-dark);}
+  button.submit-written:disabled{background:var(--ink-soft); cursor:wait;}
   .feedback{
     margin-top:16px; padding:14px 16px; border-left:4px solid var(--red);
     background:var(--paper-dark); font-size:14.5px; display:none;
@@ -208,11 +222,11 @@ const QUESTIONS = [
 {topic:"Étape 2 — Préparer l'enquête", prompt:"Avant d'écrire, que faut-il lister en utilisant les 5W ?", options:["Les informations nécessaires à l'article","La liste des photos à prendre","Les fautes d'orthographe possibles","Le nombre de mots attendu"], correct:0, explanation:"Les 5W (Qui, Quoi, Où, Quand, Pourquoi) permettent de lister toutes les informations nécessaires."},
 {topic:"Étape 2 — Préparer l'enquête", prompt:"Que faut-il toujours noter à propos de chaque information recueillie ?", options:["Sa couleur préférée","Le nombre de témoins","D'où elle vient (la source)","Sa longueur en mots"], correct:2, explanation:"Il faut vérifier ses sources : noter toujours d'où vient l'information (interview, affiche, site officiel...)."},
 {topic:"Étape 3 — Mener l'enquête", prompt:"Pendant l'enquête, quelle distinction est essentielle à faire ?", options:["Entre le matin et l'après-midi","Entre les faits vérifiables et les opinions","Entre les élèves et les professeurs","Entre les phrases courtes et longues"], correct:1, explanation:"Il faut distinguer les faits (vérifiables) des opinions (à citer comme témoignages, pas comme des vérités absolues)."},
-{topic:"Étape 3 — Mener l'enquête", prompt:"Comment doit-on présenter l'opinion d'une personne interrogée ?", options:["Comme une vérité absolue","Comme un témoignage, clairement attribué à cette personne","En la modifiant pour qu'elle soit plus intéressante","Il ne faut jamais la mentionner"], correct:1, explanation:"Une opinion doit être citée comme un témoignage, pas présentée comme un fait vérifié."},
-{topic:"Étape 4 — Rédiger l'article", prompt:"Quel plan doit-on utiliser pour rédiger l'article ?", options:["Titre accrocheur, accroche, développement clair","Une seule très longue phrase","Une liste à puces uniquement","Introduction, développement, conclusion scolaire classique"], correct:0, explanation:"Le plan du journaliste : titre accrocheur, accroche, développement clair."},
-{topic:"Étape 4 — Rédiger l'article", prompt:"Pour que l'article soit clair et précis, les phrases doivent être...", options:["Longues et très détaillées","Le plus techniques possible","Écrites uniquement au futur","Courtes, avec un vocabulaire adapté et sans répétitions inutiles"], correct:3, explanation:"Phrases courtes, vocabulaire adapté, pas de répétitions inutiles : c'est la clé de la clarté."},
-{topic:"Étape 4 — Rédiger l'article", prompt:"Avant de rendre son article, que recommande-t-on de faire ?", options:["Le faire relire par un camarade","Le traduire en anglais","Le rendre sans le relire, pour gagner du temps","Le faire relire uniquement par soi-même"], correct:0, explanation:"Faire relire son article par un camarade permet de corriger les fautes et vérifier la compréhension."},
-{topic:"Étape 5 — Finaliser", prompt:"À la dernière étape, qu'ajoute-t-on si besoin à l'article ?", options:["Une nouvelle enquête complète","Une photo, un dessin ou un encadré","Un deuxième titre","Une note de bas de page obligatoire"], correct:1, explanation:"À l'étape 5, on ajoute si besoin une photo, un dessin, un encadré, puis on rend l'article à temps."},
+{type:"written", topic:"Étape 3 — Mener l'enquête", prompt:"Comment doit-on présenter l'opinion d'une personne interrogée ?", acceptableAnswers:["comme un témoignage, clairement attribué à cette personne","comme un témoignage clairement attribué à cette personne","comme un témoignage attribué à cette personne","comme un témoignage"], explanation:"Une opinion doit être citée comme un témoignage, pas présentée comme un fait vérifié."},
+{type:"written", topic:"Étape 4 — Rédiger l'article", prompt:"Quel plan doit-on utiliser pour rédiger l'article ?", acceptableAnswers:["titre accrocheur, accroche, développement clair","titre accrocheur, accroche, développement","un titre accrocheur puis une accroche puis un développement clair"], explanation:"Le plan du journaliste : titre accrocheur, accroche, développement clair."},
+{type:"written", topic:"Étape 4 — Rédiger l'article", prompt:"Pour que l'article soit clair et précis, les phrases doivent être...", acceptableAnswers:["courtes, avec un vocabulaire adapté et sans répétitions inutiles","courtes et sans répétitions inutiles","courtes, avec un vocabulaire adapté"], explanation:"Phrases courtes, vocabulaire adapté, pas de répétitions inutiles : c'est la clé de la clarté."},
+{type:"written", topic:"Étape 4 — Rédiger l'article", prompt:"Avant de rendre son article, que recommande-t-on de faire ?", acceptableAnswers:["le faire relire par un camarade","faire relire son article par un camarade","le faire relire par quelqu'un"], explanation:"Faire relire son article par un camarade permet de corriger les fautes et vérifier la compréhension."},
+{type:"written", topic:"Étape 5 — Finaliser", prompt:"À la dernière étape, qu'ajoute-t-on si besoin à l'article ?", acceptableAnswers:["une photo, un dessin ou un encadré","une photo, un dessin ou un encadre","une photo ou un dessin","un dessin ou un encadré"], explanation:"À l'étape 5, on ajoute si besoin une photo, un dessin, un encadré, puis on rend l'article à temps."},
 {type:"write-article", topic:"Rédaction guidée", prompt:"Rédige un article complet à partir du sujet suivant.", scenario:"Le club de robotique du lycée a remporté le 1er prix du concours régional de robotique, avec un robot autonome conçu par cinq élèves de terminale MELEC.", checklist:["Réponds aux 5W : Qui ? Quoi ? Où ? Quand ? Pourquoi ?","Utilise le plan du journaliste : titre accrocheur, accroche, développement clair","Phrases courtes, ton neutre, pas de répétitions inutiles","Longueur attendue : environ 5 à 8 phrases"], aiInstructions:"Un(e) élève de 2nde doit rédiger un article de presse complet à partir du sujet suivant : « Le club de robotique du lycée a remporté le 1er prix du concours régional de robotique, avec un robot autonome conçu par cinq élèves de terminale MELEC. » Évalue : la présence des 5W (Qui, Quoi, Où, Quand, Pourquoi), la structure (titre accrocheur + accroche + développement clair), le style (phrases courtes, ton neutre, pas de répétitions), et la grammaire/orthographe. Donne un retour structuré et encourageant."},
 {type:"write-article", topic:"Rédaction guidée", prompt:"Rédige un article complet à partir du sujet suivant.", scenario:"Le lycée organisera sa première « Journée du Sport » le mois prochain, avec des tournois inter-classes et des démonstrations d'anciens élèves sportifs de haut niveau.", checklist:["Réponds aux 5W : Qui ? Quoi ? Où ? Quand ? Pourquoi ?","Utilise le plan du journaliste : titre accrocheur, accroche, développement clair","Phrases courtes, ton neutre, pas de répétitions inutiles","Longueur attendue : environ 5 à 8 phrases"], aiInstructions:"Un(e) élève de 2nde doit rédiger un article de presse complet à partir du sujet suivant : « Le lycée organisera sa première 'Journée du Sport' le mois prochain, avec des tournois inter-classes et des démonstrations d'anciens élèves sportifs de haut niveau. » Évalue : la présence des 5W (Qui, Quoi, Où, Quand, Pourquoi), la structure (titre accrocheur + accroche + développement clair), le style (phrases courtes, ton neutre, pas de répétitions), et la grammaire/orthographe. Donne un retour structuré et encourageant."}
 ];
@@ -274,6 +288,26 @@ function renderAll(){
           <button class="next" data-next="${i}">Suivant →</button>
         </div>
       `;
+    } else if(q.type === 'written'){
+      div.innerHTML = `
+        <div class="q-meta">
+          <div class="q-number">${i+1}</div>
+          <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
+        </div>
+        <p class="q-topic">${q.topic}</p>
+        <p class="prompt">${q.prompt}</p>
+        <div class="written-box">
+          <input type="text" class="written-input" id="written${i}" placeholder="Tape ta réponse ici" autocomplete="off">
+          <button class="submit-written" data-submit-written="${i}">Valider</button>
+        </div>
+        <div class="feedback" id="fb${i}">
+          <span class="verdict"></span>
+          <span class="explanation"></span>
+        </div>
+        <div class="nav-row">
+          <button class="next" data-next="${i}">Suivant →</button>
+        </div>
+      `;
     } else {
       div.innerHTML = `
         <div class="q-meta">
@@ -300,12 +334,95 @@ function renderAll(){
   document.querySelectorAll('.option').forEach(btn => {
     btn.addEventListener('click', handleAnswer);
   });
+  document.querySelectorAll('[data-submit-written]').forEach(btn => {
+    btn.addEventListener('click', () => handleWrittenAnswer(parseInt(btn.dataset.submitWritten)));
+  });
+  document.querySelectorAll('.written-input').forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const qi = parseInt(input.id.replace('written',''));
+        handleWrittenAnswer(qi);
+      }
+    });
+  });
   document.querySelectorAll('[data-next]').forEach(btn => {
     btn.addEventListener('click', () => goTo(parseInt(btn.dataset.next) + 1));
   });
   document.querySelectorAll('[data-correct]').forEach(btn => {
     btn.addEventListener('click', () => handleWriteCorrection(parseInt(btn.dataset.correct)));
   });
+}
+
+function normalizeWritten(s){
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+}
+
+async function gradeWrittenAnswer(q, studentAnswer){
+  const gradingPrompt = `Tu es un professeur de français bienveillant pour des élèves de 2nde en filière professionnelle. Voici une question de quiz et la réponse tapée par l'élève.
+
+Question posée à l'élève : "${q.prompt}"
+Réponse(s) attendue(s) (une seule suffit) : ${q.acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+
+Consigne de correction : sois généreux.e. Les fautes de frappe, accents manquants, majuscules/minuscules ne comptent pas contre l'élève tant que le sens reste correct et reconnaissable. En cas de doute, donne le bénéfice du doute à l'élève. Une réponse vide ou hors-sujet est incorrecte.
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après, sans balises markdown, avec exactement cette forme :
+{"correct":true,"feedback":"1 phrase courte en français, encourageante, qui confirme ou corrige"}`;
+
+  const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 200,
+      messages: [{role: 'user', content: gradingPrompt}]
+    })
+  });
+  if(!response.ok) throw new Error('grading http error');
+  const data = await response.json();
+  const raw = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if(typeof parsed.correct !== 'boolean') throw new Error('malformed grading response');
+  return parsed;
+}
+
+async function handleWrittenAnswer(qi){
+  if(answered[qi] !== undefined) return;
+  const q = QUESTIONS[qi];
+  const input = document.getElementById('written'+qi);
+  const btn = document.querySelector(`[data-submit-written="${qi}"]`);
+  const studentAnswer = input.value.trim();
+
+  if(!studentAnswer){
+    input.focus();
+    return;
+  }
+
+  input.disabled = true;
+  btn.disabled = true;
+  btn.textContent = 'Correction en cours...';
+
+  let result;
+  try {
+    result = await gradeWrittenAnswer(q, studentAnswer);
+  } catch(e){
+    const normalized = normalizeWritten(studentAnswer);
+    const isCorrect = q.acceptableAnswers.some(a => normalizeWritten(a) === normalized);
+    result = { correct: isCorrect, feedback: isCorrect ? 'Exact !' : "Ce n'est pas tout à fait ça — regarde l'explication ci-dessous." };
+  }
+
+  answered[qi] = result.correct;
+  if(result.correct) score++;
+
+  btn.textContent = 'Valider';
+  const fb = document.getElementById('fb'+qi);
+  fb.classList.add('show', result.correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = result.correct ? 'Exact !' : 'Pas tout à fait.';
+  fb.querySelector('.explanation').textContent = result.feedback + ' ' + q.explanation;
+
+  document.getElementById('q'+qi).querySelector('.next').classList.add('show');
+  qScore.textContent = score;
 }
 
 async function handleWriteCorrection(qi){
@@ -404,7 +521,7 @@ function showResults(){
   if(score >= 8){ v.textContent = 'Prêt(e) pour la rédaction !'; v.className = 'verdict-final great'; }
   else if(score >= 5){ v.textContent = 'Bien, continue comme ça'; v.className = 'verdict-final ok'; }
   else { v.textContent = 'À revoir avant l\'examen'; v.className = 'verdict-final retry'; }
-    if (window.logPracticeAttempt) logPracticeAttempt('Rédiger un article', score, SCORABLE_TOTAL);
+    if (window.logPracticeAttempt) logPracticeAttempt('Rédiger un article', score, SCORABLE_TOTAL, 'Français');
 }
 
 document.getElementById('retry-btn').addEventListener('click', () => {

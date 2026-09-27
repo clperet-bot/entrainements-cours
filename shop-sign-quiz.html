@@ -422,13 +422,13 @@
 
 <script>
 const QUESTIONS = [
-{prompt:"Eco-friendly = ?", options:["Facile à nettoyer","Bon marché","Respectueux de l'environnement","Fait à la main"], correct:2, explanation:"Eco-friendly = qui respecte l'environnement.", aide:"Eco-friendly = respectueux de l'environnement.", referencesText:false},
-{prompt:"Shiny = ?", options:["Mat","Rugueux","Transparent","Brillant"], correct:3, explanation:"Shiny = qui brille, réfléchit la lumière.", aide:"Shiny = brillant.", referencesText:false},
+{type:"translate", prompt:"Eco-friendly = ?", answers:["respectueux de l'environnement","respectueux de lenvironnement"], explanation:"Eco-friendly = qui respecte l'environnement.", referencesText:false},
+{type:"translate", prompt:"Shiny = ?", answers:["brillant"], explanation:"Shiny = qui brille, réfléchit la lumière.", referencesText:false},
 {prompt:"Which word means 'bois' ?", options:["plastic","glass","metal","wood"], correct:3, explanation:"Wood = bois.", aide:"Wood = bois.", referencesText:false},
-{prompt:"Font = ?", options:["Un matériau","Une couleur","Une police d'écriture","Une taille"], correct:2, explanation:"Font = la police d'écriture, le style des lettres.", aide:"Font = police d'écriture.", referencesText:false},
+{type:"translate", prompt:"Font = ?", answers:["une police d'écriture","police d'écriture","une police décriture","police décriture"], explanation:"Font = la police d'écriture, le style des lettres.", referencesText:false},
 {prompt:"Material = ?", options:["Devis","Matériau","Logo","Message"], correct:1, explanation:"Material = matériau, ce dont un objet est fait (bois, verre, métal...).", aide:"Material = matériau.", referencesText:false},
 {prompt:"'Easy to read from the street' veut dire...", options:["Facile à lire de loin","Difficile à voir","Trop petit","Écrit à la main"], correct:0, explanation:"Easy to read = facile à lire.", aide:"Easy to read = facile à lire.", referencesText:false},
-{prompt:"Le 'client's brief/request' c'est...", options:["La facture du client","Le nom du client","L'adresse du client","La demande du client"], correct:3, explanation:"Brief/request = la demande, ce que le client veut.", aide:"Brief = la demande du client.", referencesText:false},
+{type:"translate", prompt:"Le 'client's brief/request' c'est...", answers:["la demande du client","la demande"], explanation:"Brief/request = la demande, ce que le client veut.", referencesText:false},
 {prompt:"Elegant = ?", options:["Bon marché","Élégant, raffiné","Coloré","Solide"], correct:1, explanation:"Elegant = élégant, raffiné.", aide:"Elegant = élégant.", referencesText:false},
 {prompt:"D'après le mail, quel commerce a besoin d'une nouvelle enseigne ?", options:["Un café","Une boulangerie","Un fleuriste (Bloom & Co)","Une librairie"], correct:2, explanation:"'Owner of Bloom & Co' — Bloom & Co est un fleuriste.", aide:"Bloom & Co = un magasin de fleurs.", referencesText:true},
 {prompt:"D'après le mail, quel style Tom Walsh veut-il ?", options:["Élégant et vintage","Simple et minimaliste","Moderne et coloré","Amusant et enfantin"], correct:0, explanation:"'I want something elegant and vintage.'", aide:"Elegant and vintage = élégant et vintage.", referencesText:true},
@@ -436,7 +436,7 @@ const QUESTIONS = [
 {prompt:"D'après le mail, quel matériau Tom préfère-t-il ?", options:["Le verre ou le métal (glass or metal)","Le carton","Le plastique","Le tissu"], correct:0, explanation:"'With a glass or metal look.'", aide:"Glass or metal = verre ou métal.", referencesText:true},
 {prompt:"D'après le mail, qu'est-ce que Tom veut éviter ?", options:["Le bois et le verre","Les lettres élégantes","Le plastique et les néons (plastic and neon lights)","Le rose et le doré"], correct:2, explanation:"'Please avoid plastic and neon lights.'", aide:"Avoid = éviter.", referencesText:true},
 {prompt:"D'après le mail, quel texte doit apparaître sur l'enseigne ?", options:["\"Tom's Flower Shop\"","\"Bloom & Co – Flowers for every moment.\"","\"Fresh Flowers Daily\"","\"Bloom & Co – Open Now\""], correct:1, explanation:"'The text should be: Bloom & Co – Flowers for every moment.'", aide:"Relis la dernière partie du mail.", referencesText:true},
-{prompt:"Durable = ?", options:["Qui dure longtemps, résistant","Fait main","Qui coûte cher","Qui brille"], correct:0, explanation:"Durable = qui dure longtemps, résistant dans le temps.", aide:"Durable = résistant, qui dure longtemps.", referencesText:false},
+{type:"translate", prompt:"Durable = ?", answers:["qui dure longtemps, résistant","résistant, qui dure longtemps","qui dure longtemps et résistant","résistant"], explanation:"Durable = qui dure longtemps, résistant dans le temps.", referencesText:false},
 {type:"translate", prompt:"Traduis en anglais : « respectueux de l'environnement »", answers:["eco-friendly","eco friendly","ecofriendly"], explanation:"Respectueux de l'environnement = eco-friendly.", referencesText:false},
 {type:"translate", prompt:"Traduis en anglais : « brillant »", answers:["shiny"], explanation:"Brillant = shiny.", referencesText:false},
 {type:"translate", prompt:"Traduis en anglais : « le bois »", answers:["wood"], explanation:"Le bois = wood.", referencesText:false},
@@ -468,7 +468,7 @@ function renderAll(){
           <input type="text" class="translate-input" id="input${i}" placeholder="Écris ta traduction en anglais" autocomplete="off">
           <button class="submit-translate" data-submit="${i}">Valider</button>
         </div>
-        <span class="translate-hint">Une seule réponse attendue, en anglais.</span>
+        <span class="translate-hint">Tape ta réponse.</span>
         <div class="feedback" id="fb${i}">
           <span class="verdict"></span>
           <span class="explanation"></span>
@@ -540,25 +540,71 @@ function updateTextPanel(i){
   }
 }
 
-function handleTranslateAnswer(qi){
+function normalizeWritten(s){
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+}
+
+async function gradeWrittenAnswer(promptText, studentAnswer, acceptableAnswers){
+  const gradingPrompt = `Tu es un professeur bienveillant pour des élèves de 2nde en filière professionnelle (design/enseigne), niveau A1-A2 en anglais. Voici une question de quiz et la réponse tapée par l'élève.
+
+Question posée à l'élève : "${promptText}"
+Réponse(s) attendue(s) (une seule suffit, ou un équivalent proche) : ${acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+
+Consigne de correction : sois généreux.e. Les fautes de frappe, accents manquants, majuscules/minuscules ne comptent pas contre l'élève tant que le mot ou la phrase reste reconnaissable et que le sens est correct. En cas de doute, donne le bénéfice du doute à l'élève. Une réponse vide ou hors-sujet est incorrecte.
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après, sans balises markdown, avec exactement cette forme :
+{"correct":true,"feedback":"1 phrase courte en français, encourageante, qui confirme ou corrige"}`;
+
+  const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 200,
+      messages: [{role: 'user', content: gradingPrompt}]
+    })
+  });
+  if(!response.ok) throw new Error('grading http error');
+  const data = await response.json();
+  const raw = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if(typeof parsed.correct !== 'boolean') throw new Error('malformed grading response');
+  return parsed;
+}
+
+async function handleTranslateAnswer(qi){
   if(answered[qi] !== undefined) return;
 
   const input = document.getElementById('input'+qi);
+  const btn = document.querySelector(`[data-submit="${qi}"]`);
   const q = QUESTIONS[qi];
-  const raw = input.value.trim().toLowerCase().replace(/[.!?]+$/,'');
-  const correct = q.answers.includes(raw) && raw.length > 0;
-
-  answered[qi] = correct;
-  if(correct) score++;
+  const studentAnswer = input.value.trim();
+  if(!studentAnswer){ input.focus(); return; }
 
   input.disabled = true;
-  document.querySelector(`[data-submit="${qi}"]`).disabled = true;
-  input.classList.add(correct ? 'correct' : 'incorrect');
+  btn.disabled = true;
+  btn.textContent = 'Correction en cours...';
+
+  let result;
+  try {
+    result = await gradeWrittenAnswer(q.prompt, studentAnswer, q.answers);
+  } catch(e){
+    const normalized = normalizeWritten(studentAnswer);
+    const isCorrect = q.answers.some(a => normalizeWritten(a) === normalized);
+    result = { correct: isCorrect, feedback: isCorrect ? 'Exact !' : 'Ce n\'est pas tout à fait ça — regarde l\'explication ci-dessous.' };
+  }
+
+  answered[qi] = result.correct;
+  if(result.correct) score++;
+
+  btn.textContent = 'Valider';
+  input.classList.add(result.correct ? 'correct' : 'incorrect');
 
   const fb = document.getElementById('fb'+qi);
-  fb.classList.add('show', correct ? 'ok' : 'ko');
-  fb.querySelector('.verdict').textContent = correct ? "Exact !" : "Pas tout à fait.";
-  fb.querySelector('.explanation').textContent = q.explanation;
+  fb.classList.add('show', result.correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = result.correct ? "Exact !" : "Pas tout à fait.";
+  fb.querySelector('.explanation').textContent = result.feedback + ' ' + q.explanation;
 
   document.querySelector(`#q${qi} .next`).classList.add('show');
   qScore.textContent = score;

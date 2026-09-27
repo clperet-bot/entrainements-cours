@@ -80,6 +80,22 @@
   }
   .hint-btn:hover { background-color: #332818; }
   .hint-text { color: #cbb994; font-style: italic; font-size: 0.9em; margin-bottom: 10px; display:none; }
+  .written-input {
+    width: 100%; box-sizing: border-box;
+    background-color: #1f1912; color: #f4e9d8;
+    border: 1px solid #3d3020; border-radius: 8px;
+    padding: 12px 14px; font-family: 'Georgia', serif; font-size: 0.95em;
+    margin-bottom: 10px;
+  }
+  .written-input:focus { outline: none; border-color: #f4c542; }
+  .written-input:disabled { opacity: 0.6; }
+  .submit-written-btn {
+    background: linear-gradient(135deg, #8b1a1a, #6b1414);
+    color: #f4e9d8; border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 0.95em; font-family: 'Georgia', serif;
+    cursor: pointer;
+  }
+  .submit-written-btn:disabled { opacity: 0.6; cursor: default; }
   .feedback {
     margin-top: 14px;
     padding: 12px 14px;
@@ -250,21 +266,18 @@ const QUESTIONS = [
    hint:"Repense à la définition vue en cours.",
    explanation:"Un champ lexical est un ensemble de mots liés à une même idée — ici tout ce qui exprime l'admiration ou l'émerveillement (« prodige », « beauté », « ardeur »...)."},
 
-  {prompt:"Un texte décrit un visage « monstrueux, mais dont le regard trahissait une douceur inattendue ». Quel procédé reconnais-tu ?",
-   options:["Une accumulation","Une métaphore","Une antithèse (opposition de deux idées vraiment contraires)"],
-   correct:2,
+  {type:"written", prompt:"Un texte décrit un visage « monstrueux, mais dont le regard trahissait une douceur inattendue ». Quel procédé reconnais-tu ?",
+   acceptableAnswers:["une antithèse","antithèse","une antithèse (opposition de deux idées contraires)"],
    hint:"Cherche deux mots qui sont de vrais contraires, pas juste deux idées différentes.",
    explanation:"« Monstrueux » et « douceur » sont deux idées véritablement opposées (laideur/effroi contre tendresse) mises en contact dans la même phrase : c'est une antithèse, comme « Quelque beauté ! Grand Dieu ! » dans Frankenstein."},
 
-  {prompt:"Un personnage est décrit ainsi : « boiteux, borgne, voûté, le visage grêlé ». Quel procédé permet d'insister sur sa laideur ?",
-   options:["Une exclamation","Une accumulation de défauts physiques","Un registre lyrique"],
-   correct:1,
+  {type:"written", prompt:"Un personnage est décrit ainsi : « boiteux, borgne, voûté, le visage grêlé ». Quel procédé permet d'insister sur sa laideur ?",
+   acceptableAnswers:["une accumulation de défauts physiques","une accumulation","accumulation"],
    hint:"Plusieurs éléments négatifs mis bout à bout.",
    explanation:"Énumérer plusieurs défauts à la suite renforce l'impression de monstruosité — c'est une accumulation, comme la description de la créature (« peau jaunâtre... dents blanches... yeux stupides... »)."},
 
-  {prompt:"Quel registre cherche à provoquer la pitié du lecteur envers un personnage qui souffre ?",
-   options:["Le registre pathétique","Le registre épique","Le registre comique"],
-   correct:0,
+  {type:"written", prompt:"Quel registre cherche à provoquer la pitié du lecteur envers un personnage qui souffre ?",
+   acceptableAnswers:["le registre pathétique","registre pathétique","pathétique"],
    hint:"C'est un registre déjà étudié plusieurs fois cette séquence.",
    explanation:"Le registre pathétique vise à provoquer la pitié — c'est celui du plaidoyer de la créature dans le Document 2, mais aussi de tout personnage rejeté qui inspire compassion."},
 
@@ -274,9 +287,8 @@ const QUESTIONS = [
    hint:"Pense à une forme qui semble se déformer.",
    explanation:"Contrairement aux lignes courbes qui apaisent, les lignes brisées ou tordues créent une tension visuelle et inquiètent — c'est un des points de la méthode d'analyse d'image."},
 
-  {prompt:"Dans une image, des couleurs froides (bleu, gris) évoquent le plus souvent...",
-   options:["La tristesse, le calme ou l'angoisse","La joie et la fête","La colère"],
-   correct:0,
+  {type:"written", prompt:"Dans une image, des couleurs froides (bleu, gris) évoquent le plus souvent...",
+   acceptableAnswers:["la tristesse, le calme ou l'angoisse","la tristesse le calme ou l'angoisse","tristesse, calme ou angoisse"],
    hint:"Pense à ce qu'évoque la couleur d'un ciel gris.",
    explanation:"Les couleurs froides sont associées à la tristesse, au calme ou à l'angoisse selon le contexte, contrairement aux couleurs chaudes (rouge, orange) plutôt liées à l'agitation ou au danger."},
 
@@ -302,21 +314,99 @@ function renderQuestion() {
   const quizDiv = document.getElementById('quiz');
   answered = false;
 
-  let optionsHtml = q.options.map((opt, i) =>
-    `<label id="opt-${i}"><input type="radio" name="answer" value="${i}" onchange="selectAnswer(${i})"> ${opt}</label>`
-  ).join('');
+  const bodyHtml = q.type === 'written'
+    ? `
+      <div class="options">
+        <input type="text" class="written-input" id="written-input" placeholder="Tape ta réponse ici" autocomplete="off">
+        <button class="submit-written-btn" id="submit-written-btn" onclick="handleWrittenAnswer()">Valider</button>
+      </div>
+    `
+    : `<div class="options">${q.options.map((opt, i) =>
+        `<label id="opt-${i}"><input type="radio" name="answer" value="${i}" onchange="selectAnswer(${i})"> ${opt}</label>`
+      ).join('')}</div>`;
 
   quizDiv.innerHTML = `
     <div class="question">
       <div class="q-count">Question ${current + 1} / ${QUESTIONS.length}</div>
       <p class="qtext">${q.prompt}</p>
       ${q.hint ? `<button class="hint-btn" onclick="toggleHint()">💡 Indice</button><div class="hint-text" id="hint-text">${q.hint}</div>` : ''}
-      <div class="options">${optionsHtml}</div>
+      ${bodyHtml}
       <div class="feedback" id="feedback"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">Suivant →</button>
     </div>
   `;
   document.getElementById('progress').style.width = ((current) / QUESTIONS.length * 100) + '%';
+
+  if(q.type === 'written'){
+    document.getElementById('written-input').addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); handleWrittenAnswer(); }
+    });
+  }
+}
+
+function normalizeWritten(s){
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+}
+
+async function gradeWrittenAnswer(q, studentAnswer){
+  const gradingPrompt = `Tu es un professeur de français bienveillant pour des élèves de 1ère. Voici une question de quiz et la réponse tapée par l'élève.
+
+Question posée à l'élève : "${q.prompt}"
+Réponse(s) attendue(s) (une seule suffit) : ${q.acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+
+Consigne de correction : sois généreux.e. Les fautes de frappe, accents manquants, majuscules/minuscules ne comptent pas contre l'élève tant que le sens reste correct et reconnaissable. En cas de doute, donne le bénéfice du doute à l'élève. Une réponse vide ou hors-sujet est incorrecte.
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après, sans balises markdown, avec exactement cette forme :
+{"correct":true,"feedback":"1 phrase courte en français, encourageante, qui confirme ou corrige"}`;
+
+  const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 200,
+      messages: [{role: 'user', content: gradingPrompt}]
+    })
+  });
+  if(!response.ok) throw new Error('grading http error');
+  const data = await response.json();
+  const raw = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if(typeof parsed.correct !== 'boolean') throw new Error('malformed grading response');
+  return parsed;
+}
+
+async function handleWrittenAnswer(){
+  if(answered) return;
+  const q = QUESTIONS[current];
+  const input = document.getElementById('written-input');
+  const btn = document.getElementById('submit-written-btn');
+  const studentAnswer = input.value.trim();
+  if(!studentAnswer){ input.focus(); return; }
+
+  answered = true;
+  input.disabled = true;
+  btn.disabled = true;
+  btn.textContent = 'Correction en cours...';
+
+  let result;
+  try {
+    result = await gradeWrittenAnswer(q, studentAnswer);
+  } catch(e){
+    const normalized = normalizeWritten(studentAnswer);
+    const isCorrect = q.acceptableAnswers.some(a => normalizeWritten(a) === normalized);
+    result = { correct: isCorrect, feedback: isCorrect ? 'Exact !' : "Ce n'est pas tout à fait ça — regarde l'explication ci-dessous." };
+  }
+
+  if(result.correct) score++;
+
+  const feedback = document.getElementById('feedback');
+  feedback.className = 'feedback ' + (result.correct ? 'correct' : 'incorrect');
+  feedback.innerHTML = `<span class="verdict">${result.correct ? '✓ Exactement !' : '✗ Pas tout à fait.'}</span>${result.feedback} ${q.explanation}`;
+  feedback.style.display = 'block';
+
+  document.getElementById('next-btn').style.display = 'block';
 }
 
 function toggleHint() {
@@ -361,7 +451,7 @@ function showResults() {
   document.getElementById('results').style.display = 'block';
   document.getElementById('score-display').textContent = score + ' / ' + QUESTIONS.length;
   document.getElementById('total-display').textContent = QUESTIONS.length;
-    if (window.logPracticeAttempt) logPracticeAttempt('Fascination et rejet du monstrueux', score, QUESTIONS.length);
+    if (window.logPracticeAttempt) logPracticeAttempt('Fascination et rejet du monstrueux', score, QUESTIONS.length, 'Français');
 }
 
 function toggleModel(n) {
