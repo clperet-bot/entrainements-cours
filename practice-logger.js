@@ -3,6 +3,9 @@
 // Usage : <script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>
 // Puis, dans la fonction qui affiche le score final de CHAQUE quiz, ajoute :
 //   if (window.logPracticeAttempt) logPracticeAttempt('Nom du quiz', score, total);
+// Pour un quiz de FRANÇAIS, ajoute un 4e argument :
+//   if (window.logPracticeAttempt) logPracticeAttempt('Nom du quiz', score, total, 'Français');
+// (par défaut la matière est "Anglais" si tu ne précises rien)
 // ============================================================
 
 (function () {
@@ -76,7 +79,7 @@
     });
   }
 
-  window.logPracticeAttempt = function (quizName, score, maxScore) {
+  window.logPracticeAttempt = function (quizName, score, maxScore, matiere) {
     const info = getStudentInfo();
     if (!info) return; // sécurité, ne devrait pas arriver
     loadSupabaseLib(function () {
@@ -86,7 +89,8 @@
         classe: info.classe,
         quiz_name: quizName,
         score: score,
-        max_score: maxScore
+        max_score: maxScore,
+        matiere: matiere || 'Anglais'
       }]).then(function (res) {
         if (res.error) console.error('Erreur d\'enregistrement de la tentative :', res.error);
       });
