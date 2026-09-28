@@ -130,6 +130,13 @@
     line-height: 2.2em;
     font-size: 0.98em;
   }
+  .fill-input {
+    background-color: #1f1810; color: #f4e9d8;
+    border: 1px solid #f4c542; border-radius: 4px;
+    padding: 3px 6px; font-family: 'Georgia', serif; font-size: 0.95em; width: 140px;
+  }
+  .fill-input:focus{outline:none; border-color:#ffd966;}
+  .written-block{margin-top:6px;}
   textarea {
     width: 100%;
     box-sizing: border-box;
@@ -211,17 +218,14 @@
   <div class="section-title">Compréhension de l'histoire</div>
 
   <div class="question"
-       data-correct="b"
+       data-written="true"
+       data-answers="il commence un nouveau travail à bath,un nouveau travail à bath,il va commencer un travail à bath"
        data-extract="He was traveling to Bath for his new job. It was a cold and dark evening."
        data-translation="Il voyageait vers Bath pour son nouveau travail. C'était une soirée froide et sombre."
        data-explanation="Le texte précise dès le début que Billy va à Bath pour commencer un nouveau travail, pas pour des vacances.">
     <p class="qtext">1. Pourquoi Billy cherche-t-il un logement ce soir-là ?</p>
-    <div class="options">
-      <label><input type="radio" name="q1" value="a"> Il est en vacances à Bath</label>
-      <label><input type="radio" name="q1" value="b"> Il commence un nouveau travail à Bath</label>
-      <label><input type="radio" name="q1" value="c"> Il rend visite à sa famille</label>
-    </div>
-    <button class="check-btn">Vérifier</button>
+    <div class="written-block"><input type="text" class="fill-input written-single" style="width:100%;" placeholder="Réponds en une phrase"></div>
+    <button class="check-btn" data-written-check="true">Vérifier</button>
     <div class="feedback"></div>
   </div>
 
@@ -241,17 +245,14 @@
   </div>
 
   <div class="question"
-       data-correct="c"
+       data-written="true"
+       data-answers="qu'elle l'attendait,elle l'attendait,elle m'attendait"
        data-extract="Oh yes, she said. I was waiting for you!"
        data-translation="Oh oui, dit-elle. Je vous attendais !"
        data-explanation="Cette phrase est le premier vrai indice étrange : la landlady n'a aucune raison logique de savoir que Billy allait venir.">
     <p class="qtext">3. Que dit la landlady à Billy quand elle ouvre la porte ?</p>
-    <div class="options">
-      <label><input type="radio" name="q3" value="a"> Qu'elle n'a plus de chambre disponible</label>
-      <label><input type="radio" name="q3" value="b"> Qu'elle ne le connaît pas</label>
-      <label><input type="radio" name="q3" value="c"> Qu'elle l'attendait</label>
-    </div>
-    <button class="check-btn">Vérifier</button>
+    <div class="written-block"><input type="text" class="fill-input written-single" style="width:100%;" placeholder="Réponds en une phrase"></div>
+    <button class="check-btn" data-written-check="true">Vérifier</button>
     <div class="feedback"></div>
   </div>
 
@@ -271,17 +272,14 @@
   </div>
 
   <div class="question"
-       data-correct="a"
+       data-written="true"
+       data-answers="ils ne bougent pas du tout, comme empaillés,ils ne bougent pas comme empaillés,ils sont immobiles comme empaillés,ils ne bougent pas du tout"
        data-extract="The dog had not moved once. No breathing, no blinking."
        data-translation="Le chien n'avait pas bougé une seule fois. Aucune respiration, aucun clignement des yeux."
        data-explanation="L'immobilité totale du chien et du perroquet est un indice clé : on découvre plus tard qu'ils sont empaillés.">
     <p class="qtext">5. Qu'est-ce qui est anormal chez le chien et le perroquet ?</p>
-    <div class="options">
-      <label><input type="radio" name="q5" value="a"> Ils ne bougent pas du tout, comme empaillés</label>
-      <label><input type="radio" name="q5" value="b"> Ils aboient et crient sans arrêt</label>
-      <label><input type="radio" name="q5" value="c"> Ils ne sont pas dans la pièce</label>
-    </div>
-    <button class="check-btn">Vérifier</button>
+    <div class="written-block"><input type="text" class="fill-input written-single" style="width:100%;" placeholder="Réponds en une phrase"></div>
+    <button class="check-btn" data-written-check="true">Vérifier</button>
     <div class="feedback"></div>
   </div>
 
@@ -303,17 +301,14 @@
   <div class="section-title">Vocabulaire des émotions</div>
 
   <div class="question"
-       data-correct="b"
+       data-written="true"
+       data-answers="effrayé,effrayée,effraye"
        data-extract="Billy's hands started to shake."
        data-translation="Les mains de Billy ont commencé à trembler."
        data-explanation="Trembler de peur correspond à l'émotion 'scared' (effrayé) — Billy réalise que quelque chose de grave se passe.">
     <p class="qtext">7. "Scared" veut dire :</p>
-    <div class="options">
-      <label><input type="radio" name="q7" value="a"> Surpris</label>
-      <label><input type="radio" name="q7" value="b"> Effrayé</label>
-      <label><input type="radio" name="q7" value="c"> Curieux</label>
-    </div>
-    <button class="check-btn">Vérifier</button>
+    <div class="written-block"><input type="text" class="fill-input written-single" placeholder="Tape le mot en français"></div>
+    <button class="check-btn" data-written-check="true">Vérifier</button>
     <div class="feedback"></div>
   </div>
 
@@ -338,11 +333,11 @@
       Billy is looking for a room and finds a small B&B. He feels
       <select data-answer="calm"><option value="">--</option><option value="calm">calm</option><option value="angry">angry</option><option value="bored">bored</option></select>
       when he sees the warm light. The landlady seems very kind, but Billy feels
-      <select data-answer="confused"><option value="">--</option><option value="confused">confused</option><option value="happy">happy</option><option value="tired">tired</option></select>
+      <input type="text" class="fill-input" data-written-answer="confused" placeholder="...">
       when she says she was waiting for him. When he notices the dog does not move, he feels
       <select data-answer="worried"><option value="">--</option><option value="worried">worried</option><option value="excited">excited</option><option value="proud">proud</option></select>.
       At the end, after drinking the tea, Billy feels very
-      <select data-answer="scared"><option value="">--</option><option value="scared">scared</option><option value="calm">calm</option><option value="happy">happy</option></select>.
+      <input type="text" class="fill-input" data-written-answer="scared" placeholder="...">.
     </p>
     <button class="check-btn" id="check-fill">Vérifier</button>
     <div class="feedback" id="fill-feedback"></div>
@@ -383,7 +378,45 @@
 <footer>Lycée Godefroy de Bouillon</footer>
 
 <script>
-  // QCM checking (questions 1-8) — always shows extract + translation + explanation
+  function normalizeWritten(s){
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+  }
+
+  async function gradeWrittenAnswer(promptText, studentAnswer, acceptableAnswers) {
+    const gradingPrompt = `Tu es un professeur bienveillant pour des élèves de niveau A1-A2 en filière professionnelle. Voici une question de quiz de compréhension et la réponse tapée par l'élève, en français.
+
+Question posée à l'élève : "${promptText}"
+Réponse(s) attendue(s) (une seule suffit, ou un équivalent proche) : ${acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+
+Consigne de correction : sois généreux.e. Les fautes de frappe, accents, majuscules/minuscules ne comptent pas contre l'élève tant que le sens reste correct et reconnaissable. Une réponse vide ou hors-sujet est incorrecte.
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après : {"correct":true}`;
+    const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 60, messages: [{role:'user', content: gradingPrompt}] })
+    });
+    if (!response.ok) throw new Error('grading http error');
+    const data = await response.json();
+    const raw = (data.content || []).map(b => b.text || '').join('').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (typeof parsed.correct !== 'boolean') throw new Error('malformed');
+    return parsed.correct;
+  }
+
+  async function checkOneWritten(studentAnswer, acceptable, promptText){
+    if(!studentAnswer) return false;
+    try { return await gradeWrittenAnswer(promptText, studentAnswer, acceptable); }
+    catch(e){
+      const normalized = normalizeWritten(studentAnswer);
+      return acceptable.some(a => normalizeWritten(a) === normalized);
+    }
+  }
+
+  const writtenQuestionResults = {};
+
+  // QCM checking (questions restantes en QCM) — toujours extrait + traduction + explication
   document.querySelectorAll('.question[data-correct]').forEach(function(q) {
     const btn = q.querySelector('.check-btn');
     const feedback = q.querySelector('.feedback');
@@ -413,13 +446,54 @@
     });
   });
 
-  // Fill in the blank checking (question 9)
-  document.getElementById('check-fill').addEventListener('click', function() {
+  // Questions converties en réponse rédigée (1, 3, 5, 7), correction souple
+  document.querySelectorAll('.question[data-written]').forEach(function(q, idx) {
+    const btn = q.querySelector('[data-written-check]');
+    const feedback = q.querySelector('.feedback');
+    const input = q.querySelector('.written-single');
+    const key = 'written-' + idx;
+    btn.addEventListener('click', async function() {
+      const studentAnswer = input.value.trim();
+      if (!studentAnswer) {
+        feedback.style.display = 'block';
+        feedback.className = 'feedback incorrect';
+        feedback.innerHTML = '<div class="verdict">Écris ta réponse avant de vérifier.</div>';
+        return;
+      }
+      btn.disabled = true; btn.textContent = '⏳';
+      const acceptable = q.getAttribute('data-answers').split(',');
+      const promptText = q.querySelector('.qtext').textContent;
+      const extract = q.getAttribute('data-extract');
+      const translation = q.getAttribute('data-translation');
+      const explanation = q.getAttribute('data-explanation');
+      const isCorrect = await checkOneWritten(studentAnswer, acceptable, promptText);
+      writtenQuestionResults[key] = isCorrect;
+      input.disabled = true; btn.disabled = false; btn.textContent = 'Vérifier';
+      feedback.style.display = 'block';
+      feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+      feedback.innerHTML =
+        '<div class="verdict">' + (isCorrect ? '✅ Correct !' : '❌ Pas tout à fait.') + '</div>' +
+        '<div class="extract">"' + extract + '"</div>' +
+        '<div class="translation">' + translation + '</div>' +
+        '<div class="explanation">' + explanation + '</div>';
+    });
+  });
+
+  // Fill in the blank checking (question 9 — 2 selects + 2 champs à rédiger)
+  document.getElementById('check-fill').addEventListener('click', async function() {
+    const btn = this;
+    btn.disabled = true; btn.textContent = '⏳';
     const selects = document.querySelectorAll('#fill-blank select');
+    const writtenInputs = document.querySelectorAll('#fill-blank .fill-input');
     let allCorrect = true;
     selects.forEach(function(s) {
       if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
     });
+    const writtenResults = await Promise.all(Array.from(writtenInputs).map(inp =>
+      checkOneWritten(inp.value.trim(), [inp.getAttribute('data-written-answer')], 'Quel mot d\'émotion en anglais complète le résumé à cet endroit ?')
+    ));
+    if (writtenResults.some(r => r === false)) allCorrect = false;
+    btn.disabled = false; btn.textContent = 'Vérifier';
     const fb = document.getElementById('fill-feedback');
     fb.style.display = 'block';
     if (allCorrect) {
@@ -433,6 +507,8 @@
   });
 
   // Correction de la rédaction via le Worker IA
+  let writingScore = null;
+  let writingSummary = '';
   async function correctWriting() {
     const text = document.getElementById('writing10').value.trim();
     const fb = document.getElementById('ai-feedback');
@@ -463,7 +539,10 @@ Consignes de correction :
 - Vérifie si l'élève a bien utilisé un mot d'émotion + "because"
 - Maximum 400 caractères
 - Réponds en français pour les explications, mais garde les exemples de phrases corrigées en anglais
-- Structure ta réponse ainsi : d'abord ce qui est réussi, puis les corrections, puis la version corrigée complète`;
+- Structure ta réponse ainsi : d'abord ce qui est réussi, puis les corrections, puis la version corrigée complète
+
+Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, au format exact :
+{"score": <note entière de 0 à 10 évaluant la qualité du texte>, "summary": "<une phrase courte en français pour la prof, résumant le niveau, sans jugement sévère>", "correction": "<le retour pédagogique complet pour l'élève, dans le même esprit que les instructions ci-dessus>"}`;
 
     try {
       const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
@@ -476,7 +555,21 @@ Consignes de correction :
         })
       });
       const data = await response.json();
-      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+      const raw = (data.content?.[0]?.text || '').trim();
+      const clean = raw.replace(/```json|```/g, '').trim();
+      let parsed = null;
+      try { parsed = JSON.parse(clean); } catch (e) {}
+
+      let correction;
+      if (parsed && typeof parsed.correction === 'string') {
+        writingScore = (typeof parsed.score === 'number' && isFinite(parsed.score)) ? Math.max(0, Math.min(10, Math.round(parsed.score))) : 6;
+        writingSummary = typeof parsed.summary === 'string' ? parsed.summary : '';
+        correction = parsed.correction;
+      } else {
+        writingScore = 6;
+        writingSummary = '';
+        correction = raw || 'Erreur de correction, réessaie.';
+      }
 
       fb.className = 'feedback correct';
       fb.innerHTML = '<div class="verdict">✅ Correction :</div><div class="explanation">' + correction.replace(/\n/g, '<br>') + '</div>';
@@ -589,7 +682,7 @@ Consignes de correction :
     let score = 0;
     let total = 9;
 
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 2; i <= 8; i += 2) {
       const q = document.querySelector('input[name="q' + i + '"]:checked');
       if (q) {
         const questionDiv = document.querySelector('input[name="q' + i + '"]').closest('.question');
@@ -598,18 +691,30 @@ Consignes de correction :
       }
     }
 
+    // Questions 1, 3, 5, 7 (converties en réponse rédigée, corrigées de façon asynchrone)
+    Object.values(writtenQuestionResults).forEach(r => { if (r) score++; });
+
     const selects = document.querySelectorAll('#fill-blank select');
     let fillCorrect = true;
     selects.forEach(function(s) {
       if (s.value !== s.getAttribute('data-answer')) fillCorrect = false;
     });
+    const writtenInputs = document.querySelectorAll('#fill-blank .fill-input');
+    writtenInputs.forEach(function(inp) {
+      // Une fois vérifiées via le bouton "Vérifier" de la question 9, on relit la classe appliquée par checkOneWritten indirectement :
+      // on se base ici sur une comparaison locale simple pour le calcul du score final affiché.
+      if (normalizeWritten(inp.value) !== normalizeWritten(inp.getAttribute('data-written-answer'))) fillCorrect = false;
+    });
     if (fillCorrect) score++;
+
+    total += 10;
+    score += (writingScore !== null ? writingScore : 0);
 
     const box = document.getElementById('score-box');
     box.style.display = 'block';
-    box.textContent = 'Score : ' + score + ' / ' + total;
+    box.textContent = 'Score : ' + score + ' / ' + total + (writingScore === null ? ' (fais la correction de ta rédaction pour qu\'elle compte dans le score !)' : '');
+    if (window.logPracticeAttempt) logPracticeAttempt('The Landlady', score, total, 'Anglais', writingSummary);
   }
-    if (window.logPracticeAttempt) logPracticeAttempt('The Landlady', score, total);
 </script>
 
 <script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>

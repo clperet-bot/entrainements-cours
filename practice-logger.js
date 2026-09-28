@@ -6,6 +6,9 @@
 // Pour un quiz de FRANÇAIS, ajoute un 4e argument :
 //   if (window.logPracticeAttempt) logPracticeAttempt('Nom du quiz', score, total, 'Français');
 // (par défaut la matière est "Anglais" si tu ne précises rien)
+// Pour ajouter un petit compte rendu succinct (1 phrase générée par l'IA sur la rédaction
+// de l'élève, visible par la prof dans le tableau de bord), ajoute un 5e argument :
+//   if (window.logPracticeAttempt) logPracticeAttempt('Nom du quiz', score, total, 'Anglais', 'Bonne utilisation des connecteurs, quelques fautes d\'accord.');
 // ============================================================
 
 (function () {
@@ -79,7 +82,7 @@
     });
   }
 
-  window.logPracticeAttempt = function (quizName, score, maxScore, matiere) {
+  window.logPracticeAttempt = function (quizName, score, maxScore, matiere, feedbackSummary) {
     const info = getStudentInfo();
     if (!info) return; // sécurité, ne devrait pas arriver
     loadSupabaseLib(function () {
@@ -90,7 +93,8 @@
         quiz_name: quizName,
         score: score,
         max_score: maxScore,
-        matiere: matiere || 'Anglais'
+        matiere: matiere || 'Anglais',
+        feedback_summary: feedbackSummary || null
       }]).then(function (res) {
         if (res.error) console.error('Erreur d\'enregistrement de la tentative :', res.error);
       });

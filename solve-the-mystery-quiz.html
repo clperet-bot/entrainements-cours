@@ -64,6 +64,13 @@
     font-size: 0.9em;
   }
   .options label:hover { background-color: #2e2820; }
+  .fill-input {
+    background-color: #1a1612; color: #e8dfc8;
+    border: 1.5px solid #c9302c; border-radius: 6px;
+    padding: 5px 8px; font-family: inherit; font-size: 0.9em; width: 100%;
+    box-sizing: border-box; margin-bottom: 6px;
+  }
+  .fill-input:focus{outline:none; border-color:#e8534d;}
   .reveal-btn {
     background: none;
     border: 1.5px solid #c9302c;
@@ -182,13 +189,9 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="a" data-translation="Empreinte.">
-    <p class="qtext">2. "Fingerprint" means...</p>
-    <div class="options">
-      <label><input type="radio" name="q2" value="a"> Empreinte</label>
-      <label><input type="radio" name="q2" value="b"> Perles</label>
-      <label><input type="radio" name="q2" value="c"> Coupable</label>
-    </div>
+  <div class="question" data-written="true" data-qid="q2" data-answers="empreinte,une empreinte,empreinte digitale">
+    <p class="qtext">2. "Fingerprint" means... (traduis en français)</p>
+    <input type="text" class="fill-input written-check" placeholder="Traduis en français">
     <button class="check-btn">Vérifier</button>
     <div class="feedback"></div>
   </div>
@@ -204,13 +207,9 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="b" data-translation="Elle a été vue près du gymnase.">
-    <p class="qtext">4. "She was seen near the gym" means...</p>
-    <div class="options">
-      <label><input type="radio" name="q4" value="a"> Elle a vu le gymnase</label>
-      <label><input type="radio" name="q4" value="b"> Elle a été vue près du gymnase</label>
-      <label><input type="radio" name="q4" value="c"> Elle est absente du gymnase</label>
-    </div>
+  <div class="question" data-written="true" data-qid="q4" data-answers="elle a été vue près du gymnase,elle a ete vue pres du gymnase">
+    <p class="qtext">4. "She was seen near the gym" means... (traduis en français)</p>
+    <input type="text" class="fill-input written-check" placeholder="Traduis en français">
     <button class="check-btn">Vérifier</button>
     <div class="feedback"></div>
   </div>
@@ -226,13 +225,9 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="c" data-translation="Le bracelet est à elle.">
-    <p class="qtext">6. "The bracelet belongs to her" means...</p>
-    <div class="options">
-      <label><input type="radio" name="q6" value="a"> Elle a perdu le bracelet</label>
-      <label><input type="radio" name="q6" value="b"> Le bracelet est cassé</label>
-      <label><input type="radio" name="q6" value="c"> Le bracelet est à elle</label>
-    </div>
+  <div class="question" data-written="true" data-qid="q6" data-answers="le bracelet est à elle,le bracelet est a elle">
+    <p class="qtext">6. "The bracelet belongs to her" means... (traduis en français)</p>
+    <input type="text" class="fill-input written-check" placeholder="Traduis en français">
     <button class="check-btn">Vérifier</button>
     <div class="feedback"></div>
   </div>
@@ -248,13 +243,9 @@
     <div class="feedback"></div>
   </div>
 
-  <div class="question" data-correct="a" data-translation="Conseil des élèves.">
-    <p class="qtext">8. "Student council" means...</p>
-    <div class="options">
-      <label><input type="radio" name="q8" value="a"> Conseil des élèves</label>
-      <label><input type="radio" name="q8" value="b"> Salle de classe</label>
-      <label><input type="radio" name="q8" value="c"> Cour de récréation</label>
-    </div>
+  <div class="question" data-written="true" data-qid="q8" data-answers="conseil des élèves,conseil des eleves,conseil d'élèves">
+    <p class="qtext">8. "Student council" means... (traduis en français)</p>
+    <input type="text" class="fill-input written-check" placeholder="Traduis en français">
     <button class="check-btn">Vérifier</button>
     <div class="feedback"></div>
   </div>
@@ -290,6 +281,38 @@
 <footer>Lycée Godefroy de Bouillon</footer>
 
 <script>
+  function normalizeWritten(s){
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+  }
+  async function gradeWrittenAnswer(promptText, studentAnswer, acceptableAnswers) {
+    const gradingPrompt = `Tu es un professeur d'anglais qui corrige la réponse d'un élève.
+Consigne : "${promptText}"
+Réponse(s) attendue(s) : ${acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+Consigne de correction : sois généreux.e, tolère les fautes de frappe, les accents manquants, la casse. Réponds UNIQUEMENT en JSON valide : {"correct":true} ou {"correct":false}`;
+    const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 60, messages: [{role:'user', content: gradingPrompt}] })
+    });
+    if (!response.ok) throw new Error('grading http error');
+    const data = await response.json();
+    const raw = (data.content || []).map(b => b.text || '').join('').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (typeof parsed.correct !== 'boolean') throw new Error('malformed');
+    return parsed.correct;
+  }
+  async function checkOneWritten(studentAnswer, acceptable, promptText){
+    if(!studentAnswer) return false;
+    try { return await gradeWrittenAnswer(promptText, studentAnswer, acceptable); }
+    catch(e){
+      const normalized = normalizeWritten(studentAnswer);
+      return acceptable.some(a => normalizeWritten(a) === normalized);
+    }
+  }
+
+  const writtenQuestionResults = {};
+
   document.querySelectorAll('.question[data-correct]').forEach(function(q) {
     const btn = q.querySelector('.check-btn');
     const feedback = q.querySelector('.feedback');
@@ -314,6 +337,43 @@
         '<div class="translation">' + translation + '</div>';
     });
   });
+
+  document.querySelectorAll('.question[data-written]').forEach(function(q) {
+    const btn = q.querySelector('.check-btn');
+    const feedback = q.querySelector('.feedback');
+    if (!btn) return;
+    btn.addEventListener('click', async function() {
+      const input = q.querySelector('.written-check');
+      const answer = input.value.trim();
+      const acceptable = q.getAttribute('data-answers').split(',');
+      const qId = q.getAttribute('data-qid');
+      const promptText = q.querySelector('.qtext').textContent;
+
+      feedback.style.display = 'block';
+
+      if (!answer) {
+        feedback.className = 'feedback incorrect';
+        feedback.innerHTML = 'Écris une réponse avant de vérifier.';
+        return;
+      }
+
+      btn.disabled = true;
+      feedback.className = 'feedback';
+      feedback.innerHTML = '⏳ Vérification...';
+
+      const isCorrect = await checkOneWritten(answer, acceptable, promptText);
+      writtenQuestionResults[qId] = isCorrect;
+      btn.disabled = false;
+
+      feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+      feedback.innerHTML =
+        (isCorrect ? '✅ Correct !' : '❌ Pas tout à fait.') +
+        '<div class="translation">' + acceptable[0] + '</div>';
+    });
+  });
+
+  let writingScore = null;
+  let writingSummary = '';
 
   async function correctSolution() {
     const text = document.getElementById('finalSolution').value.trim();
@@ -341,7 +401,9 @@ Consignes de correction :
 - Vérifie que la réponse identifie clairement un·e coupable avec une explication (quand, pourquoi, quelle preuve)
 - Propose une version corrigée si besoin
 - Maximum 400 caractères
-- Réponds en français pour les explications, garde les exemples en anglais`;
+- Réponds en français pour les explications, garde les exemples en anglais
+Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, au format exact :
+{"score": <note entière de 0 à 10 évaluant la qualité du texte>, "summary": "<une phrase courte en français pour la prof, résumant le niveau, sans jugement sévère>", "correction": "<le retour pédagogique complet pour l'élève, dans le même esprit que les instructions ci-dessus>"}`;
 
     try {
       const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
@@ -354,7 +416,21 @@ Consignes de correction :
         })
       });
       const data = await response.json();
-      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+      const raw = (data.content?.[0]?.text || '').trim();
+      const clean = raw.replace(/```json|```/g, '').trim();
+      let parsed = null;
+      try { parsed = JSON.parse(clean); } catch (e) {}
+
+      let correction;
+      if (parsed && typeof parsed.correction === 'string') {
+        writingScore = (typeof parsed.score === 'number' && isFinite(parsed.score)) ? Math.max(0, Math.min(10, Math.round(parsed.score))) : 6;
+        writingSummary = typeof parsed.summary === 'string' ? parsed.summary : '';
+        correction = parsed.correction;
+      } else {
+        writingScore = 6;
+        writingSummary = '';
+        correction = raw || 'Erreur de correction, réessaie.';
+      }
 
       fb.className = 'feedback correct';
       fb.innerHTML = '<strong>✅ Correction :</strong><br>' + correction.replace(/\n/g, '<br>');
@@ -375,11 +451,16 @@ Consignes de correction :
         if (q.value === correct) score++;
       }
     }
+    Object.values(writtenQuestionResults).forEach(function(r) { if (r) score++; });
+
+    total += 10;
+    score += (writingScore !== null ? writingScore : 0);
+
     const box = document.getElementById('score-box');
     box.style.display = 'block';
-    box.textContent = 'Score : ' + score + ' / ' + total;
+    box.textContent = 'Score : ' + score + ' / ' + total + (writingScore === null ? ' (fais la correction de ta rédaction pour qu\'elle compte dans le score !)' : '');
+    if (window.logPracticeAttempt) logPracticeAttempt('Solve the Mystery', score, total, 'Anglais', writingSummary);
   }
-    if (window.logPracticeAttempt) logPracticeAttempt('Solve the Mystery', score, total);
 </script>
 
 <script src="https://clperet-bot.github.io/entrainements-cours/practice-logger.js"></script>

@@ -60,6 +60,12 @@
     font-size: 0.9em;
   }
   .fill-text { line-height: 2.3em; font-size: 0.93em; }
+  .fill-input {
+    background-color: #1a1330; color: #ede6f5;
+    border: 1.5px solid #ffb703; border-radius: 5px;
+    padding: 3px 6px; font-family: inherit; font-size: 0.9em; width: 180px;
+  }
+  .fill-input:focus{outline:none; border-color:#ffc94a;}
   textarea {
     width: 100%;
     box-sizing: border-box;
@@ -160,9 +166,9 @@
   <div class="question" id="general-quiz">
     <p class="qtext">Associe chaque phrase anglaise à sa traduction française</p>
     1. "I work as a ..." → <select data-answer="Je travaille comme ..."><option value="">--</option><option value="Je travaille comme ...">Je travaille comme ...</option><option value="Je suis marié.e">Je suis marié.e</option><option value="Mes ami.es sont ...">Mes ami.es sont ...</option></select><br><br>
-    2. "I live in ..." → <select data-answer="J'habite à ..."><option value="">--</option><option value="Je suis marié.e">Je suis marié.e</option><option value="Mes ami.es sont ...">Mes ami.es sont ...</option><option value="J'habite à ...">J'habite à ...</option></select><br><br>
+    2. "I live in ..." → <input type="text" class="fill-input written-check" data-written-answer="j'habite à ...,jhabite à ...,j'habite à..." placeholder="Traduis en français"><br><br>
     3. "I have ... children" → <select data-answer="J'ai ... enfants"><option value="">--</option><option value="Mes ami.es sont ...">Mes ami.es sont ...</option><option value="Je suis marié.e">Je suis marié.e</option><option value="J'ai ... enfants">J'ai ... enfants</option></select><br><br>
-    4. "In my free time, I ..." → <select data-answer="Pendant mon temps libre, je ..."><option value="">--</option><option value="Je suis marié.e">Je suis marié.e</option><option value="Mes ami.es sont ...">Mes ami.es sont ...</option><option value="Pendant mon temps libre, je ...">Pendant mon temps libre, je ...</option></select><br><br>
+    4. "In my free time, I ..." → <input type="text" class="fill-input written-check" data-written-answer="pendant mon temps libre, je ...,pendant mon temps libre je ..." placeholder="Traduis en français"><br><br>
     <button class="check-btn" id="check-general">Vérifier</button>
     <div class="feedback" id="fb-general"></div>
   </div>
@@ -172,9 +178,9 @@
   <div class="question" id="jobs-quiz">
     <p class="qtext">Associe chaque métier français à sa traduction anglaise</p>
     1. Artisan.e d'art → <select data-answer="Craftsperson"><option value="">--</option><option value="Illuminator">Illuminator</option><option value="Craftsperson">Craftsperson</option><option value="Gilder">Gilder</option></select><br><br>
-    2. Doreur.euse → <select data-answer="Gilder"><option value="">--</option><option value="Gilder">Gilder</option><option value="Illuminator">Illuminator</option><option value="Craftsperson">Craftsperson</option></select><br><br>
+    2. Doreur.euse → <input type="text" class="fill-input written-check" data-written-answer="gilder" placeholder="Tape le mot en anglais"><br><br>
     3. Enlumineur.euse → <select data-answer="Illuminator"><option value="">--</option><option value="Illuminator">Illuminator</option><option value="Craftsperson">Craftsperson</option><option value="Gilder">Gilder</option></select><br><br>
-    4. Peintre en lettres → <select data-answer="Sign painter"><option value="">--</option><option value="Gilder">Gilder</option><option value="Sign painter">Sign painter</option><option value="Illuminator">Illuminator</option></select><br><br>
+    4. Peintre en lettres → <input type="text" class="fill-input written-check" data-written-answer="sign painter" placeholder="Tape les mots en anglais"><br><br>
     5. Sculpteur.rice sur enseignes → <select data-answer="Sign carver"><option value="">--</option><option value="Sign carver">Sign carver</option><option value="Craftsperson">Craftsperson</option><option value="Illuminator">Illuminator</option></select><br><br>
     <button class="check-btn" id="check-jobs">Vérifier</button>
     <div class="feedback" id="fb-jobs"></div>
@@ -185,9 +191,9 @@
   <div class="question" id="techs-quiz">
     <p class="qtext">Associe chaque mot technique français à sa traduction anglaise</p>
     1. Calligraphie → <select data-answer="Calligraphy"><option value="">--</option><option value="Calligraphy">Calligraphy</option><option value="Restoration of old signs">Restoration of old signs</option><option value="Wood carving">Wood carving</option></select><br><br>
-    2. Dorure à la feuille → <select data-answer="Gold leaf gilding"><option value="">--</option><option value="Hand-lettering">Hand-lettering</option><option value="Gold leaf gilding">Gold leaf gilding</option><option value="Wood carving">Wood carving</option></select><br><br>
+    2. Dorure à la feuille → <input type="text" class="fill-input written-check" data-written-answer="gold leaf gilding" placeholder="Tape les mots en anglais"><br><br>
     3. Lettrage à la main → <select data-answer="Hand-lettering"><option value="">--</option><option value="Wood carving">Wood carving</option><option value="Gold leaf gilding">Gold leaf gilding</option><option value="Hand-lettering">Hand-lettering</option></select><br><br>
-    4. Sculpture sur bois → <select data-answer="Wood carving"><option value="">--</option><option value="Calligraphy">Calligraphy</option><option value="Wood carving">Wood carving</option><option value="Hand-lettering">Hand-lettering</option></select><br><br>
+    4. Sculpture sur bois → <input type="text" class="fill-input written-check" data-written-answer="wood carving" placeholder="Tape les mots en anglais"><br><br>
     5. Restauration d'enseignes anciennes → <select data-answer="Restoration of old signs"><option value="">--</option><option value="Wood carving">Wood carving</option><option value="Restoration of old signs">Restoration of old signs</option><option value="Gold leaf gilding">Gold leaf gilding</option></select><br><br>
     <button class="check-btn" id="check-techs">Vérifier</button>
     <div class="feedback" id="fb-techs"></div>
@@ -218,13 +224,56 @@
 <footer>Lycée Godefroy de Bouillon</footer>
 
 <script>
+  function normalizeWritten(s){
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+  }
+
+  async function gradeWrittenAnswer(promptText, studentAnswer, acceptableAnswers) {
+    const gradingPrompt = `Tu es un professeur d'anglais bienveillant pour des élèves de niveau A1-A2 en filière BMA. Voici un mot/une expression à traduire et la réponse tapée par l'élève.
+
+Consigne : "${promptText}"
+Réponse(s) attendue(s) : ${acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+
+Consigne de correction : sois généreux.e. Fautes de frappe, accents, majuscules/minuscules ne comptent pas contre l'élève tant que le mot reste reconnaissable. Réponds UNIQUEMENT en JSON valide : {"correct":true}`;
+    const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 60, messages: [{role:'user', content: gradingPrompt}] })
+    });
+    if (!response.ok) throw new Error('grading http error');
+    const data = await response.json();
+    const raw = (data.content || []).map(b => b.text || '').join('').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (typeof parsed.correct !== 'boolean') throw new Error('malformed');
+    return parsed.correct;
+  }
+
+  async function checkOneWritten(studentAnswer, acceptable, promptText){
+    if(!studentAnswer) return false;
+    try { return await gradeWrittenAnswer(promptText, studentAnswer, acceptable); }
+    catch(e){
+      const normalized = normalizeWritten(studentAnswer);
+      return acceptable.some(a => normalizeWritten(a) === normalized);
+    }
+  }
+
   function checkMatching(containerId, checkBtnId, feedbackId, successMsg, errorMsg) {
-    document.getElementById(checkBtnId).addEventListener('click', function() {
+    const btn = document.getElementById(checkBtnId);
+    btn.addEventListener('click', async function() {
+      btn.disabled = true; btn.textContent = '⏳';
       const selects = document.querySelectorAll('#' + containerId + ' select');
+      const writtenInputs = document.querySelectorAll('#' + containerId + ' .written-check');
       let allCorrect = true;
       selects.forEach(function(s) {
         if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
       });
+      const writtenResults = await Promise.all(Array.from(writtenInputs).map(inp =>
+        checkOneWritten(inp.value.trim(), inp.getAttribute('data-written-answer').split(','), 'Traduis ce mot/cette expression.')
+      ));
+      if (writtenResults.some(r => r === false)) allCorrect = false;
+      btn.disabled = false; btn.textContent = 'Vérifier';
       const fb = document.getElementById(feedbackId);
       fb.style.display = 'block';
       if (allCorrect) {
@@ -241,6 +290,8 @@
   checkMatching('jobs-quiz', 'check-jobs', 'fb-jobs', 'Bravo, tu connais bien les métiers !', 'Il y a au moins une erreur, réessaie.');
   checkMatching('techs-quiz', 'check-techs', 'fb-techs', 'Bravo, tu connais bien le vocabulaire technique !', 'Il y a au moins une erreur, réessaie.');
 
+  let writingScore = null;
+  let writingSummary = '';
   async function correctLetter() {
     const text = document.getElementById('finalLetter').value.trim();
     const fb = document.getElementById('fb-final');
@@ -266,7 +317,10 @@ Consignes de correction :
 - Vérifie que la lettre commence bien par une formule d'ouverture et parle du métier, du lieu de vie, et d'un autre aspect de la vie future
 - Propose une version corrigée si besoin
 - Maximum 400 caractères
-- Réponds en français pour les explications, garde les exemples en anglais`;
+- Réponds en français pour les explications, garde les exemples en anglais
+
+Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, au format exact :
+{"score": <note entière de 0 à 10 évaluant la qualité du texte>, "summary": "<une phrase courte en français pour la prof, résumant le niveau, sans jugement sévère>", "correction": "<le retour pédagogique complet pour l'élève, dans le même esprit que les instructions ci-dessus>"}`;
 
     try {
       const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
@@ -279,7 +333,21 @@ Consignes de correction :
         })
       });
       const data = await response.json();
-      const correction = (data.content?.[0]?.text || '').trim() || 'Erreur de correction, réessaie.';
+      const raw = (data.content?.[0]?.text || '').trim();
+      const clean = raw.replace(/```json|```/g, '').trim();
+      let parsed = null;
+      try { parsed = JSON.parse(clean); } catch (e) {}
+
+      let correction;
+      if (parsed && typeof parsed.correction === 'string') {
+        writingScore = (typeof parsed.score === 'number' && isFinite(parsed.score)) ? Math.max(0, Math.min(10, Math.round(parsed.score))) : 6;
+        writingSummary = typeof parsed.summary === 'string' ? parsed.summary : '';
+        correction = parsed.correction;
+      } else {
+        writingScore = 6;
+        writingSummary = '';
+        correction = raw || 'Erreur de correction, réessaie.';
+      }
 
       fb.className = 'feedback correct';
       fb.innerHTML = '<strong>✅ Correction :</strong><br>' + correction.replace(/\n/g, '<br>');
@@ -295,17 +363,25 @@ Consignes de correction :
 
     ['general-quiz', 'jobs-quiz', 'techs-quiz'].forEach(function(qId) {
       const selects = document.querySelectorAll('#' + qId + ' select');
-      let allCorrect = selects.length > 0;
+      const writtenInputs = document.querySelectorAll('#' + qId + ' .written-check');
+      let allCorrect = (selects.length + writtenInputs.length) > 0;
       selects.forEach(function(s) {
         if (s.value !== s.getAttribute('data-answer')) allCorrect = false;
+      });
+      writtenInputs.forEach(function(inp) {
+        const acceptable = inp.getAttribute('data-written-answer').split(',');
+        if (!acceptable.some(a => normalizeWritten(a) === normalizeWritten(inp.value))) allCorrect = false;
       });
       if (allCorrect) score++;
     });
 
+    total += 10;
+    score += (writingScore !== null ? writingScore : 0);
+
     const box = document.getElementById('score-box');
     box.style.display = 'block';
-    box.textContent = 'Score : ' + score + ' / ' + total + ' (la lettre finale est corrigée séparément)';
-    if (window.logPracticeAttempt) logPracticeAttempt('Me in Ten Years (BMA)', score, total);
+    box.textContent = 'Score : ' + score + ' / ' + total + (writingScore === null ? ' (fais la correction de ta rédaction pour qu\'elle compte dans le score !)' : '');
+    if (window.logPracticeAttempt) logPracticeAttempt('Me in Ten Years (BMA)', score, total, 'Anglais', writingSummary);
   }
 </script>
 
