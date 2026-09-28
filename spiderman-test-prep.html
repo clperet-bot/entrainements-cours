@@ -314,7 +314,7 @@
 Consigne : "${promptText}"
 Réponse(s) attendue(s) : ${acceptableAnswers.join(' / ')}
 Réponse de l'élève : "${studentAnswer}"
-Consigne de correction : sois généreux.e, tolère les fautes de frappe, les accents manquants, la casse. Réponds UNIQUEMENT en JSON valide : {"correct":true} ou {"correct":false}`;
+Consigne de correction : sois généreux.e. Accepte toute reformulation qui a le même sens que la réponse attendue, même avec des mots différents, des synonymes ou une autre construction de phrase. Tolère aussi les fautes de frappe, les accents manquants et la casse. Réponds UNIQUEMENT en JSON valide : {"correct":true} ou {"correct":false}`;
     const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 60, messages: [{role:'user', content: gradingPrompt}] })

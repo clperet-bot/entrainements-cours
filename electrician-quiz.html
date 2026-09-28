@@ -557,53 +557,114 @@ function renderAll(){
   });
 }
 
-function handleConstructAnswer(qi){
+function normalizeWritten(s){
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+}
+
+async function gradeWrittenAnswer(promptText, studentAnswer, acceptableAnswers, extraInstructions){
+  const gradingPrompt = `Tu es un professeur d'anglais bienveillant pour des élèves de 2nde en filière professionnelle (électricité/maintenance), niveau A1-A2. Voici une question de quiz et la réponse tapée par l'élève.
+
+Question posée à l'élève : "${promptText}"
+Réponse(s) attendue(s) (une seule suffit, ou un équivalent proche) : ${acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+${extraInstructions || ''}
+
+Consigne de correction : sois généreux.e. Accepte toute reformulation qui a le même sens que la réponse attendue, même avec des mots différents, des synonymes ou une autre construction de phrase. Les fautes de frappe, accents manquants et majuscules/minuscules ne comptent pas non plus contre l'élève. En cas de doute, donne le bénéfice du doute à l'élève. Une réponse vide ou hors-sujet est incorrecte.
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après, sans balises markdown, avec exactement cette forme :
+{"correct":true,"feedback":"1 phrase courte en français, encourageante, qui confirme ou corrige"}`;
+
+  const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 200,
+      messages: [{role: 'user', content: gradingPrompt}]
+    })
+  });
+  if(!response.ok) throw new Error('grading http error');
+  const data = await response.json();
+  const raw = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if(typeof parsed.correct !== 'boolean') throw new Error('malformed grading response');
+  return parsed;
+}
+
+async function handleConstructAnswer(qi){
   if(answered[qi] !== undefined) return;
 
   const input = document.getElementById('input'+qi);
+  const btn = document.querySelector(`[data-submit="${qi}"]`);
   const q = QUESTIONS[qi];
-  const raw = input.value.trim().toLowerCase();
-
-  const hasIng = raw.includes(q.requiredIng);
-  const hasWord = raw.includes(q.requiredWord);
-  const hasSubject = !q.requireSubject || /\bi\s+am\b|\bi'm\b/.test(raw);
-  const correct = hasIng && hasWord && hasSubject && raw.length > 0;
-
-  answered[qi] = correct;
-  if(correct) score++;
+  const studentAnswer = input.value.trim();
+  if(!studentAnswer){ input.focus(); return; }
 
   input.disabled = true;
-  document.querySelector(`[data-submit="${qi}"]`).disabled = true;
-  input.classList.add(correct ? 'correct' : 'incorrect');
+  btn.disabled = true;
+  btn.textContent = 'Correction en cours...';
+
+  const acceptable = [`I am ${q.requiredIng} the ${q.requiredWord}.`];
+  const extra = `La phrase doit utiliser la structure BE + V-ing (ex: "I am ${q.requiredIng} the ${q.requiredWord}."). Accepte les variantes correctes de cette structure.`;
+  let result;
+  try {
+    result = await gradeWrittenAnswer(q.prompt, studentAnswer, acceptable, extra);
+  } catch(e){
+    const raw = studentAnswer.toLowerCase();
+    const hasIng = raw.includes(q.requiredIng);
+    const hasWord = raw.includes(q.requiredWord);
+    const hasSubject = !q.requireSubject || /\bi\s+am\b|\bi'm\b/.test(raw);
+    const isCorrect = hasIng && hasWord && hasSubject;
+    result = { correct: isCorrect, feedback: isCorrect ? 'Exact !' : 'Ce n\'est pas tout à fait ça — regarde l\'explication ci-dessous.' };
+  }
+
+  answered[qi] = result.correct;
+  if(result.correct) score++;
+
+  btn.textContent = 'Valider';
+  input.classList.add(result.correct ? 'correct' : 'incorrect');
 
   const fb = document.getElementById('fb'+qi);
-  fb.classList.add('show', correct ? 'ok' : 'ko');
-  fb.querySelector('.verdict').textContent = correct ? "Exact !" : "Pas tout à fait.";
-  fb.querySelector('.explanation').textContent = q.explanation;
+  fb.classList.add('show', result.correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = result.correct ? "Exact !" : "Pas tout à fait.";
+  fb.querySelector('.explanation').textContent = result.feedback + ' ' + q.explanation;
 
   document.querySelector(`#q${qi} .next`).classList.add('show');
   qScore.textContent = score;
 }
 
-function handleTranslateAnswer(qi){
+async function handleTranslateAnswer(qi){
   if(answered[qi] !== undefined) return;
 
   const input = document.getElementById('input'+qi);
+  const btn = document.querySelector(`[data-submit="${qi}"]`);
   const q = QUESTIONS[qi];
-  const raw = input.value.trim().toLowerCase().replace(/[.!?]+$/,'');
-  const correct = q.answers.includes(raw) && raw.length > 0;
-
-  answered[qi] = correct;
-  if(correct) score++;
+  const studentAnswer = input.value.trim();
+  if(!studentAnswer){ input.focus(); return; }
 
   input.disabled = true;
-  document.querySelector(`[data-submit="${qi}"]`).disabled = true;
-  input.classList.add(correct ? 'correct' : 'incorrect');
+  btn.disabled = true;
+  btn.textContent = 'Correction en cours...';
+
+  let result;
+  try {
+    result = await gradeWrittenAnswer(q.prompt, studentAnswer, q.answers);
+  } catch(e){
+    const normalized = normalizeWritten(studentAnswer);
+    const isCorrect = q.answers.some(a => normalizeWritten(a) === normalized);
+    result = { correct: isCorrect, feedback: isCorrect ? 'Exact !' : 'Ce n\'est pas tout à fait ça — regarde l\'explication ci-dessous.' };
+  }
+
+  answered[qi] = result.correct;
+  if(result.correct) score++;
+
+  btn.textContent = 'Valider';
+  input.classList.add(result.correct ? 'correct' : 'incorrect');
 
   const fb = document.getElementById('fb'+qi);
-  fb.classList.add('show', correct ? 'ok' : 'ko');
-  fb.querySelector('.verdict').textContent = correct ? "Exact !" : "Pas tout à fait.";
-  fb.querySelector('.explanation').textContent = q.explanation;
+  fb.classList.add('show', result.correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = result.correct ? "Exact !" : "Pas tout à fait.";
+  fb.querySelector('.explanation').textContent = result.feedback + ' ' + q.explanation;
 
   document.querySelector(`#q${qi} .next`).classList.add('show');
   qScore.textContent = score;

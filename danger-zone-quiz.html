@@ -247,6 +247,32 @@
     display:none;
   }
   .aide-box.show{display:block;}
+  .written-box{display:flex; flex-direction:column; gap:10px;}
+  .written-input{
+    background:var(--near-black);
+    border:1px solid rgba(255,255,255,0.15);
+    color:var(--white);
+    font-family:'Oswald',sans-serif;
+    font-size:16px;
+    padding:13px 16px;
+  }
+  .written-input:focus{outline:none; border-color:var(--yellow);}
+  .written-input:disabled{opacity:0.6;}
+  .written-hint{font-size:12.5px; color:var(--grey); letter-spacing:0.03em;}
+  button.submit-written{
+    align-self:flex-start;
+    font-family:'Archivo Black',sans-serif;
+    font-size:13px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    background:var(--yellow);
+    color:var(--black);
+    border:none;
+    padding:11px 20px;
+    cursor:pointer;
+  }
+  button.submit-written:hover:not(:disabled){background:var(--white);}
+  button.submit-written:disabled{background:var(--grey); cursor:wait;}
 
   #results{display:none; text-align:center;}
   #results.show{display:block;}
@@ -440,21 +466,22 @@
 
 <script>
 // referencesText: true => the reading passage panel is shown for this question
+// type: 'mcq' (par défaut) = choix multiple ; 'written' = l'élève tape sa réponse, corrigée par IA
 const QUESTIONS = [
 {prompt:"Hazard = ?", options:["Un danger, un risque d'accident","Un équipement","Un inspecteur","Une échelle"], correct:0, explanation:"Hazard = something that can cause an accident or injury.", aide:"Hazard = un danger, ce qui peut provoquer un accident.", referencesText:false},
 {prompt:"Which word means 'câble' ?", options:["ladder","cables","panel","boots"], correct:1, explanation:"Cables = thick wires on the floor, a trip hazard.", aide:"Cables = câbles, des fils épais qui traînent au sol.", referencesText:false},
 {prompt:"'A hard hat that protects your head' — quel mot ?", options:["goggles","boots","helmet","gloves"], correct:2, explanation:"Helmet = casque, protège la tête.", aide:"Helmet = casque de protection pour la tête.", referencesText:false},
 {prompt:"'Protective glasses for your eyes' = ?", options:["goggles","warning","risk","panel"], correct:0, explanation:"Goggles = lunettes de protection.", aide:"Goggles = lunettes de protection pour les yeux.", referencesText:false},
 {prompt:"Comment dit-on 'chaussures de sécurité' en anglais ?", options:["safety boots","gloves","equipment","helmet"], correct:0, explanation:"Safety boots = chaussures de sécurité, protective shoes for your feet.", aide:"Safety boots = chaussures de sécurité.", referencesText:false},
-{prompt:"'An electrical board on the wall' = ?", options:["ladder","panel","floor","inspector"], correct:1, explanation:"Panel = tableau électrique.", aide:"Panel = tableau électrique sur le mur.", referencesText:false},
+{prompt:"'An electrical board on the wall' = ?", options:["ladder","electrical panel","floor","inspector"], correct:1, explanation:"Electrical panel = tableau électrique. On précise 'electrical', car 'panel' tout seul est un mot plus général (panneau, tableau de bord...).", aide:"Electrical panel = tableau électrique.", referencesText:false},
 {prompt:"Which word means 'échelle' ?", options:["risk","warning","ladder","equipment"], correct:2, explanation:"Ladder = structure used to climb up or down.", aide:"Ladder = échelle.", referencesText:false},
-{prompt:"D'après le texte, qu'est-ce qui recouvre le sol du garage ?", options:["De l'eau","De la peinture","Rien, il est sec","De l'huile (oil)"], correct:3, explanation:"'There is oil on the floor' — de l'huile au sol, c'est glissant et dangereux.", aide:"Oil = huile.", referencesText:true},
-{prompt:"D'après le texte, où se trouve le câble (cable) ?", options:["Accroché au mur","Dans un tiroir","Sur le passage (walkway)","Dans la poubelle"], correct:2, explanation:"'A cable is lying across the walkway' — le câble traverse le passage, un risque de chute.", aide:"Walkway = le passage, l'allée où l'on marche.", referencesText:true},
-{prompt:"D'après le texte, combien de travailleurs sont dans le garage ?", options:["Aucun","Trois","Un seul","Deux"], correct:3, explanation:"'There are two workers, a man and a woman.'", aide:"Two = deux.", referencesText:true},
-{prompt:"D'après le texte, complète : 'A ___ is leaning against the shelves, not secured.'", options:["sign","bucket","ladder","cable"], correct:2, explanation:"'A ladder is leaning against the shelves, not secured' — l'échelle n'est pas fixée, c'est un danger.", aide:"Il faut le mot pour 'échelle'.", referencesText:true},
-{prompt:"D'après le texte, complète : 'One worker is wearing goggles. The other is not wearing any ___.'", options:["helmet","gloves","boots","goggles"], correct:1, explanation:"'The other is not wearing any gloves' — l'un des deux travailleurs n'a pas de gants.", aide:"Gloves = gants.", referencesText:true},
-{prompt:"D'après le texte, quelle fin de phrase est correcte : 'The garage is dangerous because...' ?", options:["there is a fire extinguisher on the wall","there is oil on the floor","one worker wears goggles","they are checking a report"], correct:1, explanation:"L'huile au sol est un vrai danger (sol glissant), contrairement à l'extincteur ou aux lunettes qui sont des protections.", aide:"Cherche ce qui est un danger, pas une protection.", referencesText:true},
-{prompt:"Warning sign = ?", options:["Un panneau d'avertissement","Une prise électrique","Une boîte à outils","Un extincteur"], correct:0, explanation:"Warning = a sign that tells you to be careful.", aide:"Warning sign = panneau d'avertissement.", referencesText:false},
+{type:"written", prompt:"D'après le texte, qu'est-ce qui recouvre le sol du garage ? (réponds en anglais)", acceptableAnswers:["oil"], explanation:"'There is oil on the floor' — de l'huile au sol, c'est glissant et dangereux.", aide:"Oil = huile.", referencesText:true},
+{type:"written", prompt:"D'après le texte, où se trouve le câble (cable) ? (réponds en anglais)", acceptableAnswers:["walkway","on the walkway","the walkway"], explanation:"'A cable is lying across the walkway' — le câble traverse le passage, un risque de chute.", aide:"Walkway = le passage, l'allée où l'on marche.", referencesText:true},
+{type:"written", prompt:"D'après le texte, combien de travailleurs sont dans le garage ? (réponds en anglais, en toutes lettres)", acceptableAnswers:["two"], explanation:"'There are two workers, a man and a woman.'", aide:"Two = deux.", referencesText:true},
+{type:"written", prompt:"D'après le texte, complète en anglais : 'A ___ is leaning against the shelves, not secured.'", acceptableAnswers:["ladder"], explanation:"'A ladder is leaning against the shelves, not secured' — l'échelle n'est pas fixée, c'est un danger.", aide:"Il faut le mot pour 'échelle'.", referencesText:true},
+{type:"written", prompt:"D'après le texte, complète en anglais : 'One worker is wearing goggles. The other is not wearing any ___.'", acceptableAnswers:["gloves"], explanation:"'The other is not wearing any gloves' — l'un des deux travailleurs n'a pas de gants.", aide:"Gloves = gants.", referencesText:true},
+{type:"written", prompt:"D'après le texte, termine cette phrase en anglais : 'The garage is dangerous because...'", acceptableAnswers:["there is oil on the floor","oil on the floor","there is oil"], explanation:"L'huile au sol est un vrai danger (sol glissant), contrairement à l'extincteur ou aux lunettes qui sont des protections.", aide:"Cherche ce qui est un danger, pas une protection.", referencesText:true},
+{type:"written", prompt:"Warning sign = ? (traduis en français)", acceptableAnswers:["un panneau d'avertissement","panneau d'avertissement","un panneau davertissement"], explanation:"Warning = a sign that tells you to be careful.", aide:"Warning sign = panneau d'avertissement.", referencesText:false},
 {prompt:"Sur le rapport d'inspection (HSA report), quel est le verdict final possible ?", options:["OPEN / CLOSED","WET / DRY","HELMET / NO HELMET","SAFE / needs IMPROVEMENT / DANGEROUS"], correct:3, explanation:"Le rapport propose 3 verdicts : This workshop is SAFE / needs IMPROVEMENT / is DANGEROUS — DO NOT ENTER.", aide:"Les 3 verdicts possibles du rapport officiel.", referencesText:false}
 ];
 
@@ -475,15 +502,27 @@ function renderAll(){
     const div = document.createElement('div');
     div.className = 'question' + (i===0 ? ' active' : '');
     div.id = 'q'+i;
+
+    const bodyHtml = q.type === 'written'
+      ? `
+        <div class="written-box">
+          <input type="text" class="written-input" id="written${i}" placeholder="Tape ta réponse ici" autocomplete="off">
+          <button class="submit-written" data-submit-written="${i}">Valider</button>
+        </div>
+      `
+      : `
+        <div class="options">
+          ${q.options.map((opt, oi) => `<button class="option" data-i="${oi}">${opt}</button>`).join('')}
+        </div>
+      `;
+
     div.innerHTML = `
       <div class="q-meta">
         <div class="q-number">${i+1}</div>
         <div class="q-track"><div class="q-track-fill" style="width:${(i/QUESTIONS.length*100)}%"></div></div>
       </div>
       <p class="prompt">${q.prompt}</p>
-      <div class="options">
-        ${q.options.map((opt, oi) => `<button class="option" data-i="${oi}">${opt}</button>`).join('')}
-      </div>
+      ${bodyHtml}
       <div class="feedback" id="fb${i}">
         <span class="verdict"></span>
         <span class="explanation"></span>
@@ -499,6 +538,18 @@ function renderAll(){
 
   document.querySelectorAll('.option').forEach(btn => {
     btn.addEventListener('click', handleAnswer);
+  });
+  document.querySelectorAll('[data-submit-written]').forEach(btn => {
+    btn.addEventListener('click', () => handleWrittenAnswer(parseInt(btn.dataset.submitWritten)));
+  });
+  document.querySelectorAll('.written-input').forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const qi = parseInt(input.id.replace('written',''));
+        handleWrittenAnswer(qi);
+      }
+    });
   });
   document.querySelectorAll('[data-next]').forEach(btn => {
     btn.addEventListener('click', () => goTo(parseInt(btn.dataset.next) + 1));
@@ -545,6 +596,78 @@ function handleAnswer(e){
   fb.querySelector('.explanation').textContent = q.explanation;
 
   qDiv.querySelector('.next').classList.add('show');
+  qScore.textContent = score;
+}
+
+function normalizeWritten(s){
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.!?]+$/,'').trim();
+}
+
+async function gradeWrittenAnswer(q, studentAnswer){
+  const gradingPrompt = `Tu es un professeur d'anglais bienveillant pour des élèves de 2nde en filière professionnelle (niveau A1-A2). Voici une question de quiz et la réponse tapée par l'élève.
+
+Question posée à l'élève : "${q.prompt}"
+Réponse(s) attendue(s) (une seule suffit) : ${q.acceptableAnswers.join(' / ')}
+Réponse de l'élève : "${studentAnswer}"
+
+Consigne de correction : sois généreux.e. Accepte toute reformulation qui a le même sens que la réponse attendue, même avec des mots différents, des synonymes ou une autre construction de phrase. Les fautes de frappe, accents manquants et majuscules/minuscules ne comptent pas non plus contre l'élève. En cas de doute, donne le bénéfice du doute à l'élève. Une réponse vide ou hors-sujet est incorrecte.
+Réponds UNIQUEMENT en JSON valide, sans texte avant/après, sans balises markdown, avec exactement cette forme :
+{"correct":true,"feedback":"1 phrase courte en français, encourageante, qui confirme ou corrige"}`;
+
+  const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 200,
+      messages: [{role: 'user', content: gradingPrompt}]
+    })
+  });
+  if(!response.ok) throw new Error('grading http error');
+  const data = await response.json();
+  const raw = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if(typeof parsed.correct !== 'boolean') throw new Error('malformed grading response');
+  return parsed;
+}
+
+async function handleWrittenAnswer(qi){
+  if(answered[qi] !== undefined) return;
+  const q = QUESTIONS[qi];
+  const input = document.getElementById('written'+qi);
+  const btn = document.querySelector(`[data-submit-written="${qi}"]`);
+  const studentAnswer = input.value.trim();
+
+  if(!studentAnswer){
+    input.focus();
+    return;
+  }
+
+  input.disabled = true;
+  btn.disabled = true;
+  btn.textContent = 'Correction en cours...';
+
+  let result;
+  try {
+    result = await gradeWrittenAnswer(q, studentAnswer);
+  } catch(e){
+    // Repli si l'IA est indisponible : comparaison locale tolérante (accents/casse/ponctuation ignorés)
+    const normalized = normalizeWritten(studentAnswer);
+    const isCorrect = q.acceptableAnswers.some(a => normalizeWritten(a) === normalized);
+    result = { correct: isCorrect, feedback: isCorrect ? 'Exact !' : 'Ce n\'est pas tout à fait ça — regarde l\'explication ci-dessous.' };
+  }
+
+  answered[qi] = result.correct;
+  if(result.correct) score++;
+
+  btn.textContent = 'Valider';
+  const fb = document.getElementById('fb'+qi);
+  fb.classList.add('show', result.correct ? 'ok' : 'ko');
+  fb.querySelector('.verdict').textContent = result.correct ? 'Exact !' : 'Pas tout à fait.';
+  fb.querySelector('.explanation').textContent = result.feedback + ' ' + q.explanation;
+
+  document.getElementById('q'+qi).querySelector('.next').classList.add('show');
   qScore.textContent = score;
 }
 

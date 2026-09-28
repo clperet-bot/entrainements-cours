@@ -389,7 +389,7 @@ Question posée à l'élève : "${promptText}"
 Réponse(s) attendue(s) (une seule suffit, ou un équivalent proche) : ${acceptableAnswers.join(' / ')}
 Réponse de l'élève : "${studentAnswer}"
 
-Consigne de correction : sois généreux.e. Les fautes de frappe, accents, majuscules/minuscules ne comptent pas contre l'élève tant que le sens reste correct et reconnaissable. Une réponse vide ou hors-sujet est incorrecte.
+Consigne de correction : sois généreux.e. Accepte toute reformulation qui a le même sens que la réponse attendue, même avec des mots différents, des synonymes ou une autre construction de phrase. Les fautes de frappe, accents et majuscules/minuscules ne comptent pas non plus contre l'élève. Une réponse vide ou hors-sujet est incorrecte.
 Réponds UNIQUEMENT en JSON valide, sans texte avant/après : {"correct":true}`;
     const response = await fetch('https://ia-proxy.clperet.workers.dev/', {
       method: 'POST',
