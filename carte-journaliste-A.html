@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Client Brief to Shop Sign — Quiz</title>
+<title>Carte de journaliste — Quiz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Special+Elite&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -421,7 +421,7 @@
   <div class="kicker">Français 2nde — Formation journaliste</div>
   <h1>Carte de journaliste</h1>
   <span class="eval-badge">Quiz évalué</span>
-  <p class="subtitle">Contrôle final : info ou intox, les 5W, écrire comme un journaliste, relecture, types d'articles, rédaction.</p>
+  <p class="subtitle">Contrôle final sur les notions utiles pour rédiger votre article pour le vrai journal du lycée — le projet que vous êtes en train de réaliser en ce moment : info ou intox, les 5W, écrire comme un journaliste, types d'articles, rédaction. Toutes les questions portent sur ce projet, pas sur des connaissances générales de journalisme.</p>
 </header>
 
 <main>
@@ -441,7 +441,7 @@
     </div>
     <p class="writing-instructions">
       Le club théâtre du lycée organise sa première représentation publique le mois prochain, ouverte à tous les élèves et à leurs familles.
-      Rédige un article de presse complet sur ce sujet.
+      Rédige un article de presse complet sur ce sujet, comme pour le journal du lycée.
     </p>
     <textarea id="writing-input" placeholder="Rédige ton article ici..." style="min-height:200px;"></textarea>
     <button id="finish-btn">Terminer et voir ma note →</button>
@@ -615,10 +615,10 @@ async function cancelAttempt(){
 function runQuiz(){
 
 const QUESTIONS = [
-{prompt:"« Le CDI a été repeint pendant les vacances, comme confirmé par la direction. » Il s'agit...", options:["D'une opinion","D'une rumeur","D'une information","D'une anecdote"], correct:2, explanation:"Un fait confirmé par une source officielle est une information."},
-{prompt:"« On dit que deux classes vont fusionner l'an prochain, mais rien n'est confirmé. » Il s'agit...", options:["D'une information","D'une rumeur","D'une anecdote","D'une opinion"], correct:1, explanation:"Une affirmation non confirmée qui circule est une rumeur."},
-{prompt:"« Le foyer des élèves devrait être plus grand, à mon avis. » Il s'agit...", options:["D'une rumeur","D'une information","D'une opinion","D'une anecdote"], correct:2, explanation:"Un avis personnel non vérifiable est une opinion."},
-{prompt:"« Un jour, un surveillant a couru après un ballon échappé jusque dans la cour, tout le monde a ri. » Il s'agit...", options:["D'une anecdote","D'une information","D'une rumeur","D'une opinion"], correct:0, explanation:"Un petit fait vécu, raconté à titre personnel, est une anecdote."},
+{prompt:"Pour le journal du lycée, on te rapporte : « Le CDI a été repeint pendant les vacances, comme confirmé par la direction. » Pour ton article, il s'agit...", options:["D'une opinion","D'une rumeur","D'une information","D'une anecdote"], correct:2, explanation:"Un fait confirmé par une source officielle est une information."},
+{prompt:"Pour le journal du lycée, on te rapporte : « On dit que deux classes vont fusionner l'an prochain, mais rien n'est confirmé. » Pour ton article, il s'agit...", options:["D'une information","D'une rumeur","D'une anecdote","D'une opinion"], correct:1, explanation:"Une affirmation non confirmée qui circule est une rumeur."},
+{prompt:"Pour le journal du lycée, on te rapporte : « Le foyer des élèves devrait être plus grand, à mon avis. » Pour ton article, il s'agit...", options:["D'une rumeur","D'une information","D'une opinion","D'une anecdote"], correct:2, explanation:"Un avis personnel non vérifiable est une opinion."},
+{prompt:"Pour le journal du lycée, on te rapporte : « Un jour, un surveillant a couru après un ballon échappé jusque dans la cour, tout le monde a ri. » Pour ton article, il s'agit...", options:["D'une anecdote","D'une information","D'une rumeur","D'une opinion"], correct:0, explanation:"Un petit fait vécu, raconté à titre personnel, est une anecdote."},
 {prompt:"Dans la règle des 5W, quelle question permet de connaître le lieu d'un événement ?", options:["Where","Who","Why","When"], correct:0, explanation:"Where = Où : indique le lieu de l'événement."},
 {prompt:"Dans la règle des 5W, quelle question permet de connaître la date d'un événement ?", options:["When","Why","Who","What"], correct:0, explanation:"When = Quand : indique la date ou le moment de l'événement."},
 {prompt:"« La coupure d'eau a duré deux heures, provoquée par une fuite. » Cette phrase répond principalement à quelle question des 5W ?", options:["What","Why","Where","Who"], correct:1, explanation:"Why = Pourquoi : la phrase explique la cause (une fuite)."},
@@ -627,10 +627,7 @@ const QUESTIONS = [
 {prompt:"Pour intégrer correctement un témoignage dans un article, quelle formulation convient ?", options:["Un élève aurait dit un truc du genre que c'était énervant.","On raconte qu'une élève trouvait ça énervant.","Il paraît qu'une élève était choquée par la situation.","Selon une élève de terminale, « la situation devenait ingérable »."], correct:3, explanation:"« Selon [nom/fonction]... » suivi d'une citation entre guillemets est la structure attendue."},
 {prompt:"Pour exprimer une cause dans un article, quelle formulation est correcte ?", options:["Et donc du coup ça a fait ça...","Ça arrive, c'est comme ça.","La coupure aurait été causée par une fuite d'eau.","On sait pas trop pourquoi en vrai."], correct:2, explanation:"« [Événement] aurait été causé par... » exprime une cause avec la prudence journalistique du conditionnel."},
 {prompt:"Pour conclure un article en évoquant la suite des événements, quelle formulation convient le mieux ?", options:["Voilà, c'est tout pour aujourd'hui.","On verra bien comment ça se termine.","Bref, l'histoire est un peu confuse.","Les techniciens interviendront dès demain pour réparer la fuite."], correct:3, explanation:"Une bonne conclusion évoque la suite de façon factuelle et précise, souvent au futur."},
-{prompt:"D'après la grille de relecture, quel type de phrases faut-il privilégier dans un article ?", options:["Des phrases avec beaucoup de adjectifs","Des phrases longues et détaillées","Des phrases à la première personne","Des phrases courtes et claires"], correct:3, explanation:"Des phrases courtes et claires facilitent la lecture et la compréhension."},
 {prompt:"Quel ton un article d'information doit-il adopter ?", options:["Un ton humoristique","Un ton très familier","Un ton neutre et objectif","Un ton engagé et militant"], correct:2, explanation:"Un article d'information doit rester neutre et objectif, sans opinion personnelle."},
-{prompt:"Sur la grille de relecture, quel critère concerne la clarté visuelle du texte ?", options:["Texte facile et lisible","Absence de répétitions","Grammaire correcte","Vocabulaire journalistique"], correct:0, explanation:"« Texte facile et lisible » évalue la présentation et la lisibilité, distinct de la grammaire ou du vocabulaire."},
-{prompt:"Pourquoi la grille de relecture précise-t-elle « pas de répétitions inutiles » ?", options:["Parce que les lecteurs détestent les mots longs","Parce que c'est interdit dans la charte du journal","Parce que ça coûte plus cher à imprimer","Parce que les répétitions alourdissent le texte sans apporter d'information nouvelle"], correct:3, explanation:"Les répétitions inutiles n'apportent rien et nuisent à la qualité de lecture."},
 {prompt:"Un article qui rapporte un événement de façon factuelle, sans opinion, s'appelle...", options:["Un éditorial","Un article d'information","Une critique","Une chronique"], correct:1, explanation:"L'article d'information rapporte les faits de façon neutre."},
 {prompt:"Un article qui exprime clairement l'opinion assumée de son auteur sur un sujet s'appelle...", options:["Une interview","Un éditorial / une tribune","Un article de fond","Une brève"], correct:1, explanation:"L'éditorial (ou tribune) exprime un point de vue assumé par l'auteur."},
 {prompt:"Un texte très court donnant une information rapide, sans développement, s'appelle...", options:["Une chronique / billet","Une brève / annonce","Un article de fond","Une critique / revue"], correct:1, explanation:"La brève (ou annonce) est un texte court et rapide à lire."},
@@ -726,7 +723,7 @@ function handleTranslateAnswer(qi){
   document.querySelector(`[data-submit="${qi}"]`).disabled = true;
   qScore.textContent = score;
 
-  if(!wasAnswered) setTimeout(() => goTo(qi + 1), 200);
+  setTimeout(() => goTo(qi + 1), 200); // avance aussi apres une correction
 }
 
 function handleAnswer(e){
@@ -746,7 +743,7 @@ function handleAnswer(e){
   qDiv.querySelectorAll('.option').forEach(o => o.disabled = true);
   qScore.textContent = score;
 
-  if(!wasAnswered) setTimeout(() => goTo(qi + 1), 150);
+  setTimeout(() => goTo(qi + 1), 150); // avance aussi apres une correction
 }
 
 function goTo(i){
