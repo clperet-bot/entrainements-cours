@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entraîne-toi !</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bleu:#3B7DFF; --violet:#7C5CFA; --vert:#1FB57F; --rose:#F0589B;
+    --encre:#1F2350; --fond:#F5F4FF; --blanc:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Poppins','Nunito','Segoe UI',Arial,sans-serif;
+    background:var(--fond); color:var(--encre);
+    padding:20px 16px 48px; line-height:1.4;
+  }
+  .page{max-width:680px;margin:0 auto}
+  header{text-align:center;margin:8px 0 26px}
+  header h1{font-size:2.1rem;font-weight:800;color:var(--violet)}
+  header p{font-size:1.05rem;color:var(--encre);opacity:.75;margin-top:4px}
+
+  .ruban{
+    display:inline-block; color:#fff; font-weight:700; font-size:1.2rem;
+    padding:9px 34px 9px 22px; margin:22px 0 14px -6px;
+    clip-path:polygon(0 0,100% 0,calc(100% - 16px) 50%,100% 100%,0 100%);
+  }
+  .ruban.anglais{background:var(--violet)}
+  .ruban.francais{background:var(--vert)}
+
+  .liste{display:flex;flex-direction:column;gap:12px}
+  a.carte{
+    display:flex;align-items:center;gap:14px;
+    background:var(--blanc); border-radius:18px; padding:14px 16px;
+    text-decoration:none; color:var(--encre);
+    box-shadow:0 2px 0 rgba(31,35,80,.08), 0 6px 14px rgba(31,35,80,.06);
+    border:2px solid transparent; transition:transform .12s, border-color .12s;
+  }
+  a.carte:active{transform:scale(.98)}
+  a.carte:hover{border-color:var(--violet)}
+  .num{
+    flex:0 0 44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;font-size:1.15rem;
+  }
+  .c1{background:var(--bleu)} .c2{background:var(--violet)}
+  .c3{background:var(--vert)} .c4{background:var(--rose)}
+  .texte{flex:1;min-width:0}
+  .titre{font-weight:700;font-size:1.05rem}
+  .detail{font-size:.9rem;opacity:.7;margin-top:2px}
+  .fleche{font-size:1.4rem;color:var(--violet);font-weight:700}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Entraîne-toi !</h1>
+    <p>Choisis ton quiz et c'est parti.</p>
+  </header>
+
+  <div class="ruban anglais">Anglais</div>
+  <div class="liste" id="anglais"></div>
+
+  <div class="ruban francais">Français</div>
+  <div class="liste" id="francais"></div>
+</div>
+
+<script>
+  // Pour ajouter un quiz : une ligne [titre, détail, fichier] dans la bonne matière.
+  var QUIZ = {
+    anglais: [
+      ["Danger Zone", "Safety Check", "danger-zone-quiz.html"],
+      ["From Art to Ad", "Quiz de révision", "art-to-ad-quiz.html"],
+      ["Create Your Start-up", "Quiz de révision", "create-startup-quiz.html"],
+      ["Shop Sign", "Client Brief to Shop Sign", "shop-sign-quiz.html"],
+      ["At Work", "Electrician's Check", "electrician-quiz.html"],
+      ["Solve the Mystery", "Quiz de révision", "solve-the-mystery-quiz.html"],
+      ["The Landlady", "Quiz de révision", "landlady-quiz.html"],
+      ["Spider-Man : Before You Watch", "Avant le film", "spiderman-before-you-watch.html"],
+      ["Spider-Man : Get Ready for the Test", "Avant le contrôle", "spiderman-test-prep.html"]
+    ],
+    francais: [
+      ["Frankenstein", "Quiz", "frankenstein-quiz.html"],
+      ["Fascination et rejet du monstrueux", "Quiz de révision", "quiz-revision-transfert.html"],
+      ["Informer, s'informer", "Quiz", "informer-quiz.html"],
+      ["Rédiger un article", "Quiz", "ecrire-article-quiz.html"],
+      ["Carte de journaliste (A)", "Quiz", "carte-journaliste-A.html"],
+      ["Carte de journaliste (B)", "Quiz", "carte-journaliste-B.html"]
+    ]
+  };
+
+  function afficher(id, liste){
+    var conteneur = document.getElementById(id);
+    liste.forEach(function(q, i){
+      var a = document.createElement("a");
+      a.className = "carte";
+      a.href = q[2];
+      a.innerHTML =
+        '<div class="num c' + ((i % 4) + 1) + '">' + (i + 1) + '</div>' +
+        '<div class="texte"><div class="titre"></div><div class="detail"></div></div>' +
+        '<div class="fleche">›</div>';
+      a.querySelector(".titre").textContent = q[0];
+      a.querySelector(".detail").textContent = q[1];
+      conteneur.appendChild(a);
+    });
+  }
+  afficher("anglais", QUIZ.anglais);
+  afficher("francais", QUIZ.francais);
+</script>
+</body>
+</html>
