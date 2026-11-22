@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Révise en musique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bleu:#3B7DFF; --violet:#7C5CFA; --vert:#1FB57F; --rose:#F0589B;
+    --encre:#1F2350; --fond:#F5F4FF; --blanc:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Poppins','Nunito','Segoe UI',Arial,sans-serif;
+    background:var(--fond); color:var(--encre);
+    padding:20px 16px 48px; line-height:1.4;
+  }
+  .page{max-width:680px;margin:0 auto}
+  header{text-align:center;margin:8px 0 26px}
+  header h1{font-size:2.1rem;font-weight:800;color:var(--rose)}
+  header p{font-size:1.05rem;opacity:.75;margin-top:4px}
+
+  .liste{display:flex;flex-direction:column;gap:14px}
+  .carte{
+    background:var(--blanc); border-radius:18px; padding:16px;
+    box-shadow:0 2px 0 rgba(31,35,80,.08), 0 6px 14px rgba(31,35,80,.06);
+  }
+  .entete{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .num{
+    flex:0 0 44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;font-size:1.15rem;
+  }
+  .c1{background:var(--bleu)} .c2{background:var(--violet)}
+  .c3{background:var(--vert)} .c4{background:var(--rose)}
+  .titre{font-weight:700;font-size:1.05rem}
+  .detail{font-size:.9rem;opacity:.7;margin-top:2px}
+  audio{width:100%}
+  .vide{
+    text-align:center;background:var(--blanc);border-radius:18px;padding:28px 18px;
+    font-weight:600;font-size:1.05rem;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Révise en musique</h1>
+    <p>Choisis ton cours, mets tes écouteurs et écoute.</p>
+  </header>
+  <div class="liste" id="liste"></div>
+</div>
+
+<script>
+  // Pour ajouter une musique : une ligne [titre du cours, détail, fichier audio]
+  // Exemple : ["Danger Zone", "La musique du cours", "danger-zone-musique.mp3"],
+  var MUSIQUES = [
+  ];
+
+  var liste = document.getElementById("liste");
+  if (MUSIQUES.length === 0) {
+    liste.innerHTML = '<div class="vide">Les premières musiques arrivent bientôt.</div>';
+  }
+  MUSIQUES.forEach(function(m, i){
+    var d = document.createElement("div");
+    d.className = "carte";
+    d.innerHTML =
+      '<div class="entete"><div class="num c' + ((i % 4) + 1) + '">' + (i + 1) + '</div>' +
+      '<div><div class="titre"></div><div class="detail"></div></div></div>' +
+      '<audio controls preload="none"></audio>';
+    d.querySelector(".titre").textContent = m[0];
+    d.querySelector(".detail").textContent = m[1];
+    d.querySelector("audio").src = m[2];
+    liste.appendChild(d);
+  });
+</script>
+</body>
+</html>
