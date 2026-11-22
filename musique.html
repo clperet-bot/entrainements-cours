@@ -39,6 +39,13 @@
   .titre{font-weight:700;font-size:1.05rem}
   .detail{font-size:.9rem;opacity:.7;margin-top:2px}
   audio{width:100%}
+  .paroles{margin-top:14px;padding:14px 16px;background:var(--fond);border-radius:14px;font-size:1.05rem;line-height:1.7}
+  .paroles .partie{display:block;margin:14px 0 4px;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--violet)}
+  .paroles .partie:first-child{margin-top:0}
+  .paroles .ligne{display:block}
+  .paroles .trad{display:none;font-size:.92rem;opacity:.65;font-style:italic;margin-bottom:6px}
+  .paroles.avec-trad .trad{display:block}
+  .btn-trad{margin-top:12px;font-family:inherit;font-weight:600;font-size:.95rem;color:#fff;background:var(--rose);border:0;border-radius:999px;padding:9px 18px;cursor:pointer}
   .ruban{
     display:inline-block; color:#fff; font-weight:700; font-size:1.2rem;
     padding:9px 34px 9px 22px; margin:22px 0 14px -6px;
@@ -72,10 +79,51 @@
 </div>
 
 <script>
-  // Pour ajouter une musique : une ligne [titre du cours, détail, fichier audio]
-  // dans la bonne matière. Exemple : ["Danger Zone", "La musique du cours", "danger-zone-musique.mp3"],
+  // Pour ajouter une musique : [titre du cours, détail, fichier audio, paroles]
+  // dans la bonne matière. Les paroles sont facultatives : entre accents graves (`),
+  // une ligne [Verse 1] ou [Chorus] devient un petit titre de partie.
+  // Pour la traduction : on l'écrit après une barre verticale sur la même ligne
+  //   Clue, clue, look for a clue | Indice, indice, cherche un indice
+  // Un bouton « Voir la traduction » apparaît alors sous les paroles.
+  // Exemple :
+  // ["Solve the Mystery : le vocabulaire de l'enquête", "Cluedo", "solve-the-mystery-musique.mp3", `[Verse 1]
+  // There's a note by the locker...
+  // [Chorus]
+  // Clue, clue, look for a clue...`],
   var MUSIQUES = {
     anglais: [
+      ["Solve the Mystery : le vocabulaire de l'enquête", "Cluedo", "solve-the-mystery-musique.mp3", `[Verse 1]
+There's a note by the locker, with no name on it | Il y a un mot près du casier, sans nom dessus
+A small red object, take a look at it! | Un petit objet rouge, regarde-le !
+Five suspects, five stories, who tells the truth? | Cinq suspects, cinq histoires, qui dit la vérité ?
+We need a witness, we need some proof. | Il nous faut un témoin, il nous faut une preuve.
+[Chorus]
+Clue, clue, look for a clue | Indice, indice, cherche un indice
+Fingerprint, what can it tell you? | L'empreinte, que peut-elle te dire ?
+Suspect, witness, alibi, | Suspect, témoin, alibi,
+Find the culprit, don't let them lie! | Trouve le coupable, ne le laisse pas mentir !
+[Verse 2]
+"She was seen near the gym," the witness said, | « Elle a été vue près du gymnase », a dit le témoin,
+"The fingerprint matches hers," it's in my head. | « L'empreinte lui correspond », c'est dans ma tête.
+"The bracelet belongs to her," that's a clue, | « Le bracelet lui appartient », c'est un indice,
+"Other suspects have alibis," so who, who, who? | « Les autres suspects ont des alibis », alors qui, qui, qui ?
+[Chorus]
+Clue, clue, look for a clue | Indice, indice, cherche un indice
+Fingerprint, what can it tell you? | L'empreinte, que peut-elle te dire ?
+Suspect, witness, alibi, | Suspect, témoin, alibi,
+Find the culprit, don't let them lie! | Trouve le coupable, ne le laisse pas mentir !
+[Bridge]
+Student council, a meeting at two, | Le conseil des élèves, une réunion à deux heures,
+Witnesses there, so an alibi too. | Des témoins présents, donc un alibi aussi.
+Say it again, say it loud, | Répète-le, dis-le fort,
+Clue, culprit, alibi, proof! | Indice, coupable, alibi, preuve !
+[Final Chorus]
+Clue, clue, look for a clue | Indice, indice, cherche un indice
+Fingerprint, what can it tell you? | L'empreinte, que peut-elle te dire ?
+Suspect, witness, alibi, | Suspect, témoin, alibi,
+Find the culprit, don't let them lie! | Trouve le coupable, ne le laisse pas mentir !
+[Outro]
+Solve the mystery! | Résous le mystère !`]
     ],
     francais: [
       ["La poésie", "La musique du cours", "musique-poesie.mp3"]
@@ -97,6 +145,46 @@
       d.querySelector(".titre").textContent = m[0];
       d.querySelector(".detail").textContent = m[1];
       d.querySelector("audio").src = m[2];
+      if (m[3]) {
+        var p = document.createElement("div");
+        p.className = "paroles";
+        var aTrad = false;
+        m[3].split("\n").forEach(function(l){
+          l = l.trim();
+          if (!l) return;
+          var span = document.createElement("span");
+          if (l.charAt(0) === "[" && l.charAt(l.length - 1) === "]") {
+            span.className = "partie";
+            span.textContent = l.slice(1, -1);
+            p.appendChild(span);
+            return;
+          }
+          var morceaux = l.split("|");
+          span.className = "ligne";
+          span.textContent = morceaux[0].trim();
+          p.appendChild(span);
+          if (morceaux.length > 1 && morceaux[1].trim()) {
+            aTrad = true;
+            var t = document.createElement("span");
+            t.className = "trad";
+            t.textContent = morceaux[1].trim();
+            p.appendChild(t);
+          }
+        });
+        if (aTrad) {
+          var b = document.createElement("button");
+          b.className = "btn-trad";
+          b.textContent = "Voir la traduction";
+          b.onclick = function(){
+            var on = p.classList.toggle("avec-trad");
+            b.textContent = on ? "Cacher la traduction" : "Voir la traduction";
+          };
+          d.appendChild(p);
+          d.appendChild(b);
+        } else {
+          d.appendChild(p);
+        }
+      }
       conteneur.appendChild(d);
     });
     return liste.length;
