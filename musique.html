@@ -39,6 +39,13 @@
   .titre{font-weight:700;font-size:1.05rem}
   .detail{font-size:.9rem;opacity:.7;margin-top:2px}
   audio{width:100%}
+  .ruban{
+    display:inline-block; color:#fff; font-weight:700; font-size:1.2rem;
+    padding:9px 34px 9px 22px; margin:22px 0 14px -6px;
+    clip-path:polygon(0 0,100% 0,calc(100% - 16px) 50%,100% 100%,0 100%);
+  }
+  .ruban.anglais{background:var(--violet)}
+  .ruban.francais{background:var(--vert)}
   .vide{
     text-align:center;background:var(--blanc);border-radius:18px;padding:28px 18px;
     font-weight:600;font-size:1.05rem;
@@ -51,31 +58,50 @@
     <h1>Révise en musique</h1>
     <p>Choisis ton cours, mets tes écouteurs et écoute.</p>
   </header>
-  <div class="liste" id="liste"></div>
+  <div id="vide" class="vide" style="display:none">Les premières musiques arrivent bientôt.</div>
+
+  <div id="bloc-anglais" style="display:none">
+    <div class="ruban anglais">Anglais</div>
+    <div class="liste" id="anglais"></div>
+  </div>
+
+  <div id="bloc-francais" style="display:none">
+    <div class="ruban francais">Français</div>
+    <div class="liste" id="francais"></div>
+  </div>
 </div>
 
 <script>
   // Pour ajouter une musique : une ligne [titre du cours, détail, fichier audio]
-  // Exemple : ["Danger Zone", "La musique du cours", "danger-zone-musique.mp3"],
-  var MUSIQUES = [
-  ];
+  // dans la bonne matière. Exemple : ["Danger Zone", "La musique du cours", "danger-zone-musique.mp3"],
+  var MUSIQUES = {
+    anglais: [
+    ],
+    francais: [
+    ]
+  };
 
-  var liste = document.getElementById("liste");
-  if (MUSIQUES.length === 0) {
-    liste.innerHTML = '<div class="vide">Les premières musiques arrivent bientôt.</div>';
+  function afficher(matiere){
+    var liste = MUSIQUES[matiere];
+    if (liste.length === 0) return 0;
+    document.getElementById("bloc-" + matiere).style.display = "block";
+    var conteneur = document.getElementById(matiere);
+    liste.forEach(function(m, i){
+      var d = document.createElement("div");
+      d.className = "carte";
+      d.innerHTML =
+        '<div class="entete"><div class="num c' + ((i % 4) + 1) + '">' + (i + 1) + '</div>' +
+        '<div><div class="titre"></div><div class="detail"></div></div></div>' +
+        '<audio controls preload="none"></audio>';
+      d.querySelector(".titre").textContent = m[0];
+      d.querySelector(".detail").textContent = m[1];
+      d.querySelector("audio").src = m[2];
+      conteneur.appendChild(d);
+    });
+    return liste.length;
   }
-  MUSIQUES.forEach(function(m, i){
-    var d = document.createElement("div");
-    d.className = "carte";
-    d.innerHTML =
-      '<div class="entete"><div class="num c' + ((i % 4) + 1) + '">' + (i + 1) + '</div>' +
-      '<div><div class="titre"></div><div class="detail"></div></div></div>' +
-      '<audio controls preload="none"></audio>';
-    d.querySelector(".titre").textContent = m[0];
-    d.querySelector(".detail").textContent = m[1];
-    d.querySelector("audio").src = m[2];
-    liste.appendChild(d);
-  });
+  var total = afficher("anglais") + afficher("francais");
+  if (total === 0) document.getElementById("vide").style.display = "block";
 </script>
 </body>
 </html>
