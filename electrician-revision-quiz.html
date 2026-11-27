@@ -42,7 +42,6 @@ const WORDS = [
  ['porter (des gants)',['to wear','wear']],['utiliser',['to use','use']],['ouvrir',['to open','open']],['fermer',['to close','close']],
  ['serrer',['to tighten','tighten']],['appuyer sur',['to press','press']],['vérifier',['to check','check']],['remplacer',['to replace','replace']],
  ['éteindre',['to turn off','turn off']],['allumer',['to turn on','turn on']],['réparer',['to repair','repair']],
- ['les consignes de sécurité',['safety instructions','the safety instructions']],['les étapes d\'utilisation',['operating steps','the operating steps']],
  ['le dépannage',['troubleshooting','the troubleshooting']],['la cause possible',['possible cause','the possible cause','a possible cause']],
  ['le courant',['power','the power']],['desserré',['loose']],['abîmé',['damaged']],['les lunettes de sécurité',['safety glasses','the safety glasses']]
 ];
@@ -57,10 +56,10 @@ const GRAMMAR = [
 
 const both = rest => ['I am ' + rest, "I'm " + rest];
 const EXPLAIN = [
- ['La machine ne démarre pas.',['The machine does not start',"The machine doesn't start"]],
- ['J\'utilise un tournevis (en ce moment).',both('using a screwdriver')],
- ['Je vérifie le fusible (en ce moment).',both('checking the fuse')],
- ['Je serre les fils (en ce moment).',both('tightening the wires')]
+ ['La machine ne démarre pas.',['The machine does not start',"The machine doesn't start",'The machine is not starting',"The machine isn't starting"]],
+ ['J\'utilise un tournevis.',both('using a screwdriver')],
+ ['Je vérifie le fusible.',both('checking the fuse')],
+ ['Je serre les fils.',both('tightening the wires')]
 ];
 
 const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
@@ -98,7 +97,7 @@ function build(){
   for(let i = 0; i < 10; i++){ const w = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; question('s1', w[0], w[1]); }
   part('3 · Be + verb-ing', '#8E6FD8', 'Complete the sentence with the verb.', 'Complète la phrase avec le verbe.');
   GRAMMAR.forEach(g => question('s2', g[0], g[1]));
-  part('4 · Explain what you are doing', '#2F4170', 'Write the sentence in English.', 'Écris la phrase en anglais.');
+  part('4 · Explain what you are doing', '#2F4170', 'Write the sentence in English. Use the tense for an action happening as you speak.', 'Écris la phrase en anglais. Utilise le temps adapté à une action qui se passe au moment où on la dit.');
   EXPLAIN.forEach(e => question('s3', e[0], e[1]));
   document.getElementById('score').style.display = 'none';
   document.getElementById('again').style.display = 'none';
