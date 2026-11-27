@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frankenstein — Lettre 4 — Quiz d'entraînement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#161210; --soft:#6f675b; --paper:#E9DFC4; --dim:#DCD0AE; --wine:#6E1F1F; --sage:#3f6b3f; --white:#FBF7EC; --line:rgba(34,31,26,.18); --bad:#9b2a2a; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'EB Garamond',serif;font-size:19px;line-height:1.55;}
+  header{text-align:center;padding:38px 18px 26px;border-bottom:1px solid var(--line);}
+  .kicker{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:800;font-size:46px;margin:6px 0 4px;color:var(--wine);}
+  .badge{display:inline-block;background:var(--sage);color:#fff;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 12px;border-radius:99px;}
+  .sub{color:var(--soft);max-width:560px;margin:12px auto 0;font-size:17px;}
+  main{max-width:720px;margin:0 auto;padding:22px 16px 60px;}
+  .bar{display:flex;justify-content:space-between;color:var(--soft);font-size:15px;margin-bottom:6px;}
+  .prog{height:8px;background:var(--dim);border-radius:9px;overflow:hidden;margin-bottom:18px;}
+  .prog i{display:block;height:100%;background:var(--wine);transition:width .3s;}
+  .card{background:var(--white);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--wine);padding:22px 22px 20px;}
+  .extract{border-left:4px solid var(--wine);background:var(--dim);padding:10px 14px;margin:0 0 16px;font-size:17px;}
+  .extract .cap{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:4px;}
+  .q{font-weight:600;font-size:21px;margin:0 0 14px;}
+  .opt{display:block;width:100%;text-align:left;font:inherit;background:#fff;border:2px solid var(--line);border-radius:10px;padding:11px 14px;margin:0 0 9px;cursor:pointer;color:var(--ink);}
+  .opt:hover:not([disabled]){border-color:var(--wine);}
+  .opt.ok{border-color:var(--sage);background:#e4f1e1;}
+  .opt.ko{border-color:var(--bad);background:#f6e0de;}
+  .opt[disabled]{cursor:default;}
+  .fb{display:none;margin-top:12px;padding:11px 14px;border-radius:10px;font-size:17px;}
+  .fb.show{display:block;} .fb.good{background:#e4f1e1;border:1px solid var(--sage);} .fb.bad{background:#f6e0de;border:1px solid var(--bad);}
+  .next{display:none;margin-top:14px;background:var(--wine);color:#fff;border:0;border-radius:10px;padding:11px 22px;font:inherit;font-weight:600;cursor:pointer;}
+  .next.show{display:inline-block;}
+  .end{text-align:center;} .big{font-family:'Cormorant Garamond',serif;font-weight:800;font-size:64px;color:var(--wine);line-height:1.1;} .big span{font-size:28px;color:var(--soft);}
+  .rev{text-align:left;margin-top:16px;} .rev li{margin:6px 0;}
+  .again{margin-top:8px;}
+  footer{text-align:center;color:var(--soft);font-size:13px;padding:16px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Français 1ère — Parcours d'œuvre</div>
+  <h1>Frankenstein</h1>
+  <span class="badge">Quiz d'entraînement · Lettre 4</span>
+  <p class="sub">Ta note ne compte pas : entraîne-toi autant de fois que tu veux. Garde ta lettre 4 sous les yeux.</p>
+</header>
+<main><div id="app"></div></main>
+<footer>Lycée Godefroy de Bouillon</footer>
+<script>
+const Q = [
+ {q:"Qui écrit cette lettre ?", o:["Walton, le capitaine du navire","Victor Frankenstein","La créature","Margaret Saville"], c:0,
+  e:"C'est Walton qui écrit : « je » désigne Walton dans le récit de la lettre."},
+ {q:"À qui cette lettre est-elle adressée ?", o:["À Victor","À un équipage de marins","À sa sœur, Margaret Saville","À un ami d'enfance"], c:2,
+  e:"Walton écrit à « Madame Saville », sa sœur Margaret. Elle est la destinataire : c'est le « vous » (l. 47)."},
+ {x:"« Nous distinguâmes un chariot bas, fixé sur un traîneau et tiré par des chiens » (l. 14-15)", q:"Dans cette phrase, qui désigne le pronom « nous » ?", o:["Walton et Margaret","Walton et son équipage","Victor et la créature","Les chiens et le traîneau"], c:1,
+  e:"« Nous » = Walton et les marins du navire, qui observent la scène ensemble."},
+ {q:"Walton écrit une lettre, mais il y raconte aussi ce que Victor lui dira. Comment appelle-t-on un récit placé à l'intérieur d'un autre récit ?", o:["Un roman épistolaire","Un récit enchâssé","Un registre","Un présage"], c:1,
+  e:"Récit enchâssé : le récit de Victor est placé à l'intérieur de la lettre de Walton. Le roman épistolaire, lui, est un roman écrit sous forme de lettres."},
+ {q:"Pourquoi la situation du navire est-elle « extrêmement dangereuse » au début de la lettre (l. 4-6) ?", o:["Une tempête s'approche","Le navire est entouré par la glace","L'équipage manque de nourriture","Des pirates les poursuivent"], c:1,
+  e:"Le navire est « presque entouré par la glace » et un épais brouillard l'enveloppe (l. 4-7)."},
+ {q:"Que voient d'abord Walton et ses compagnons au loin (l. 14-17) ?", o:["Un navire qui vient les secourir","Une île inconnue","Un traîneau tiré par des chiens, avec une silhouette de stature gigantesque","Un homme qui leur fait signe"], c:2,
+  e:"Ils aperçoivent un traîneau tiré par des chiens, guidé par une silhouette « de stature gigantesque » qui disparaît dans la glace."},
+ {q:"Le lendemain matin, qui les marins trouvent-ils près du navire (l. 32-37) ?", o:["Un habitant sauvage d'une île inconnue","Un Européen sur un traîneau à la dérive","Le même voyageur gigantesque","Un autre capitaine"], c:1,
+  e:"Un autre traîneau a dérivé jusqu'à eux : l'homme est « un Européen » (l. 36), pas un « habitant sauvage »."},
+ {q:"Quelle citation décrit l'état PHYSIQUE de l'étranger ?", o:["« Ses membres étaient presque gelés » (l. 50)","« sa physionomie devient lumineuse » (l. 65)","« le poids des malheurs qui l'accablent » (l. 68)","« Sa physionomie prit aussitôt une expression de profond chagrin » (l. 75)"], c:0,
+  e:"Les membres gelés et le corps « atrocement meurtri » (l. 50-51) décrivent son corps. Les autres citations décrivent plutôt son état moral."},
+ {q:"Quelle citation montre l'état MORAL de l'étranger ?", o:["« il perdit connaissance » (l. 53)","« il prit un peu de potage » (l. 58)","« il est plus généralement mélancolique et dépressif » (l. 66-67)","« nous le frottâmes avec de l'eau de vie » (l. 54)"], c:2,
+  e:"« Mélancolique et dépressif » décrit ses sentiments, pas son corps. Les autres citations parlent de son état physique ou des soins."},
+ {q:"Quel est le registre dominant de cet extrait quand Walton décrit l'étranger ?", o:["Le registre comique","Le registre pathétique","Le registre polémique","Le registre épique"], c:1,
+  e:"Registre pathétique : il cherche à provoquer la pitié (souffrance, malheur). Exemple : « Je n'ai jamais vu un homme dans un tel état » (l. 51)."},
+ {q:"Quel effet le registre pathétique produit-il sur le lecteur ?", o:["Il le fait rire","Il lui fait peur d'un monstre","Il lui inspire de la pitié pour l'étranger","Il l'ennuie"], c:2,
+  e:"Le lecteur ressent de la pitié devant la souffrance de l'étranger, avant même de savoir qui il est."},
+ {q:"Pourquoi l'étranger est-il venu si loin sur la glace (l. 73-76) ?", o:["Pour explorer le pôle Nord","Pour fuir ses ennemis","Pour poursuivre quelqu'un qui avait pris la fuite","Pour retrouver sa famille"], c:2,
+  e:"Il répond : « Pour poursuivre quelqu'un qui avait pris la fuite » (l. 76). Il appelle cet homme « le démon » (l. 83)."},
+ {q:"Quels sentiments sont exprimés dans l'extrait ? Associe correctement.", o:["Walton : étonnement (l. 43) ; Victor : « profond chagrin » (l. 75)","Walton : colère ; Victor : joie","Walton : indifférence ; Victor : étonnement","Walton : peur de Victor ; Victor : fierté"], c:0,
+  e:"Walton est étonné (l. 43), inquiet (l. 59-60) puis plein de sympathie (l. 120). Victor affiche un « profond chagrin » (l. 75)."},
+ {x:"« Je souhaite ardemment que l'accomplissement de vos désirs ne devienne pas pour vous, comme ce le fut pour moi, un poison venimeux. » (l. 105-107)", q:"Que présage cette phrase pour la suite du roman ?", o:["Walton va réussir sans aucune difficulté","Le récit de Victor servira d'avertissement à Walton","Victor va quitter le navire","Walton va abandonner son expédition dès demain"], c:1,
+  e:"Présager = annoncer ce qui va arriver. Victor va raconter son histoire pour mettre Walton en garde : chercher le savoir peut devenir dangereux (l. 108-112)."},
+ {q:"Dans l'extrait, Victor est un homme à la fois seul et rejeté. Quel élément du texte le montre le mieux ?", o:["Il arrive seul, épuisé, sur un traîneau à la dérive, à la poursuite de quelqu'un qui le fuit","Il discute joyeusement avec l'équipage","Il refuse de monter sur le navire","Il décide de rentrer chez lui"], c:0,
+  e:"Victor est seul sur la glace, brisé par la fatigue et par le chagrin, et il poursuit quelqu'un qui le fuit (l. 50-51, 75-76)."},
+ {q:"Quelle réponse respecte la méthode (une idée, une citation avec la ligne, une explication) ?", o:["Victor est épuisé.","Victor est épuisé : « son corps était atrocement meurtri par la fatigue » (l. 50-51).","« son corps était atrocement meurtri par la fatigue ».","Victor est épuisé, c'est écrit dans le texte quelque part."], c:1,
+  e:"La bonne réponse donne l'idée ET la citation entre guillemets avec la ligne. Il manque ensuite l'explication, qui analyse un mot, comme « atrocement » qui souligne l'intensité de la souffrance."},
+ {x:"« L'adjectif « atrocement » (l. 51) »", q:"Quelle explication analyse correctement ce mot, au lieu de le paraphraser ?", o:["« Atrocement » veut dire que Victor est très fatigué.","« Atrocement » est un adverbe qui insiste sur l'intensité de la souffrance de Victor et crée de la pitié chez le lecteur.","« Atrocement » est écrit à la ligne 51.","« Atrocement » est un mot compliqué."], c:1,
+  e:"Analyser, ce n'est pas répéter le texte : on nomme le procédé, on explique ce que le mot montre et l'effet qu'il produit sur le lecteur."}
+];
+const app = document.getElementById('app');
+let order, i, score, wrong;
+function shuffle(a){ a = a.slice(); for(let k=a.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [a[k],a[j]]=[a[j],a[k]]; } return a; }
+function start(){ order = Q.map((_,k)=>k); i = 0; score = 0; wrong = []; show(); }
+function show(){
+  const q = Q[order[i]];
+  const opts = shuffle(q.o.map((t,k)=>({t, ok:k===q.c})));
+  app.innerHTML = `<div class="bar"><span>Question ${i+1} / ${Q.length}</span><span>Score : ${score}</span></div>
+    <div class="prog"><i style="width:${i/Q.length*100}%"></i></div>
+    <div class="card">${q.x ? `<div class="extract"><span class="cap">Extrait</span>${q.x}</div>` : ''}
+    <p class="q">${q.q}</p><div id="opts"></div><div class="fb" id="fb"></div><button class="next" id="nx">${i===Q.length-1?'Voir mon résultat':'Question suivante →'}</button></div>`;
+  const box = document.getElementById('opts');
+  opts.forEach(o => { const b = document.createElement('button'); b.className='opt'; b.textContent=o.t; b.onclick=()=>answer(b,o,opts,q); box.appendChild(b); });
+}
+function answer(btn,o,opts,q){
+  const bs = [...document.querySelectorAll('.opt')];
+  bs.forEach((b,k)=>{ b.disabled = true; if(opts[k].ok) b.classList.add('ok'); });
+  const fb = document.getElementById('fb');
+  if(o.ok){ score++; fb.className='fb show good'; fb.innerHTML='<b>Bravo !</b> '+q.e; }
+  else { btn.classList.add('ko'); wrong.push(order[i]); fb.className='fb show bad'; fb.innerHTML='<b>Pas tout à fait.</b> '+q.e; }
+  const nx = document.getElementById('nx'); nx.classList.add('show'); nx.onclick = () => { i++; i<Q.length ? show() : end(); }; nx.focus();
+}
+function end(){
+  const msg = score===Q.length ? "Parfait ! Tu es prêt.e pour le contrôle." : score>=Q.length*0.7 ? "Très bien ! Relis les points manqués dans ta fiche de révision." : "Relis ta fiche de révision et ta lettre 4, puis recommence.";
+  app.innerHTML = `<div class="card end"><div class="big">${score}<span> / ${Q.length}</span></div><p>${msg}</p>
+    ${wrong.length ? `<div class="rev"><b>À revoir :</b><ul>${wrong.map(k=>`<li>${Q[k].q.replace(/</g,'&lt;')}</li>`).join('')}</ul></div>` : ''}
+    <button class="next show again" onclick="start()">Recommencer</button></div>`;
+}
+start();
+</script>
+</body>
+</html>
